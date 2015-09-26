@@ -12,7 +12,7 @@ setup(
     license="MIT",
     keywords="user agent browser navigator",
     author_email='lorien@lorien.name',
-    classifiers=(
+    classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
@@ -25,5 +25,5 @@ setup(
         #'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Internet :: WWW/HTTP',
-    ),
+    ],
 )
