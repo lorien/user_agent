@@ -1,0 +1,14 @@
+*.pyc
+*.swp
+*.swo
+*.orig
+*.egg-info/
+
+# setuptools
+dist/
+
+# tox
+.tox
+
+# project
+.env
