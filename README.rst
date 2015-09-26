@@ -31,7 +31,7 @@ Usage Example
 Installation
 ------------
 
-Use pip::
+Use pip:
 
 .. code:: shell
 
