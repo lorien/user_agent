@@ -12,7 +12,7 @@ user_agent
     :target: https://pypi.python.org/pypi/user_agent
 
 
-What is for user_agent library?
+What is user_agent library for?
 -------------------------------
 
 Well, it is for generating content of content of User-Agent header.
