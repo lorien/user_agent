@@ -11,6 +11,7 @@ setup(
     install_requires=['six'],
     license="MIT",
     keywords="user agent browser navigator",
+    author_email='lorien@lorien.name',
     classifiers=(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
