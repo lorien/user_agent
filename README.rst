@@ -33,7 +33,7 @@ Installation
 
 Use pip::
 
-.. code:: bash
+.. code:: shell
 
     $ pip install -U user_agent
 
