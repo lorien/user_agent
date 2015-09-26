@@ -5,7 +5,7 @@ ROOT = os.path.dirname(os.path.realpath(__file__))
 
 setup(
     name='user_agent',
-    version='0.0.1',
+    version='0.0.2',
     description='User-Agent generator',
     long_description=open(os.path.join(ROOT, 'README.rst')).read(),
     install_requires=['six'],
