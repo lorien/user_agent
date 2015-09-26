@@ -2,8 +2,8 @@
 user_agent
 ==========
 
-.. image:: https://travis-ci.org/lorien/grab.png?branch=master
-    :target: https://travis-ci.org/lorien/grab?branch=master
+.. image:: https://travis-ci.org/lorien/user_agent.png?branch=master
+    :target: https://travis-ci.org/lorien/user_agent?branch=master
 
 .. image:: https://img.shields.io/pypi/dm/user_agent.svg
     :target: https://pypi.python.org/pypi/user_agent
