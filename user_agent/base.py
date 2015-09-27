@@ -103,7 +103,8 @@ def generate_navigator(platform=None, navigator=None):
     Generates navigator's config
     """
 
-    if navigator != 'firefox':
+    if (navigator and isinstance(navigator, six.string_types)
+            and navigator != 'firefox'):
         EXCLUDE_PLATFORM = ('mac',)
     else:
         EXCLUDE_PLATFORM = ()
