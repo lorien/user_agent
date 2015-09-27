@@ -69,6 +69,7 @@ GECKOTRAIL_DESKTOP = '20100101'
 #    '42.0.2311.1', '43.0.2357.134', '44.0.2403.130', '45.0.2454.85',
 #)
 
+#https://en.wikipedia.org/wiki/Google_Chrome_release_history
 CHROME_BUILD = (
     (32, 1700, 1749),
     (33, 1750, 1846),
