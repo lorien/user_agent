@@ -55,6 +55,11 @@ class UserAgentTestCase(TestCase):
             self.assertTrue('chrome' in ua.lower())
             self.assertTrue('windows' in ua.lower())
 
+    def test_platform_linux(self):
+        for x in range(100):
+            ua = generate_user_agent(platform='linux')
+            self.assertTrue(ua.startswith('Mozilla/5.0 (X11;'))
+
 
 if __name__ == '__main__':
     unittest.main()

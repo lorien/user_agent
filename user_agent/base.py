@@ -6,6 +6,14 @@ This module is for generating random, valid web navigator's configs & User-Agent
 
 TODO:
 * add Edge, IE, Safari and Opera support
+
+Specs:
+* https://developer.mozilla.org/en-US/docs/Web/HTTP/Gecko_user_agent_string_reference
+* http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
+* https://developer.chrome.com/multidevice/user-agent
+
+Links:
+* http://www.zytrax.com/tech/web/browser_ids.htm
 """
 
 from random import choice, randint
@@ -66,11 +74,14 @@ APPVERSION = '5.0'
 USERAGENT_TEMPLATE = {
     'firefox': ( 
         'Mozilla/5.0 (%(platform)s; rv:%(version)s)'
-        ' Gecko/%(geckotrail)s Firefox/%(version)s'
+        ' Gecko/%(geckotrail)s'
+        ' Firefox/%(version)s'
     ),
     'chrome': (
-        'Mozilla/5.0 (%(platform)s) AppleWebKit/537.36'
-        ' (KHTML, like Gecko) Chrome/%(version)s Safari/537.36'
+        'Mozilla/5.0 (%(platform)s)'
+        ' AppleWebKit/537.36 (KHTML, like Gecko)'
+        ' Chrome/%(version)s'
+        ' Safari/537.36'
     ),
 }
 
@@ -180,10 +191,6 @@ def generate_navigator(platform=None, navigator=None):
         navigator_platform = SUBPLATFORM['mac']
         platform = choice(PLATFORM['mac'])
         oscpu = platform[11:]
-
-    if platform_name == 'mac' and navigator_name == 'chrome':
-        raise UserAgentRuntimeError('Chrome navigator is not currently'
-                                    ' implemented on Mac platform')
 
     if navigator_name == 'firefox':
         navigator_version = build_firefox_version()
