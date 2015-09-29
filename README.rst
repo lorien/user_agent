@@ -23,8 +23,8 @@ Usage Example
 
 .. code:: python
 
-    >>> from user_agent import generate_user_agent, generate_navigator
-    >>> generate_user_agent()
+	>>> from user_agent import generate_user_agent, generate_navigator
+	>>> generate_user_agent()
 	'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:40.0) Gecko/20100101 Firefox/40.0'
 	>>> generate_navigator(platform='win',navigator='chrome')
 	{'appversion': '5.0',
