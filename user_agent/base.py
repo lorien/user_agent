@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-That module is for generating web navigator's User-Agent header.
+This module is for generating unique and valid web navigator's configs & User-Agent HTTP headers.
+** generate_user_agent: generates User-Agent HTTP header
+** generate_navigator:  generates web navigator's config
 
 TODO:
-* add Edge/IE
-* You can build completely random user-agent or limit generation
-to specific OS, browser, etc.
+* add Edge, IE, Safari and Opera support
 """
+
 from random import choice, randint
 import six
 
 __all__ = ['generate_user_agent', 'generate_navigator',
            'UserAgentRuntimeError']
 
-#PLATFORM = ('linux', 'mac', 'win')
 PLATFORM = {
     'win': (
         'Windows NT 5.1', # Windows XP
@@ -119,7 +119,7 @@ def build_chrome_version():
 
 def generate_navigator(platform=None, navigator=None):
     """
-    Generates navigator's config
+    Generates web navigator's config
 
     :param platfrom: limit list of platforms for generation
     :type platform: None or string or list/tuple
@@ -181,9 +181,9 @@ def generate_navigator(platform=None, navigator=None):
         platform = choice(PLATFORM['mac'])
         oscpu = platform[11:]
 
-    if platform_name == 'mac' and navigator_name != 'firefox':
-        raise UserAgentRuntimeError('Only firefox navigator is'
-                                    ' available for mac platform')
+    if platform_name == 'mac' and navigator_name == 'chrome':
+        raise UserAgentRuntimeError('Chrome navigator is not currently'
+                                    ' implemented on Mac platform')
 
     if navigator_name == 'firefox':
         navigator_version = build_firefox_version()
