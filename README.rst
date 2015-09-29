@@ -12,7 +12,7 @@ user_agent
     :target: https://pypi.python.org/pypi/user_agent
 
 
-What is user_agent library for?
+What is user_agent module for?
 -------------------------------
 
 This module is for generating unique and valid web navigator's configs & User-Agent HTTP headers.
