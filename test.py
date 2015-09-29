@@ -3,7 +3,7 @@ from unittest import TestCase
 import unittest
 
 from user_agent import (generate_user_agent, generate_navigator,
-                        UserAgentRuntimeError)
+                        UserAgentRuntimeError, UserAgentInvalidRequirements)
 
 class UserAgentTestCase(TestCase):
     def test_it(self):
@@ -59,6 +59,14 @@ class UserAgentTestCase(TestCase):
         for x in range(100):
             ua = generate_user_agent(platform='linux')
             self.assertTrue(ua.startswith('Mozilla/5.0 (X11;'))
+
+    def test_impossible_combination(self):
+        for x in range(100):
+            self.assertRaises(UserAgentInvalidRequirements,
+                              generate_user_agent,
+                              platform='mac', navigator='chrome')
+
+
 
 
 if __name__ == '__main__':

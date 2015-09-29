@@ -20,7 +20,7 @@ from random import choice, randint
 import six
 
 __all__ = ['generate_user_agent', 'generate_navigator',
-           'UserAgentRuntimeError']
+           'UserAgentRuntimeError', 'UserAgentInvalidRequirements']
 
 PLATFORM = {
     'win': (
@@ -115,6 +115,10 @@ class UserAgentRuntimeError(Exception):
     pass
 
 
+class UserAgentInvalidRequirements(UserAgentRuntimeError):
+    pass
+
+
 def build_firefox_version():
     return choice(FIREFOX_VERSION)
 
@@ -165,12 +169,34 @@ def generate_navigator(platform=None, navigator=None):
     # available for choosen navigator
     if len(navigator_choices) == 1:
         navigator_name = navigator_choices[0]
-        platform_name = choice([x for x in platform_choices
-                                if x in NAVIGATOR_PLATFORMS[navigator_name]])
+        avail_platform_choices = [x for x in platform_choices
+                                  if x in NAVIGATOR_PLATFORMS[navigator_name]]
+        # This list could be empty because of invalid
+        # parameters passed to the `generate_navigator` function
+        if avail_platform_choices:
+            platform_name = choice(avail_platform_choices)
+        else:
+            platform_list = '[%s]' % ', '.join(avail_platform_choices)
+            navigator_list = '[%s]' % ', '.join(navigator_choices)
+            raise UserAgentInvalidRequirements(
+                'Could not generate navigator for any combination of'
+                ' %s platforms and %s navigators'
+                % (platform_list, navigator_list))
     else:
         platform_name = choice(platform_choices)
-        navigator_name = choice([x for x in navigator_choices
-                                 if x in PLATFORM_NAVIGATORS[platform_name]])
+        avail_navigator_choices = [x for x in navigator_choices
+                                   if x in PLATFORM_NAVIGATORS[platform_name]]
+        # This list could be empty because of invalid
+        # parameters passed to the `generate_navigator` function
+        if avail_navigator_choices:
+            navigator_name = choice(avail_navigator_choices)
+        else:
+            platform_list = '[%s]' % ', '.join(avail_platform_choices)
+            navigator_list = '[%s]' % ', '.join(navigator_choices)
+            raise UserAgentInvalidRequirements(
+                'Could not generate navigator for any combination of'
+                ' %s platforms and %s navigators'
+                % (platform_list, navigator_list))
 
     assert platform_name in PLATFORM
     assert navigator_name in NAVIGATOR
