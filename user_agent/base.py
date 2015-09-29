@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This module is for generating unique and valid web navigator's configs & User-Agent HTTP headers.
+This module is for generating random, valid web navigator's configs & User-Agent HTTP headers.
 ** generate_user_agent: generates User-Agent HTTP header
 ** generate_navigator:  generates web navigator's config
 
