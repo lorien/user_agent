@@ -23,17 +23,19 @@ Usage Example
 
 .. code:: python
 
-	>>> from user_agent import generate_user_agent, generate_navigator
-	>>> generate_user_agent()
-	'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:40.0) Gecko/20100101 Firefox/40.0'
-	>>> generate_navigator(platform='win', navigator='chrome')
-	{'appversion': '5.0',
-	 'name': 'chrome',
-	 'os': 'win',
-	 'oscpu': 'Windows NT 10.0; WOW64',
-	 'platform': 'Win32',
-	 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2172.16 Safari/537.36',
-	 'version': '39.0.2172.16'}
+    >>> from user_agent import generate_user_agent, generate_navigator
+    >>> generate_user_agent()
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:40.0) Gecko/20100101 Firefox/40.0'
+    >>> generate_user_agent(platform=('mac', 'linux'))
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:36.0) Gecko/20100101 Firefox/36.0'
+    >>> generate_navigator(platform='win', navigator='chrome')
+    {'appversion': '5.0',
+     'name': 'chrome',
+     'os': 'win',
+     'oscpu': 'Windows NT 10.0; WOW64',
+     'platform': 'Win32',
+     'user_agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2172.16 Safari/537.36',
+     'version': '39.0.2172.16'}
 
 
 Installation
