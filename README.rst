@@ -15,7 +15,7 @@ user_agent
 What is user_agent module for?
 -------------------------------
 
-This module is for generating unique and valid web navigator's configs & User-Agent HTTP headers.
+This module is for generating random, valid web navigator's configs & User-Agent HTTP headers.
 
 
 Usage Example
