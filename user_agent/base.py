@@ -14,6 +14,10 @@ Specs:
 
 Links:
 * http://www.zytrax.com/tech/web/browser_ids.htm
+
+Release history:
+* https://en.wikipedia.org/wiki/Firefox_release_history
+* https://en.wikipedia.org/wiki/Google_Chrome_release_history
 """
 
 from random import choice, randint
@@ -85,14 +89,12 @@ USERAGENT_TEMPLATE = {
     ),
 }
 
-# https://en.wikipedia.org/wiki/Firefox_release_history
 FIREFOX_VERSION = (
     '27.0', '28.0', '29.0', '31.0', '33.0', '36.0', '37.0', '38.0',
     '39.0', '40.0', '41.0', '42.0', '43.0',
 )
 GECKOTRAIL_DESKTOP = '20100101'
 
-# https://en.wikipedia.org/wiki/Google_Chrome_release_history
 CHROME_BUILD = (
     (32, 1700, 1749),
     (33, 1750, 1846),
