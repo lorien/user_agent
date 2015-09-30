@@ -64,12 +64,12 @@ SUBPLATFORM = {
 
 PLATFORM_NAVIGATORS = {
     'win': ('chrome', 'firefox'),
-    'mac': ('firefox'),
+    'mac': ('firefox', 'chrome'),
     'linux': ('chrome', 'firefox'),
 }
 
 NAVIGATOR_PLATFORMS = {
-    'chrome': ('win', 'linux'),
+    'chrome': ('win', 'linux', 'mac'),
     'firefox': ('win', 'linux', 'mac'),
 }
 
@@ -132,6 +132,28 @@ def build_chrome_version():
         randint(build[1], build[2]),
         randint(0, 99),
     )
+
+MACOSX_CHROME_BUILD_RANGE = {
+    '10.8': (0, 8),
+    '10.9': (0, 5),
+    '10.10': (0, 5),
+    '10.11': (0, 1),
+}
+
+
+def fix_chrome_mac_platform(platform):
+    """
+    :param platform: - string like "Macintosh; Intel Mac OS X 10.8"
+    """
+    ver = platform.split('OS X ')[1]
+    build_range = list(MACOSX_CHROME_BUILD_RANGE[ver])
+    build_range.append(None)
+    build = choice(build_range)
+    if build is None:
+        mac_ver = ver.replace('.', '_')
+    else:
+        mac_ver = ver.replace('.', '_') + '_' + str(build)
+    return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
 
 def generate_navigator(platform=None, navigator=None):
@@ -218,6 +240,8 @@ def generate_navigator(platform=None, navigator=None):
     elif platform_name == 'mac':
         navigator_platform = SUBPLATFORM['mac']
         platform = choice(PLATFORM['mac'])
+        if navigator_name == 'chrome':
+            platform = fix_chrome_mac_platform(platform)
         oscpu = platform[11:]
 
     if navigator_name == 'firefox':

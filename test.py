@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from unittest import TestCase
 import unittest
+import re
 
 from user_agent import (generate_user_agent, generate_navigator,
                         UserAgentRuntimeError, UserAgentInvalidRequirements)
@@ -60,11 +61,16 @@ class UserAgentTestCase(TestCase):
             ua = generate_user_agent(platform='linux')
             self.assertTrue(ua.startswith('Mozilla/5.0 (X11;'))
 
-    def test_impossible_combination(self):
+    def test_mac_chrome(self):
         for x in range(100):
-            self.assertRaises(UserAgentInvalidRequirements,
-                              generate_user_agent,
-                              platform='mac', navigator='chrome')
+            ua = generate_user_agent(platform='mac', navigator='chrome')
+            self.assertTrue(re.search(r'OS X \d+_\d+(_\d+\b|\b)', ua))
+
+    #def test_impossible_combination(self):
+    #    for x in range(100):
+    #        self.assertRaises(UserAgentInvalidRequirements,
+    #                          generate_user_agent,
+    #                          platform='mac', navigator='chrome')
 
 
 
