@@ -147,12 +147,12 @@ def fix_chrome_mac_platform(platform):
     """
     ver = platform.split('OS X ')[1]
     build_range = list(MACOSX_CHROME_BUILD_RANGE[ver])
-    build_range.append(None)
+    #build_range.append(None)
     build = choice(build_range)
-    if build is None:
-        mac_ver = ver.replace('.', '_')
-    else:
-        mac_ver = ver.replace('.', '_') + '_' + str(build)
+    #if build is None:
+    #    mac_ver = ver.replace('.', '_')
+    #else:
+    mac_ver = ver.replace('.', '_') + '_' + str(build)
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
 
