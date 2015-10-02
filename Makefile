@@ -15,5 +15,11 @@ venv:
 
 deps:
 	.env/bin/pip install -r requirements.txt
+
+docs:
+	cd docs; make html
+
+viewdocs:
+	xdg-open docs/build/html/index.html
 	
-.PHONY: clean upload test build venv deps
+.PHONY: clean upload test build venv deps docs

@@ -160,10 +160,28 @@ def generate_navigator(platform=None, navigator=None):
     """
     Generates web navigator's config
 
-    :param platfrom: limit list of platforms for generation
-    :type platform: None or string or list/tuple
+    :param platform: limit list of platforms for generation
+    :type platform: string or list/tuple or None
     :param navigator: limit list of browser engines for generation
-    :type navigator: None or string or list/tuple
+    :type navigator: string or list/tuple or None
+    :return: User-Agent config
+    :rtype: dict
+    :raises UserAgentInvalidRequirements: if could not generate user-agent for
+        any combination of allowed platforms and navigators
+    :raise UserAgentRuntimeError: if any of passed options is invalid
+
+    Returns a dict like:
+
+    .. code:: python
+
+        {'appversion': '5.0',
+         'name': 'chrome',
+         'os': 'win',
+         'oscpu': 'Windows NT 10.0; WOW64',
+         'platform': 'Win32',
+         'user_agent': 'Mozilla/5.0 ... Safari/537.36',
+         'version': '39.0.2172.16'}
+
     """
 
     # Process platform option
@@ -266,6 +284,18 @@ def generate_navigator(platform=None, navigator=None):
     }
 
 
-def generate_user_agent(**kwargs):
-    """Generates HTTP User-Agent header"""
+def generate_user_agent(platform=None, navigator=None):
+    """
+    Generates HTTP User-Agent header
+
+    :param platform: limit list of platforms for generation
+    :type platform: string or list/tuple or None
+    :param navigator: limit list of browser engines for generation
+    :type navigator: string or list/tuple or None
+    :return: User-Agent string
+    :rtype: string
+    :raises UserAgentInvalidRequirements: if could not generate user-agent for
+        any combination of allowed platforms and navigators
+    :raise UserAgentRuntimeError: if any of passed options is invalid
+    """
     return generate_navigator(**kwargs)['user_agent']

@@ -1,3 +1,4 @@
 tox
 bumpversion
 runscript
+sphinx

@@ -13,3 +13,4 @@ dist/
 # project
 .env
 /var/
+/docs/build/
