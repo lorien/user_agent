@@ -11,6 +11,9 @@ user_agent
 .. image:: https://img.shields.io/pypi/v/user_agent.svg
     :target: https://pypi.python.org/pypi/user_agent
 
+.. image:: https://readthedocs.org/projects/user_agent/badge/?version=latest
+    :target: http://docs.user_agentlib.org/en/latest/
+
 
 What is user_agent module for?
 -------------------------------
@@ -46,6 +49,13 @@ Use pip:
 .. code:: shell
 
     $ pip install -U user_agent
+
+
+Documentation
+-------------
+
+Documentation is available at http://user-agent.readthedocs.org
+
 
 
 Contribution
