@@ -298,4 +298,4 @@ def generate_user_agent(platform=None, navigator=None):
         any combination of allowed platforms and navigators
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
-    return generate_navigator(**kwargs)['user_agent']
+    return generate_navigator(platform=platform, navigator=navigator)['user_agent']
