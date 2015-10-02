@@ -12,7 +12,7 @@ user_agent
     :target: https://pypi.python.org/pypi/user_agent
 
 .. image:: https://readthedocs.org/projects/user_agent/badge/?version=latest
-    :target: http://docs.user_agentlib.org/en/latest/
+    :target: http://user-agent.readthedocs.org
 
 
 What is user_agent module for?
