@@ -12,12 +12,14 @@ Specs:
 * http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
 * https://developer.chrome.com/multidevice/user-agent
 
-Links:
-* http://www.zytrax.com/tech/web/browser_ids.htm
-
 Release history:
 * https://en.wikipedia.org/wiki/Firefox_release_history
 * https://en.wikipedia.org/wiki/Google_Chrome_release_history
+
+Lists of user agents:
+* http://www.useragentstring.com/
+* http://www.user-agents.org/ 
+
 """
 
 from random import choice, randint
@@ -165,23 +167,11 @@ def generate_navigator(platform=None, navigator=None):
     :param navigator: limit list of browser engines for generation
     :type navigator: string or list/tuple or None
     :return: User-Agent config
-    :rtype: dict
+    :rtype: dict with keys (appversion, name, os, oscpu,
+                            platform, user_agent, version)
     :raises UserAgentInvalidRequirements: if could not generate user-agent for
         any combination of allowed platforms and navigators
     :raise UserAgentRuntimeError: if any of passed options is invalid
-
-    Returns a dict like:
-
-    .. code:: python
-
-        {'appversion': '5.0',
-         'name': 'chrome',
-         'os': 'win',
-         'oscpu': 'Windows NT 10.0; WOW64',
-         'platform': 'Win32',
-         'user_agent': 'Mozilla/5.0 ... Safari/537.36',
-         'version': '39.0.2172.16'}
-
     """
 
     # Process platform option
