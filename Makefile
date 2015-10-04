@@ -14,7 +14,7 @@ venv:
 	virtualenv --no-site-packages --python=python3.4 .env
 
 deps:
-	.env/bin/pip install -r requirements.txt
+	.env/bin/pip install -r requirements_dev.txt
 
 docs:
 	cd docs; make html
