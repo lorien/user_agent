@@ -5,7 +5,8 @@ This module is for generating random, valid web navigator's configs & User-Agent
 ** generate_navigator:  generates web navigator's config
 
 TODO:
-* add Edge, IE, Safari and Opera support
+* add Edge, Safari and Opera support
+* add random config i.e. win platform more common than linux
 
 Specs:
 * https://developer.mozilla.org/en-US/docs/Web/HTTP/Gecko_user_agent_string_reference
@@ -19,6 +20,7 @@ Release history:
 Lists of user agents:
 * http://www.useragentstring.com/
 * http://www.user-agents.org/ 
+* http://www.webapps-online.com/online-tools/user-agent-strings
 
 """
 
