@@ -65,7 +65,7 @@ SUBPLATFORM = {
 }
 
 PLATFORM_NAVIGATORS = {
-    'win': ('chrome', 'firefox'),
+    'win': ('chrome', 'firefox', 'ie'),
     'mac': ('firefox', 'chrome'),
     'linux': ('chrome', 'firefox'),
 }
@@ -73,30 +73,22 @@ PLATFORM_NAVIGATORS = {
 NAVIGATOR_PLATFORMS = {
     'chrome': ('win', 'linux', 'mac'),
     'firefox': ('win', 'linux', 'mac'),
+    'ie': ('win',),
 }
 
-NAVIGATOR = ('firefox', 'chrome')
+NAVIGATOR = ('firefox', 'chrome', 'ie')
 APPVERSION = '5.0'
 USERAGENT_TEMPLATE = {
-    'firefox': ( 
-        'Mozilla/5.0 (%(platform)s; rv:%(version)s)'
-        ' Gecko/%(geckotrail)s'
-        ' Firefox/%(version)s'
+    'ie': (
+        'Mozilla/5.0 (compatible; MSIE %(version)s; %(platform)s'
     ),
-    'chrome': (
-        'Mozilla/5.0 (%(platform)s)'
-        ' AppleWebKit/537.36 (KHTML, like Gecko)'
-        ' Chrome/%(version)s'
-        ' Safari/537.36'
-    ),
-}
 
+}
 FIREFOX_VERSION = (
     '27.0', '28.0', '29.0', '31.0', '33.0', '36.0', '37.0', '38.0',
     '39.0', '40.0', '41.0', '42.0', '43.0',
 )
 GECKOTRAIL_DESKTOP = '20100101'
-
 CHROME_BUILD = (
     (32, 1700, 1749),
     (33, 1750, 1846),
@@ -113,6 +105,12 @@ CHROME_BUILD = (
     (44, 2403, 2453),
     (45, 2454, 2489),
 )
+IE_VERSION = (
+    'MSIE 11.0',
+    'MSIE 10.0',
+    'MSIE 9.0',
+    'MSIE 8.0',
+)
 
 
 class UserAgentRuntimeError(Exception):
@@ -122,6 +120,24 @@ class UserAgentRuntimeError(Exception):
 class UserAgentInvalidRequirements(UserAgentRuntimeError):
     pass
 
+
+def build_ua(navigator_name, navigator_version, platform):
+    assert navigator_name in ('firefox', 'chrome', 'ie')
+    if navigator_name == 'firefox':
+        return ('Mozilla/5.0 (%s; rv:%s) Gecko/%s Firefox/%s'
+                % (platform, navigator_version,
+                   GECKOTRAIL_DESKTOP, navigator_version))
+    elif navigator_name == 'chrome':
+        return ('Mozilla/5.0 (%s) AppleWebKit/537.36 (KHTML, like Gecko)'
+                ' Chrome/%s Safari/537.36'
+                % (platform, navigator_version))
+    elif navigator_name == 'ie':
+        if navigator_version == 'MSIE 11.0':
+            return ('Mozilla/5.0 (%s; Trident/7.0; rv:11.0) like Gecko'
+                    % platform)
+        else:
+            return ('Mozilla/5.0 (compatible; %s; %s)'
+                    % (navigator_version, platform))  
 
 def build_firefox_version():
     return choice(FIREFOX_VERSION)
@@ -134,6 +150,11 @@ def build_chrome_version():
         randint(build[1], build[2]),
         randint(0, 99),
     )
+
+
+def build_ie_version():
+    return choice(IE_VERSION)
+
 
 MACOSX_CHROME_BUILD_RANGE = {
     '10.8': (0, 8),
@@ -256,12 +277,10 @@ def generate_navigator(platform=None, navigator=None):
         navigator_version = build_firefox_version()
     elif navigator_name == 'chrome':
         navigator_version = build_chrome_version()
+    elif navigator_name == 'ie':
+        navigator_version = build_ie_version()
 
-    user_agent = USERAGENT_TEMPLATE[navigator_name] % {
-        'platform': platform,
-        'version': navigator_version,
-        'geckotrail': GECKOTRAIL_DESKTOP,
-    }
+    user_agent = build_ua(navigator_name, navigator_version, platform)
 
     return {
         'name': navigator_name,

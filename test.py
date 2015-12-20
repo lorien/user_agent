@@ -34,9 +34,14 @@ class UserAgentTestCase(TestCase):
             ua = generate_user_agent(navigator='chrome')
             self.assertTrue('chrome' in ua.lower())
 
+            ua = generate_user_agent(navigator='ie')
+            self.assertTrue('msie' in ua.lower() or 'rv:11' in ua.lower())
+
     def test_navigator_option_tuple(self):
         for x in range(100):
+            ua = generate_user_agent(navigator=('chrome',))
             ua = generate_user_agent(navigator=('chrome', 'firefox'))
+            ua = generate_user_agent(navigator=('chrome', 'firefox', 'ie'))
 
     def test_platform_option_tuple(self):
         for x in range(100):
@@ -56,6 +61,10 @@ class UserAgentTestCase(TestCase):
             self.assertTrue('chrome' in ua.lower())
             self.assertTrue('windows' in ua.lower())
 
+            ua = generate_user_agent(platform='win', navigator='ie')
+            self.assertTrue('msie' in ua.lower() or 'rv:11' in ua.lower())
+            self.assertTrue('windows' in ua.lower())
+
     def test_platform_linux(self):
         for x in range(100):
             ua = generate_user_agent(platform='linux')
@@ -66,12 +75,14 @@ class UserAgentTestCase(TestCase):
             ua = generate_user_agent(platform='mac', navigator='chrome')
             self.assertTrue(re.search(r'OS X \d+_\d+(_\d+\b|\b)', ua))
 
-    #def test_impossible_combination(self):
-    #    for x in range(100):
-    #        self.assertRaises(UserAgentInvalidRequirements,
-    #                          generate_user_agent,
-    #                          platform='mac', navigator='chrome')
-
+    def test_impossible_combination(self):
+        for x in range(100):
+            self.assertRaises(UserAgentInvalidRequirements,
+                              generate_user_agent,
+                              platform='linux', navigator='ie')
+            self.assertRaises(UserAgentInvalidRequirements,
+                              generate_user_agent,
+                              platform='mac', navigator='ie')
 
 
 
