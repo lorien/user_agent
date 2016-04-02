@@ -61,9 +61,7 @@ SUBPLATFORM = {
         ('x86_64', 'Linux x86_64'), # 64bit
         ('i686 on x86_64', 'Linux i686 on x86_64'), # 32bit process / 64bit system
     ),
-    'mac': (
-        ('MacIntel',), # 32bit, 64bit
-    ),
+    'mac': 'MacIntel'
 }
 
 PLATFORM_NAVIGATORS = {
