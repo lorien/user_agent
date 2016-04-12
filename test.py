@@ -4,6 +4,7 @@ import unittest
 import re
 
 from user_agent import (generate_user_agent, generate_navigator,
+                        generate_navigator_js,
                         UserAgentRuntimeError, UserAgentInvalidRequirements)
 
 class UserAgentTestCase(TestCase):
@@ -83,6 +84,16 @@ class UserAgentTestCase(TestCase):
             self.assertRaises(UserAgentInvalidRequirements,
                               generate_user_agent,
                               platform='mac', navigator='ie')
+
+    def test_generate_navigator_js(self):
+        for x in range(100):
+            nav = generate_navigator_js()
+            self.assertEqual(set(['appCodeName', 'appName', 'appVersion',
+                                  'platform', 'userAgent']), set(nav.keys()))
+
+            self.assertEqual(nav['appCodeName'], 'Mozilla')
+            self.assertTrue(nav['appName'] in (
+                'Netscape', 'Microsoft Internet Explorer'))
 
 
 

@@ -18,7 +18,9 @@ user_agent
 What is user_agent module for?
 -------------------------------
 
-This module is for generating random, valid web navigator's configs & User-Agent HTTP headers.
+This module is for generating random, valid web user agents:
+* content of "User-Agent" HTTP headers
+* content of `window.navigator` JavaScript object
 
 
 Usage Example
@@ -27,18 +29,27 @@ Usage Example
 .. code:: python
 
     >>> from user_agent import generate_user_agent, generate_navigator
+    >>> from pprint import pprint
     >>> generate_user_agent()
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:40.0) Gecko/20100101 Firefox/40.0'
     >>> generate_user_agent(platform=('mac', 'linux'))
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:36.0) Gecko/20100101 Firefox/36.0'
-    >>> generate_navigator(platform='win', navigator='chrome')
-    {'appversion': '5.0',
-     'name': 'chrome',
-     'os': 'win',
-     'oscpu': 'Windows NT 10.0; WOW64',
-     'platform': 'Win32',
-     'user_agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2172.16 Safari/537.36',
-     'version': '39.0.2172.16'}
+    >>> pprint(generate_navigator())
+    {'app_code_name': 'Mozilla',
+     'app_name': 'Netscape',
+     'appversion': '5.0',
+     'name': 'firefox',
+     'os': 'linux',
+     'oscpu': 'Linux i686 on x86_64',
+     'platform': 'Linux i686 on x86_64',
+     'user_agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686 on x86_64; rv:41.0) Gecko/20100101 Firefox/41.0',
+     'version': '41.0'}
+    >>> pprint(generate_navigator_js())
+    {'appCodeName': 'Mozilla',
+     'appName': 'Netscape',
+     'appVersion': '38.0',
+     'platform': (('MacIntel',),),
+     'userAgent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:38.0) Gecko/20100101 Firefox/38.0'}
 
 
 Installation

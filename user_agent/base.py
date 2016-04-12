@@ -12,6 +12,7 @@ Specs:
 * https://developer.mozilla.org/en-US/docs/Web/HTTP/Gecko_user_agent_string_reference
 * http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
 * https://developer.chrome.com/multidevice/user-agent
+* http://www.javascriptkit.com/javatutors/navigator.shtml
 
 Release history:
 * https://en.wikipedia.org/wiki/Firefox_release_history
@@ -28,6 +29,7 @@ from random import choice, randint
 import six
 
 __all__ = ['generate_user_agent', 'generate_navigator',
+           'generate_navigator_js',
            'UserAgentRuntimeError', 'UserAgentInvalidRequirements']
 
 PLATFORM = {
@@ -275,10 +277,17 @@ def generate_navigator(platform=None, navigator=None):
 
     if navigator_name == 'firefox':
         navigator_version = build_firefox_version()
+        app_name = 'Netscape'
     elif navigator_name == 'chrome':
         navigator_version = build_chrome_version()
+        app_name = 'Netscape'
     elif navigator_name == 'ie':
         navigator_version = build_ie_version()
+        num_ver = float(navigator_version.split(' ')[-1])
+        if num_ver >= 11:
+            app_name = 'Netscape'
+        else:
+            app_name = 'Microsoft Internet Explorer'
 
     user_agent = build_ua(navigator_name, navigator_version, platform)
 
@@ -290,6 +299,8 @@ def generate_navigator(platform=None, navigator=None):
         'oscpu': oscpu,
         'user_agent': user_agent,
         'appversion': APPVERSION,
+        'app_name': app_name,
+        'app_code_name': 'Mozilla',
     }
 
 
@@ -308,3 +319,29 @@ def generate_user_agent(platform=None, navigator=None):
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
     return generate_navigator(platform=platform, navigator=navigator)['user_agent']
+
+
+def generate_navigator_js(platform=None, navigator=None):
+    """
+    Generates web navigator's config with keys corresponding
+    to keys of `windows.navigator` JavaScript object.
+
+    :param platform: limit list of platforms for generation
+    :type platform: string or list/tuple or None
+    :param navigator: limit list of browser engines for generation
+    :type navigator: string or list/tuple or None
+    :return: User-Agent config
+    :rtype: dict with keys (TODO)
+    :raises UserAgentInvalidRequirements: if could not generate user-agent for
+        any combination of allowed platforms and navigators
+    :raise UserAgentRuntimeError: if any of passed options is invalid
+    """
+
+    config = generate_navigator(platform=platform, navigator=navigator) 
+    return {
+        'appCodeName': config['app_code_name'],
+        'appName': config['app_name'],
+        'appVersion': config['version'],
+        'platform': config['platform'],
+        'userAgent': config['user_agent'],
+    }
