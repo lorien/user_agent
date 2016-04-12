@@ -63,7 +63,9 @@ SUBPLATFORM = {
         ('x86_64', 'Linux x86_64'), # 64bit
         ('i686 on x86_64', 'Linux i686 on x86_64'), # 32bit process / 64bit system
     ),
-    'mac': 'MacIntel'
+    'mac': (
+        ('', 'MacIntel'),
+    ),
 }
 
 PLATFORM_NAVIGATORS = {
@@ -269,7 +271,7 @@ def generate_navigator(platform=None, navigator=None):
         platform = choice(PLATFORM['linux']) + ' ' + subplatform
         oscpu = navigator_platform
     elif platform_name == 'mac':
-        navigator_platform = SUBPLATFORM['mac']
+        subplatform, navigator_platform = choice(SUBPLATFORM['mac'])
         platform = choice(PLATFORM['mac'])
         if navigator_name == 'chrome':
             platform = fix_chrome_mac_platform(platform)

@@ -2,6 +2,7 @@
 from unittest import TestCase
 import unittest
 import re
+import six
 
 from user_agent import (generate_user_agent, generate_navigator,
                         generate_navigator_js,
@@ -94,6 +95,23 @@ class UserAgentTestCase(TestCase):
             self.assertEqual(nav['appCodeName'], 'Mozilla')
             self.assertTrue(nav['appName'] in (
                 'Netscape', 'Microsoft Internet Explorer'))
+
+    def test_data_integrity(self):
+        for x in range(100):
+            nav = generate_navigator()
+            for key, val in nav.items():
+                self.assertTrue(isinstance(val, six.string_types))
+
+    def test_platform_value(self):
+        for x in range(100):
+            nav = generate_navigator(platform='win')
+            self.assertTrue('Win' in nav['platform'])
+            nav = generate_navigator(platform='linux')
+            self.assertTrue('Linux' in nav['platform'])
+            nav = generate_navigator(platform='win')
+            self.assertTrue('Win' in nav['platform'])
+
+
 
 
 
