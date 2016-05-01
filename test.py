@@ -90,7 +90,8 @@ class UserAgentTestCase(TestCase):
         for x in range(100):
             nav = generate_navigator_js()
             self.assertEqual(set(['appCodeName', 'appName', 'appVersion',
-                                  'platform', 'userAgent']), set(nav.keys()))
+                                  'platform', 'userAgent', 'oscpu'
+                                  ]), set(nav.keys()))
 
             self.assertEqual(nav['appCodeName'], 'Mozilla')
             self.assertTrue(nav['appName'] in (
@@ -108,8 +109,18 @@ class UserAgentTestCase(TestCase):
             self.assertTrue('Win' in nav['platform'])
             nav = generate_navigator(platform='linux')
             self.assertTrue('Linux' in nav['platform'])
+            #TODO: Should be mac
+            #nav = generate_navigator(platform='win')
+            #self.assertTrue('Win' in nav['platform'])
+
+    def test_oscpu_value(self):
+        for x in range(100):
             nav = generate_navigator(platform='win')
-            self.assertTrue('Win' in nav['platform'])
+            self.assertTrue('Windows NT' in nav['oscpu'])
+            nav = generate_navigator(platform='linux')
+            self.assertTrue('Linux' in nav['oscpu'])
+            nav = generate_navigator(platform='mac')
+            self.assertTrue('Mac OS' in nav['oscpu'])
 
 
 

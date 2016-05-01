@@ -273,9 +273,9 @@ def generate_navigator(platform=None, navigator=None):
     elif platform_name == 'mac':
         subplatform, navigator_platform = choice(SUBPLATFORM['mac'])
         platform = choice(PLATFORM['mac'])
+        oscpu = 'Intel Mac OS X %s' % platform.split(' ')[-1]
         if navigator_name == 'chrome':
             platform = fix_chrome_mac_platform(platform)
-        oscpu = platform[11:]
 
     if navigator_name == 'firefox':
         navigator_version = build_firefox_version()
@@ -346,4 +346,5 @@ def generate_navigator_js(platform=None, navigator=None):
         'appVersion': config['version'],
         'platform': config['platform'],
         'userAgent': config['user_agent'],
+        'oscpu': config['oscpu'],
     }
