@@ -45,6 +45,7 @@ PLATFORM = {
         'Macintosh; Intel Mac OS X 10.9',
         'Macintosh; Intel Mac OS X 10.10',
         'Macintosh; Intel Mac OS X 10.11',
+        'Macintosh; Intel Mac OS X 10.12'
     ),
     'linux': (
         'X11; Linux',
@@ -170,24 +171,28 @@ def build_ie_version():
 
 
 MACOSX_CHROME_BUILD_RANGE = {
+    # https://en.wikipedia.org/wiki/MacOS#Release_history
     '10.8': (0, 8),
     '10.9': (0, 5),
     '10.10': (0, 5),
-    '10.11': (0, 1),
+    '10.11': (0, 6),
+    '10.12': (0, 2)
 }
 
 
 def fix_chrome_mac_platform(platform):
     """
+    Chrome on Mac OS adds minor version number and uses underscores instead
+    of dots. E.g. platform for Firefox will be: 'Intel Mac OS X 10.11'
+    but for Chrome it will be 'Intel Mac OS X 10_11_6'.
+
     :param platform: - string like "Macintosh; Intel Mac OS X 10.8"
+    :return: platform with version number including minor number and formatted
+    with underscores, e.g. "Macintosh; Intel Mac OS X 10_8_2"
     """
     ver = platform.split('OS X ')[1]
-    build_range = list(MACOSX_CHROME_BUILD_RANGE[ver])
-    #build_range.append(None)
+    build_range = range(MACOSX_CHROME_BUILD_RANGE[ver][-1])
     build = choice(build_range)
-    #if build is None:
-    #    mac_ver = ver.replace('.', '_')
-    #else:
     mac_ver = ver.replace('.', '_') + '_' + str(build)
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
