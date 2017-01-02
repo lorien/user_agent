@@ -191,7 +191,7 @@ def fix_chrome_mac_platform(platform):
     with underscores, e.g. "Macintosh; Intel Mac OS X 10_8_2"
     """
     ver = platform.split('OS X ')[1]
-    build_range = range(MACOSX_CHROME_BUILD_RANGE[ver][-1])
+    build_range = range(*MACOSX_CHROME_BUILD_RANGE[ver])
     build = choice(build_range)
     mac_ver = ver.replace('.', '_') + '_' + str(build)
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
