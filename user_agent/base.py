@@ -45,6 +45,7 @@ PLATFORM = {
         'Macintosh; Intel Mac OS X 10.9',
         'Macintosh; Intel Mac OS X 10.10',
         'Macintosh; Intel Mac OS X 10.11',
+        'Macintosh; Intel Mac OS X 10.12'
     ),
     'linux': (
         'X11; Linux',
@@ -89,14 +90,12 @@ USERAGENT_TEMPLATE = {
 
 }
 FIREFOX_VERSION = (
-    '27.0', '28.0', '29.0', '31.0', '33.0', '36.0', '37.0', '38.0',
-    '39.0', '40.0', '41.0', '42.0', '43.0', "44.0", "45.0", "46.0",
-    "47.0", "48.0"
+    '29.0', '31.0', '33.0', '36.0', '37.0', '38.0', '39.0', '40.0',
+    '41.0', '42.0', '43.0', "44.0", '45.0', '46.0', '47.0', '48.0',
+    '49.0', '50.0'
 )
 GECKOTRAIL_DESKTOP = '20100101'
 CHROME_BUILD = (
-    (32, 1700, 1749),
-    (33, 1750, 1846),
     (34, 1847, 1915),
     (35, 1916, 1984),
     (36, 1985, 2061),
@@ -116,7 +115,9 @@ CHROME_BUILD = (
     (50, 2661, 2703),
     (51, 2704, 2742),
     (52, 2743, 2784),
-    (53, 2785, 2810)
+    (53, 2785, 2810),
+    (54, 2811, 2840),
+    (55, 2841, 2883)
 )
 IE_VERSION = (
     'MSIE 11.0',
@@ -170,24 +171,28 @@ def build_ie_version():
 
 
 MACOSX_CHROME_BUILD_RANGE = {
+    # https://en.wikipedia.org/wiki/MacOS#Release_history
     '10.8': (0, 8),
     '10.9': (0, 5),
     '10.10': (0, 5),
-    '10.11': (0, 1),
+    '10.11': (0, 6),
+    '10.12': (0, 2)
 }
 
 
 def fix_chrome_mac_platform(platform):
     """
+    Chrome on Mac OS adds minor version number and uses underscores instead
+    of dots. E.g. platform for Firefox will be: 'Intel Mac OS X 10.11'
+    but for Chrome it will be 'Intel Mac OS X 10_11_6'.
+
     :param platform: - string like "Macintosh; Intel Mac OS X 10.8"
+    :return: platform with version number including minor number and formatted
+    with underscores, e.g. "Macintosh; Intel Mac OS X 10_8_2"
     """
     ver = platform.split('OS X ')[1]
-    build_range = list(MACOSX_CHROME_BUILD_RANGE[ver])
-    #build_range.append(None)
+    build_range = range(*MACOSX_CHROME_BUILD_RANGE[ver])
     build = choice(build_range)
-    #if build is None:
-    #    mac_ver = ver.replace('.', '_')
-    #else:
     mac_ver = ver.replace('.', '_') + '_' + str(build)
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
