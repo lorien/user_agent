@@ -8,7 +8,7 @@ The user_agent is a library for:
 
 Supported platforms: windows, linux,  mac.
 
-Supported browsers: chrome, firefox.
+Supported browsers: chrome, firefox, ie.
 
 .. py:module:: user_agent
 
