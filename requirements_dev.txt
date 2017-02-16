@@ -2,3 +2,4 @@ tox
 bumpversion
 sphinx
 pytest
+pylint
