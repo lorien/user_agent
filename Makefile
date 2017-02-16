@@ -1,17 +1,17 @@
+.PHONY: clean upload test build venv deps docs viewdoc
+
 clean:
 	find -name '*.pyc' -delete
 	find -name '*.swp' -delete
+	find -name __pycache__ -delete
 
 upload:
 	python setup.py sdist upload
 
-test:
-	./test.py
-
 build: venv deps
 
 venv:
-	virtualenv --no-site-packages --python=python3.4 .env
+	virtualenv --no-site-packages --python=python3 .env
 
 deps:
 	.env/bin/pip install -r requirements_dev.txt
@@ -19,7 +19,5 @@ deps:
 docs:
 	cd docs; make html
 
-viewdocs:
-	xdg-open docs/build/html/index.html
-	
-.PHONY: clean upload test build venv deps docs
+viewdoc:
+	x-www-browser docs/build/html/index.html

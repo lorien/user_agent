@@ -1,0 +1,17 @@
+[MASTER]
+jobs=4
+extension-pkg-whitelist=pytest
+
+[TYPECHEK]
+
+[MESSAGES CONTROL]
+disable=R,I,fixme,missing-docstring
+
+[REPORTS]
+reports=no
+
+[BASIC]
+method-rgx=([a-z_][a-z0-9_]{2,30}|test_[a-z_][a-z0-9_]{2,50})$
+
+[FORMAT]
+max-line-length=79

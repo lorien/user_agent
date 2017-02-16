@@ -1,5 +1,5 @@
 tox
 bumpversion
-runscript
 sphinx
-sphinx_rtd_theme
+pytest
+pylint

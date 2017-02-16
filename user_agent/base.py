@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=line-too-long
 """
-This module is for generating random, valid web navigator's configs & User-Agent HTTP headers.
-** generate_user_agent: generates User-Agent HTTP header
-** generate_navigator:  generates web navigator's config
+This module is for generating random, valid web navigator's
+    configs & User-Agent HTTP headers.
 
-TODO:
+Functions:
+* generate_user_agent: generates User-Agent HTTP header
+* generate_navigator:  generates web navigator's config
+
+FIXME:
 * add Edge, Safari and Opera support
 * add random config i.e. win platform more common than linux
 
@@ -20,10 +24,11 @@ Release history:
 
 Lists of user agents:
 * http://www.useragentstring.com/
-* http://www.user-agents.org/ 
+* http://www.user-agents.org/
 * http://www.webapps-online.com/online-tools/user-agent-strings
 
 """
+# pylint: enable=line-too-long
 
 from random import choice, randint
 import six
@@ -62,7 +67,7 @@ SUBPLATFORM = {
     'linux': (
         ('i686', 'Linux i686'), # 32bit
         ('x86_64', 'Linux x86_64'), # 64bit
-        ('i686 on x86_64', 'Linux i686 on x86_64'), # 32bit process / 64bit system
+        ('i686 on x86_64', 'Linux i686 on x86_64'), # 32bit process on 64bit os
     ),
     'mac': (
         ('', 'MacIntel'),
@@ -151,7 +156,7 @@ def build_ua(navigator_name, navigator_version, platform):
                     % platform)
         else:
             return ('Mozilla/5.0 (compatible; %s; %s)'
-                    % (navigator_version, platform))  
+                    % (navigator_version, platform))
 
 def build_firefox_version():
     return choice(FIREFOX_VERSION)
@@ -334,7 +339,8 @@ def generate_user_agent(platform=None, navigator=None):
         any combination of allowed platforms and navigators
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
-    return generate_navigator(platform=platform, navigator=navigator)['user_agent']
+    return generate_navigator(platform=platform,
+                              navigator=navigator)['user_agent']
 
 
 def generate_navigator_js(platform=None, navigator=None):
@@ -353,7 +359,7 @@ def generate_navigator_js(platform=None, navigator=None):
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
 
-    config = generate_navigator(platform=platform, navigator=navigator) 
+    config = generate_navigator(platform=platform, navigator=navigator)
     return {
         'appCodeName': config['app_code_name'],
         'appName': config['app_name'],
