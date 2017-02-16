@@ -22,6 +22,7 @@ Release history:
 * https://en.wikipedia.org/wiki/Firefox_release_history
 * https://en.wikipedia.org/wiki/Google_Chrome_release_history
 * https://en.wikipedia.org/wiki/Internet_Explorer_version_history
+* https://en.wikipedia.org/wiki/Android_version_history
 
 Lists of user agents:
 * http://www.useragentstring.com/
@@ -57,6 +58,11 @@ PLATFORM = {
         'X11; Linux',
         'X11; Ubuntu; Linux',
     ),
+    #'android': (
+    #    'Android 4.4', # 2013-10-31
+    #    'Android 5.0', # 2014-11-12
+    #    'Android 6.0', # 2015-10-05
+    #),
 }
 
 SUBPLATFORM = {
@@ -76,6 +82,7 @@ SUBPLATFORM = {
 }
 
 PLATFORM_NAVIGATORS = {
+    'android': ('firefox',),
     'win': ('chrome', 'firefox', 'ie'),
     'mac': ('firefox', 'chrome'),
     'linux': ('chrome', 'firefox'),
@@ -120,6 +127,11 @@ IE_VERSION = (
 )
 USER_AGENT_TEMPLATE = {
     'firefox': (
+        'Mozilla/5.0'
+        ' ({platform}; rv:{app_version}) Gecko/20100101'
+        ' Firefox/{app_version}'
+    ),
+    'firefox_mobile': (
         'Mozilla/5.0'
         ' ({platform}; rv:{app_version}) Gecko/20100101'
         ' Firefox/{app_version}'
