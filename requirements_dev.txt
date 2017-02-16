@@ -1,4 +1,4 @@
 tox
 bumpversion
 sphinx
-sphinx_rtd_theme
+pytest
