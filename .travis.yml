@@ -61,7 +61,7 @@ before_script:
       pyenv install "$PYENV_VERSION"
       pyenv global "$PYENV_VERSION"
     fi
-  - python -m pip install -U pip setuptools tox
+  - python -m pip install -U pip setuptools tox pytest
 
 script:
   - tox -e $TOX_ENV
