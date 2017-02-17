@@ -14,7 +14,5 @@ install:
 
 build: off
 
-before_test:
-
 test_script:
   - "%PYTHON%/python.exe -m tox -e appveyor"
