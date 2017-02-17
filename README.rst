@@ -5,11 +5,8 @@ user_agent
 .. image:: https://travis-ci.org/lorien/user_agent.png?branch=master
     :target: https://travis-ci.org/lorien/user_agent?branch=master
 
-.. image:: https://img.shields.io/pypi/dm/user_agent.svg
-    :target: https://pypi.python.org/pypi/user_agent
-
-.. image:: https://img.shields.io/pypi/v/user_agent.svg
-    :target: https://pypi.python.org/pypi/user_agent
+.. image:: https://ci.appveyor.com/api/projects/status/jbyd2b9dfq99fvs3
+    :target: https://ci.appveyor.com/project/lorien/user-agent
 
 .. image:: https://readthedocs.org/projects/user_agent/badge/?version=latest
     :target: http://user-agent.readthedocs.org
@@ -53,10 +50,27 @@ Usage Example
      'userAgent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:38.0) Gecko/20100101 Firefox/38.0'}
 
 
+Command Line Usage
+------------------
+
+.. code:: shell
+
+    $ ua
+    Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:49.0) Gecko/20100101 Firefox/49.0
+
+    $ ua -n chrome -e
+    {
+      "oscpu": "Linux i686 on x86_64", 
+      "appName": "Netscape", 
+      "appCodeName": "Mozilla", 
+      "appVersion": "55.0.2909.25", 
+      "platform": "X11; Linux i686 on x86_64", 
+      "userAgent": "Mozilla/5.0 (X11; Linux i686 on x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2909.25 Safari/537.36"
+    }
+
+
 Installation
 ------------
-
-Use pip:
 
 .. code:: shell
 
@@ -67,7 +81,6 @@ Documentation
 -------------
 
 Documentation is available at http://user-agent.readthedocs.org
-
 
 
 Contribution

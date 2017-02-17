@@ -4,6 +4,9 @@ from __future__ import absolute_import
 import re
 import six
 import pytest
+from subprocess import check_output
+import re
+import json
 
 from user_agent import (generate_user_agent, generate_navigator,
                         generate_navigator_js,
@@ -136,10 +139,34 @@ def test_platform_value():
 
 
 def test_oscpu_value():
-    for _ in range(100):
+    for _ in range(10):
         nav = generate_navigator(platform='win')
         assert 'Windows NT' in nav['oscpu']
         nav = generate_navigator(platform='linux')
         assert 'Linux' in nav['oscpu']
         nav = generate_navigator(platform='mac')
         assert 'Mac OS' in nav['oscpu']
+
+
+def test_ua_script_simple():
+    for _ in range(10):
+        out = (check_output('ua', shell=True)
+               .decode('utf-8'))
+        assert re.match('^Mozilla', out)
+        assert len(out.strip().splitlines()) == 1
+
+
+def test_ua_script_options():
+    for _ in range(10):
+        out = (check_output('ua -p linux -n chrome', shell=True)
+               .decode('utf-8'))
+        assert re.match('^Mozilla.*Linux.*Chrome', out)
+
+
+def test_ua_script_extended():
+    for _ in range(10):
+        out = (check_output('ua -p linux -n chrome -e', shell=True)
+               .decode('utf-8'))
+        data = json.loads(out)
+        assert 'Linux' in data['platform']
+        assert 'Chrome' in data['userAgent']

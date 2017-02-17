@@ -8,12 +8,17 @@ setup(
     version='0.1.6',
     description='User-Agent generator',
     long_description=open(os.path.join(ROOT, 'README.rst')).read(),
-    packages=find_packages(exclude=['script']),
+    packages=find_packages(),
     install_requires=['six'],
     license="MIT",
     keywords="user agent browser navigator",
     author="jamb0ss, Gregory Petukhov",
     author_email='lorien@lorien.name',
+    entry_points = {
+        'console_scripts': [
+            'ua = user_agent.cli:script_ua',
+        ],
+    },
     classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
