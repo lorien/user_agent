@@ -1,12 +1,13 @@
 # Change Log of user_agent Library
 
-## [0.1.6] - Unreleased
+## [0.1.6] - 2016-02-17
 ### Added
-- Extend CI test environments: py35, py36, OSX, Windows.
+- Extend CI test environments: py35, py36, Windows.
 
 ### Changed
 - Add recent chrome and firefox versions, by @pawelmhm
 - Add recent Mac OS releases, by @pawelmhm
+- Remove deprecated chrome/firefox versions
 
 ### Fixed
 - Fix bug in generating chrome user agent on mac platform, by @pawelmhm
