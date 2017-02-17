@@ -1,5 +1,12 @@
 # Change Log of user_agent Library
 
+## [0.1.7] - Unreleased
+### Added
+- The `ua` script for generating user-agent data in console
+
+### Fixed
+- Better validation platform/navigator options
+
 ## [0.1.6] - 2016-02-17
 ### Added
 - Extend CI test environments: py35, py36, Windows.

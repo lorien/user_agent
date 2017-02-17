@@ -274,6 +274,9 @@ def pickup_platform_navigator_ids(platform, navigator):
     else:
         raise UserAgentRuntimeError('Option platform has invalid'
                                     ' value: %s' % platform)
+    for item in platform_choices:
+        if item not in PLATFORM_NAVIGATORS:
+            raise UserAgentRuntimeError('Invalid platform option: %s' % item)
 
     # Process navigator option
     if isinstance(navigator, six.string_types):
@@ -285,6 +288,9 @@ def pickup_platform_navigator_ids(platform, navigator):
     else:
         raise UserAgentRuntimeError('Option navigator has invalid'
                                     ' value: %s' % navigator)
+    for item in navigator_choices:
+        if item not in NAVIGATOR_PLATFORMS:
+            raise UserAgentRuntimeError('Invalid navigator option: %s' % item)
 
     # If we have only one navigator option to choose from
     # Then use it and select platform from platforms

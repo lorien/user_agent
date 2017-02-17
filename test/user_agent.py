@@ -2,6 +2,9 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 import re
+from subprocess import check_output
+import json
+
 import six
 import pytest
 
@@ -25,8 +28,15 @@ def test_platform_option():
         agent = generate_user_agent(platform='mac')
         assert 'mac' in agent.lower()
 
-        with pytest.raises(UserAgentRuntimeError):
-            generate_user_agent(platform=11)
+def test_invalid_platform_option():
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(platform=11)
+
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(platform='dos')
+
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(platform='win,dos')
 
 
 def test_navigator_option():
@@ -39,6 +49,14 @@ def test_navigator_option():
 
         agent = generate_user_agent(navigator='ie')
         assert 'msie' in agent.lower() or 'rv:11' in agent.lower()
+
+
+def test_invalid_navigator_option():
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(navigator='vim')
+
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(navigator='chrome,vim')
 
 
 def test_navigator_option_tuple():
@@ -121,10 +139,34 @@ def test_platform_value():
 
 
 def test_oscpu_value():
-    for _ in range(100):
+    for _ in range(10):
         nav = generate_navigator(platform='win')
         assert 'Windows NT' in nav['oscpu']
         nav = generate_navigator(platform='linux')
         assert 'Linux' in nav['oscpu']
         nav = generate_navigator(platform='mac')
         assert 'Mac OS' in nav['oscpu']
+
+
+def test_ua_script_simple():
+    for _ in range(10):
+        out = (check_output('ua', shell=True)
+               .decode('utf-8'))
+        assert re.match('^Mozilla', out)
+        assert len(out.strip().splitlines()) == 1
+
+
+def test_ua_script_options():
+    for _ in range(10):
+        out = (check_output('ua -p linux -n chrome', shell=True)
+               .decode('utf-8'))
+        assert re.match('^Mozilla.*Linux.*Chrome', out)
+
+
+def test_ua_script_extended():
+    for _ in range(10):
+        out = (check_output('ua -p linux -n chrome -e', shell=True)
+               .decode('utf-8'))
+        data = json.loads(out)
+        assert 'Linux' in data['platform']
+        assert 'Chrome' in data['userAgent']
