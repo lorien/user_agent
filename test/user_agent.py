@@ -2,11 +2,11 @@
 # pylint: disable=missing-docstring
 from __future__ import absolute_import
 import re
+from subprocess import check_output
+import json
+
 import six
 import pytest
-from subprocess import check_output
-import re
-import json
 
 from user_agent import (generate_user_agent, generate_navigator,
                         generate_navigator_js,

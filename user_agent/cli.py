@@ -17,4 +17,3 @@ def script_ua():
         print(json.dumps(nav, indent=2))
     else:
         print(nav['userAgent'])
-
