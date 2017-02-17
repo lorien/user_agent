@@ -25,8 +25,15 @@ def test_platform_option():
         agent = generate_user_agent(platform='mac')
         assert 'mac' in agent.lower()
 
-        with pytest.raises(UserAgentRuntimeError):
-            generate_user_agent(platform=11)
+def test_invalid_platform_option():
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(platform=11)
+
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(platform='dos')
+
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(platform='win,dos')
 
 
 def test_navigator_option():
@@ -39,6 +46,14 @@ def test_navigator_option():
 
         agent = generate_user_agent(navigator='ie')
         assert 'msie' in agent.lower() or 'rv:11' in agent.lower()
+
+
+def test_invalid_navigator_option():
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(navigator='vim')
+
+    with pytest.raises(UserAgentRuntimeError):
+        generate_user_agent(navigator='chrome,vim')
 
 
 def test_navigator_option_tuple():
