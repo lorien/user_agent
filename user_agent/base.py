@@ -71,7 +71,7 @@ SUBPLATFORM = {
         ('i686 on x86_64', 'Linux i686 on x86_64'), # 32bit process on 64bit os
     ),
     'mac': (
-        ('', 'MacIntel'),
+        ('', 'IS NOT USED'),
     ),
 }
 
@@ -232,10 +232,12 @@ def build_app_components(navigator_name):
         app_version = build_firefox_version()
         app_name = 'Netscape'
         app_product_sub = '20100101'
+        app_vendor = ''
     elif navigator_name == 'chrome':
         app_version = None
         app_name = 'Netscape'
         app_product_sub = '20030107'
+        app_vendor = 'Google Inc.'
     elif navigator_name == 'ie':
         num_ver, app_version = build_ie_version()
         if num_ver >= 11:
@@ -243,7 +245,8 @@ def build_app_components(navigator_name):
         else:
             app_name = 'Microsoft Internet Explorer'
         app_product_sub = None
-    return app_version, app_name, app_product_sub
+        app_vendor = ''
+    return app_version, app_name, app_product_sub, app_vendor
 
 
 def pickup_platform_navigator_ids(platform, navigator):
@@ -346,7 +349,7 @@ def generate_navigator(platform=None, navigator=None):
                                                               navigator)
     os_platform, oscpu = build_platform_components(platform_id,
                                                    navigator_id)
-    app_version, app_name, app_product_sub = (
+    app_version, app_name, app_product_sub, app_vendor = (
         build_app_components(navigator_id)
     )
     if navigator_id == 'ie':
@@ -375,6 +378,8 @@ def generate_navigator(platform=None, navigator=None):
         'app_code_name': 'Mozilla',
         'product': 'Gecko',
         'product_sub': app_product_sub,
+        'vendor': app_vendor,
+        'vendor_sub': '',
         # compiled user agent
         'user_agent': user_agent,
     }
@@ -424,4 +429,6 @@ def generate_navigator_js(platform=None, navigator=None):
         'oscpu': config['oscpu'],
         'product': config['product'],
         'productSub': config['product_sub'],
+        'vendor': config['vendor'],
+        'vendorSub': config['vendor_sub'],
     }

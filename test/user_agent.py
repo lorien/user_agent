@@ -113,9 +113,11 @@ def test_impossible_combination():
 def test_generate_navigator_js():
     for _ in range(50):
         nav = generate_navigator_js()
-        assert set(nav.keys()) == set(['appCodeName', 'appName', 'appVersion',
-                                       'platform', 'userAgent', 'oscpu',
-                                       'product', 'productSub'])
+        assert set(nav.keys()) == set([
+            'appCodeName', 'appName', 'appVersion',
+            'platform', 'userAgent', 'oscpu',
+            'product', 'productSub', 'vendor', 'vendorSub',
+        ])
 
         assert nav['appCodeName'] == 'Mozilla'
         assert nav['appName'] in ('Netscape', 'Microsoft Internet Explorer')
@@ -126,27 +128,6 @@ def test_data_integrity():
         nav = generate_navigator()
         for _, val in nav.items():
             assert val is None or isinstance(val, six.string_types)
-
-
-def test_platform_value():
-    for _ in range(50):
-        nav = generate_navigator(platform='win')
-        assert 'Win' in nav['platform']
-        nav = generate_navigator(platform='linux')
-        assert 'Linux' in nav['platform']
-        #TODO: Should be mac
-        #nav = generate_navigator(platform='win')
-        #assert 'Win' in nav['platform']
-
-
-def test_oscpu_value():
-    for _ in range(10):
-        nav = generate_navigator(platform='win')
-        assert 'Windows NT' in nav['oscpu']
-        nav = generate_navigator(platform='linux')
-        assert 'Linux' in nav['oscpu']
-        nav = generate_navigator(platform='mac')
-        assert 'Mac OS' in nav['oscpu']
 
 
 def test_ua_script_simple():
@@ -173,19 +154,50 @@ def test_ua_script_extended():
         assert 'Chrome' in data['userAgent']
 
 
-def test_chrome_appversion():
+def test_feature_platform():
+    for _ in range(50):
+        nav = generate_navigator(platform='win')
+        assert 'Win' in nav['platform']
+        nav = generate_navigator(platform='linux')
+        assert 'Linux' in nav['platform']
+        #TODO: Should be mac
+        #nav = generate_navigator(platform='win')
+        #assert 'Win' in nav['platform']
+
+
+def test_feature_oscpu():
+    for _ in range(10):
+        nav = generate_navigator(platform='win')
+        assert 'Windows NT' in nav['oscpu']
+        nav = generate_navigator(platform='linux')
+        assert 'Linux' in nav['oscpu']
+        nav = generate_navigator(platform='mac')
+        assert 'Mac OS' in nav['oscpu']
+
+
+def test_feature_chrome_appversion():
     for _ in range(50):
         nav = generate_navigator_js(navigator='chrome')
         assert nav['appVersion'] == nav['userAgent']
 
 
-def test_product_sub():
+def test_feature_product():
     for _ in range(50):
         nav = generate_navigator_js(navigator='chrome')
-        assert nav['productSub'] == '20030107'
+        assert nav['product'] == 'Gecko'
+
+
+def test_feature_vendor_sub():
     for _ in range(50):
-        nav = generate_navigator_js(navigator='ie')
-        assert nav['productSub'] is None
-    for _ in range(50):
+        nav = generate_navigator_js(navigator='chrome')
+        assert nav['vendor'] == 'Google Inc.'
         nav = generate_navigator_js(navigator='firefox')
-        assert nav['productSub'] == '20100101'
+        assert nav['vendor'] == ''
+        nav = generate_navigator_js(navigator='ie')
+        assert nav['vendor'] == ''
+
+
+def test_feature_vendor_sub():
+    for _ in range(50):
+        nav = generate_navigator_js(navigator='chrome')
+        assert nav['vendorSub'] == ''
