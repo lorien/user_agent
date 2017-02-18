@@ -153,15 +153,6 @@ def build_firefox_version():
     return choice(FIREFOX_VERSION)
 
 
-def build_chrome_version():
-    build = choice(CHROME_BUILD)
-    return '%d.0.%d.%d' % (
-        build[0],
-        randint(build[1], build[2]),
-        randint(0, 99),
-    )
-
-
 def build_ie_version():
     """
     Return random IE version as tuple
@@ -241,7 +232,7 @@ def build_app_components(navigator_name):
         app_version = build_firefox_version()
         app_name = 'Netscape'
     elif navigator_name == 'chrome':
-        app_version = build_chrome_version()
+        app_version = None
         app_name = 'Netscape'
     elif navigator_name == 'ie':
         num_ver, app_version = build_ie_version()
@@ -362,6 +353,8 @@ def generate_navigator(platform=None, navigator=None):
         platform=os_platform,
         app_version=app_version,
     )
+    if navigator_id == 'chrome':
+        app_version = user_agent
 
     return {
         # ids

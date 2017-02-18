@@ -149,7 +149,7 @@ def test_oscpu_value():
 
 
 def test_ua_script_simple():
-    for _ in range(10):
+    for _ in range(5):
         out = (check_output('ua', shell=True)
                .decode('utf-8'))
         assert re.match('^Mozilla', out)
@@ -157,16 +157,22 @@ def test_ua_script_simple():
 
 
 def test_ua_script_options():
-    for _ in range(10):
+    for _ in range(5):
         out = (check_output('ua -p linux -n chrome', shell=True)
                .decode('utf-8'))
         assert re.match('^Mozilla.*Linux.*Chrome', out)
 
 
 def test_ua_script_extended():
-    for _ in range(10):
+    for _ in range(5):
         out = (check_output('ua -p linux -n chrome -e', shell=True)
                .decode('utf-8'))
         data = json.loads(out)
         assert 'Linux' in data['platform']
         assert 'Chrome' in data['userAgent']
+
+
+def test_chrome_appversion():
+    for _ in range(100):
+        nav = generate_navigator_js(navigator='chrome')
+        assert nav['appVersion'] == nav['userAgent']
