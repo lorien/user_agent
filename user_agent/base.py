@@ -31,7 +31,7 @@ Lists of user agents:
 """
 # pylint: enable=line-too-long
 
-from random import choice
+from random import choice, randint
 import six
 
 __all__ = ['generate_user_agent', 'generate_navigator',
@@ -88,7 +88,6 @@ NAVIGATOR_PLATFORMS = {
 }
 
 NAVIGATOR = ('firefox', 'chrome', 'ie')
-APPVERSION = '5.0'
 USERAGENT_TEMPLATE = {
     'ie': 'Mozilla/5.0 (compatible; MSIE %(version)s; %(platform)s',
 }
@@ -121,18 +120,18 @@ IE_VERSION = (
 USER_AGENT_TEMPLATE = {
     'firefox': (
         'Mozilla/5.0'
-        ' ({platform}; rv:{app_version}) Gecko/20100101'
-        ' Firefox/{app_version}'
+        ' ({platform}; rv:{build_version}) Gecko/20100101'
+        ' Firefox/{build_version}'
     ),
     'chrome': (
         'Mozilla/5.0'
         ' ({platform}) AppleWebKit/537.36'
         ' (KHTML, like Gecko)'
-        ' Chrome/{app_version} Safari/537.36'
+        ' Chrome/{build_version} Safari/537.36'
     ),
     'ie_old': (
         'Mozilla/5.0'
-        ' (compatible; {app_version}; {platform})'
+        ' (compatible; {build_version}; {platform})'
     ),
     'ie_new': (
         'Mozilla/5.0'
@@ -149,11 +148,20 @@ class UserAgentInvalidRequirements(UserAgentRuntimeError):
     pass
 
 
-def build_firefox_version():
+def get_firefox_build():
     return choice(FIREFOX_VERSION)
 
 
-def build_ie_version():
+def get_chrome_build():
+    build = choice(CHROME_BUILD)
+    return '%d.0.%d.%d' % (
+        build[0],
+        randint(build[1], build[2]),
+        randint(0, 99),
+    )
+
+
+def get_ie_build():
     """
     Return random IE version as tuple
     (numeric_version, us-string component)
@@ -229,24 +237,24 @@ def build_app_components(navigator_name):
     """
 
     if navigator_name == 'firefox':
-        app_version = build_firefox_version()
+        build_version = get_firefox_build()
         app_name = 'Netscape'
         app_product_sub = '20100101'
         app_vendor = ''
     elif navigator_name == 'chrome':
-        app_version = None
+        build_version = get_chrome_build()
         app_name = 'Netscape'
         app_product_sub = '20030107'
         app_vendor = 'Google Inc.'
     elif navigator_name == 'ie':
-        num_ver, app_version = build_ie_version()
+        num_ver, build_version = get_ie_build()
         if num_ver >= 11:
             app_name = 'Netscape'
         else:
             app_name = 'Microsoft Internet Explorer'
         app_product_sub = None
         app_vendor = ''
-    return app_version, app_name, app_product_sub, app_vendor
+    return build_version, app_name, app_product_sub, app_vendor
 
 
 def pickup_platform_navigator_ids(platform, navigator):
@@ -349,20 +357,30 @@ def generate_navigator(platform=None, navigator=None):
                                                               navigator)
     os_platform, oscpu = build_platform_components(platform_id,
                                                    navigator_id)
-    app_version, app_name, app_product_sub, app_vendor = (
+    build_version, app_name, app_product_sub, app_vendor = (
         build_app_components(navigator_id)
     )
     if navigator_id == 'ie':
-        tpl_name = 'ie_new' if app_version == 'MSIE 11.0' else 'ie_old'
+        tpl_name = 'ie_new' if build_version == 'MSIE 11.0' else 'ie_old'
     else:
         tpl_name = navigator_id
     ua_template = USER_AGENT_TEMPLATE[tpl_name]
     user_agent = ua_template.format(
         platform=os_platform,
-        app_version=app_version,
+        build_version=build_version,
     )
-    if navigator_id == 'chrome':
-        app_version = user_agent
+    app_version = None
+    if navigator_id in ('chrome', 'ie'):
+        assert user_agent.startswith('Mozilla/')
+        app_version = user_agent.split('Mozilla/', 1)[1]
+    elif navigator_id == 'firefox':
+        os_token = {
+            'win': 'Windows',
+            'mac': 'Macintosh',
+            'linux': 'X11',
+        }[platform_id]
+        app_version = '5.0 (%s)' % os_token
+    assert app_version is not None
 
     return {
         # ids
@@ -372,8 +390,8 @@ def generate_navigator(platform=None, navigator=None):
         'platform': os_platform,
         'oscpu': oscpu,
         # app components
-        'appversion': APPVERSION,
-        'version': app_version,
+        'build_version': build_version,
+        'app_version': app_version,
         'app_name': app_name,
         'app_code_name': 'Mozilla',
         'product': 'Gecko',
@@ -423,7 +441,7 @@ def generate_navigator_js(platform=None, navigator=None):
     return {
         'appCodeName': config['app_code_name'],
         'appName': config['app_name'],
-        'appVersion': config['version'],
+        'appVersion': config['app_version'],
         'platform': config['platform'],
         'userAgent': config['user_agent'],
         'oscpu': config['oscpu'],

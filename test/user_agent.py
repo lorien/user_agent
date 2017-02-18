@@ -178,7 +178,7 @@ def test_feature_oscpu():
 def test_feature_chrome_appversion():
     for _ in range(50):
         nav = generate_navigator_js(navigator='chrome')
-        assert nav['appVersion'] == nav['userAgent']
+        assert ('Mozilla/' + nav['appVersion']) == nav['userAgent']
 
 
 def test_feature_product():
