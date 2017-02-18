@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import re
 from subprocess import check_output
 import json
+from datetime import datetime
+from copy import deepcopy
 
 import six
 import pytest
@@ -117,6 +119,7 @@ def test_generate_navigator_js():
             'appCodeName', 'appName', 'appVersion',
             'platform', 'userAgent', 'oscpu',
             'product', 'productSub', 'vendor', 'vendorSub',
+            'buildID',
         ])
 
         assert nav['appCodeName'] == 'Mozilla'
@@ -187,7 +190,7 @@ def test_feature_product():
         assert nav['product'] == 'Gecko'
 
 
-def test_feature_vendor_sub():
+def test_feature_vendor():
     for _ in range(50):
         nav = generate_navigator_js(navigator='chrome')
         assert nav['vendor'] == 'Google Inc.'
@@ -201,3 +204,33 @@ def test_feature_vendor_sub():
     for _ in range(50):
         nav = generate_navigator_js(navigator='chrome')
         assert nav['vendorSub'] == ''
+
+
+def test_build_id_nofirefox():
+    for _ in range(50):
+        nav = generate_navigator(navigator='chrome')
+        assert nav['build_id'] is None
+        nav = generate_navigator(navigator='ie')
+        assert nav['build_id'] is None
+
+
+def test_build_id_firefox():
+    from user_agent import base
+
+    orig_ff_ver = deepcopy(base.FIREFOX_VERSION)
+    base.FIREFOX_VERSION = [
+        ('49.0', datetime(2016, 9, 20)),
+        ('50.0', datetime(2016, 11, 15)),
+    ]
+    try:
+        for _ in range(50):
+            nav = generate_navigator(navigator='firefox')
+            assert len(nav['build_id']) == 14
+            if '50.0' in nav['user_agent']:
+                assert nav['build_id'].startswith('20161115')
+            else:
+                time_ = datetime.strptime(nav['build_id'], '%Y%m%d%H%M%S')
+                assert datetime(2016, 9, 20, 0) <= time_
+                assert time_ < datetime(2016, 11, 15)
+    finally:
+        base.FIREFOX_VERSION = orig_ff_ver

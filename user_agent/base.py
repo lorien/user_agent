@@ -32,6 +32,8 @@ Lists of user agents:
 # pylint: enable=line-too-long
 
 from random import choice, randint
+from datetime import datetime, timedelta
+
 import six
 
 __all__ = ['generate_user_agent', 'generate_navigator',
@@ -92,15 +94,14 @@ USERAGENT_TEMPLATE = {
     'ie': 'Mozilla/5.0 (compatible; MSIE %(version)s; %(platform)s',
 }
 FIREFOX_VERSION = (
-    '45.0', # 2016-03-08
-    '46.0', # 2016-04-26
-    '47.0', # 2016-06-07
-    '48.0', # 2016-08-02
-    '49.0', # 2016-09-20
-    '50.0', # 2016-11-15
-    '51.0', # 2017-01-24
+    ('45.0', datetime(2016, 3, 8)),
+    ('46.0', datetime(2016, 4, 26)),
+    ('47.0', datetime(2016, 6, 7)),
+    ('48.0', datetime(2016, 8, 2)),
+    ('49.0', datetime(2016, 9, 20)),
+    ('50.0', datetime(2016, 11, 15)),
+    ('51.0', datetime(2017, 1, 24)),
 )
-GECKOTRAIL_DESKTOP = '20100101'
 CHROME_BUILD = (
     (49, 2623, 2660), # 2016-03-02
     (50, 2661, 2703), # 2016-04-13
@@ -149,7 +150,17 @@ class UserAgentInvalidRequirements(UserAgentRuntimeError):
 
 
 def get_firefox_build():
-    return choice(FIREFOX_VERSION)
+    build_ver, date_from = choice(FIREFOX_VERSION)
+    try:
+        idx = FIREFOX_VERSION.index((build_ver, date_from))
+        _, date_to = FIREFOX_VERSION[idx + 1]
+    except IndexError:
+        date_to = date_from + timedelta(days=1)
+    sec_range = (date_to - date_from).total_seconds() - 1
+    build_rnd_time = (date_from +
+                      timedelta(seconds=randint(0, sec_range)))
+    return build_ver, build_rnd_time.strftime('%Y%m%d%H%M%S')
+
 
 
 def get_chrome_build():
@@ -237,24 +248,26 @@ def build_app_components(navigator_name):
     """
 
     if navigator_name == 'firefox':
-        build_version = get_firefox_build()
+        build_version, build_id = get_firefox_build()
         app_name = 'Netscape'
         app_product_sub = '20100101'
         app_vendor = ''
     elif navigator_name == 'chrome':
         build_version = get_chrome_build()
+        build_id = None
         app_name = 'Netscape'
         app_product_sub = '20030107'
         app_vendor = 'Google Inc.'
     elif navigator_name == 'ie':
         num_ver, build_version = get_ie_build()
+        build_id = None
         if num_ver >= 11:
             app_name = 'Netscape'
         else:
             app_name = 'Microsoft Internet Explorer'
         app_product_sub = None
         app_vendor = ''
-    return build_version, app_name, app_product_sub, app_vendor
+    return build_version, build_id, app_name, app_product_sub, app_vendor
 
 
 def pickup_platform_navigator_ids(platform, navigator):
@@ -357,7 +370,7 @@ def generate_navigator(platform=None, navigator=None):
                                                               navigator)
     os_platform, oscpu = build_platform_components(platform_id,
                                                    navigator_id)
-    build_version, app_name, app_product_sub, app_vendor = (
+    build_version, build_id, app_name, app_product_sub, app_vendor = (
         build_app_components(navigator_id)
     )
     if navigator_id == 'ie':
@@ -391,6 +404,7 @@ def generate_navigator(platform=None, navigator=None):
         'oscpu': oscpu,
         # app components
         'build_version': build_version,
+        'build_id': build_id,
         'app_version': app_version,
         'app_name': app_name,
         'app_code_name': 'Mozilla',
@@ -449,4 +463,5 @@ def generate_navigator_js(platform=None, navigator=None):
         'productSub': config['product_sub'],
         'vendor': config['vendor'],
         'vendorSub': config['vendor_sub'],
+        'buildID': config['build_id'],
     }
