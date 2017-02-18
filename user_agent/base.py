@@ -31,7 +31,7 @@ Lists of user agents:
 """
 # pylint: enable=line-too-long
 
-from random import choice, randint
+from random import choice
 import six
 
 __all__ = ['generate_user_agent', 'generate_navigator',
@@ -231,16 +231,19 @@ def build_app_components(navigator_name):
     if navigator_name == 'firefox':
         app_version = build_firefox_version()
         app_name = 'Netscape'
+        app_product_sub = '20100101'
     elif navigator_name == 'chrome':
         app_version = None
         app_name = 'Netscape'
+        app_product_sub = '20030107'
     elif navigator_name == 'ie':
         num_ver, app_version = build_ie_version()
         if num_ver >= 11:
             app_name = 'Netscape'
         else:
             app_name = 'Microsoft Internet Explorer'
-    return app_version, app_name
+        app_product_sub = None
+    return app_version, app_name, app_product_sub
 
 
 def pickup_platform_navigator_ids(platform, navigator):
@@ -343,7 +346,9 @@ def generate_navigator(platform=None, navigator=None):
                                                               navigator)
     os_platform, oscpu = build_platform_components(platform_id,
                                                    navigator_id)
-    app_version, app_name = build_app_components(navigator_id)
+    app_version, app_name, app_product_sub = (
+        build_app_components(navigator_id)
+    )
     if navigator_id == 'ie':
         tpl_name = 'ie_new' if app_version == 'MSIE 11.0' else 'ie_old'
     else:
@@ -368,6 +373,8 @@ def generate_navigator(platform=None, navigator=None):
         'version': app_version,
         'app_name': app_name,
         'app_code_name': 'Mozilla',
+        'product': 'Gecko',
+        'product_sub': app_product_sub,
         # compiled user agent
         'user_agent': user_agent,
     }
@@ -415,4 +422,6 @@ def generate_navigator_js(platform=None, navigator=None):
         'platform': config['platform'],
         'userAgent': config['user_agent'],
         'oscpu': config['oscpu'],
+        'product': config['product'],
+        'productSub': config['product_sub'],
     }

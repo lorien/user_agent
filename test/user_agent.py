@@ -18,7 +18,7 @@ def test_it():
 
 
 def test_platform_option():
-    for _ in range(100):
+    for _ in range(50):
         agent = generate_user_agent(platform='linux')
         assert 'linux' in agent.lower()
 
@@ -40,7 +40,7 @@ def test_invalid_platform_option():
 
 
 def test_navigator_option():
-    for _ in range(100):
+    for _ in range(50):
         agent = generate_user_agent(navigator='firefox')
         assert 'firefox' in agent.lower()
 
@@ -60,14 +60,14 @@ def test_invalid_navigator_option():
 
 
 def test_navigator_option_tuple():
-    for _ in range(100):
+    for _ in range(50):
         generate_user_agent(navigator=('chrome',))
         generate_user_agent(navigator=('chrome', 'firefox'))
         generate_user_agent(navigator=('chrome', 'firefox', 'ie'))
 
 
 def test_platform_option_tuple():
-    for _ in range(100):
+    for _ in range(50):
         generate_user_agent(platform=('win', 'linux'))
         generate_user_agent(platform=('win', 'linux', 'mac'))
         generate_user_agent(platform=('win',))
@@ -76,7 +76,7 @@ def test_platform_option_tuple():
 
 
 def test_platform_navigator_option():
-    for _ in range(100):
+    for _ in range(50):
         agent = generate_user_agent(platform='win', navigator='firefox')
         assert 'firefox' in agent.lower()
         assert 'windows' in agent.lower()
@@ -91,19 +91,19 @@ def test_platform_navigator_option():
 
 
 def test_platform_linux():
-    for _ in range(100):
+    for _ in range(50):
         agent = generate_user_agent(platform='linux')
         assert agent.startswith('Mozilla/5.0 (X11;')
 
 
 def test_mac_chrome():
-    for _ in range(100):
+    for _ in range(50):
         agent = generate_user_agent(platform='mac', navigator='chrome')
         assert re.search(r'OS X \d+_\d+(_\d+\b|\b)', agent)
 
 
 def test_impossible_combination():
-    for _ in range(100):
+    for _ in range(50):
         with pytest.raises(UserAgentInvalidRequirements):
             generate_user_agent(platform='linux', navigator='ie')
         with pytest.raises(UserAgentInvalidRequirements):
@@ -111,24 +111,25 @@ def test_impossible_combination():
 
 
 def test_generate_navigator_js():
-    for _ in range(100):
+    for _ in range(50):
         nav = generate_navigator_js()
         assert set(nav.keys()) == set(['appCodeName', 'appName', 'appVersion',
-                                       'platform', 'userAgent', 'oscpu'])
+                                       'platform', 'userAgent', 'oscpu',
+                                       'product', 'productSub'])
 
         assert nav['appCodeName'] == 'Mozilla'
         assert nav['appName'] in ('Netscape', 'Microsoft Internet Explorer')
 
 
 def test_data_integrity():
-    for _ in range(100):
+    for _ in range(50):
         nav = generate_navigator()
         for _, val in nav.items():
-            assert isinstance(val, six.string_types)
+            assert val is None or isinstance(val, six.string_types)
 
 
 def test_platform_value():
-    for _ in range(100):
+    for _ in range(50):
         nav = generate_navigator(platform='win')
         assert 'Win' in nav['platform']
         nav = generate_navigator(platform='linux')
@@ -173,6 +174,18 @@ def test_ua_script_extended():
 
 
 def test_chrome_appversion():
-    for _ in range(100):
+    for _ in range(50):
         nav = generate_navigator_js(navigator='chrome')
         assert nav['appVersion'] == nav['userAgent']
+
+
+def test_product_sub():
+    for _ in range(50):
+        nav = generate_navigator_js(navigator='chrome')
+        assert nav['productSub'] == '20030107'
+    for _ in range(50):
+        nav = generate_navigator_js(navigator='ie')
+        assert nav['productSub'] is None
+    for _ in range(50):
+        nav = generate_navigator_js(navigator='firefox')
+        assert nav['productSub'] == '20100101'
