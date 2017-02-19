@@ -10,7 +10,7 @@ Functions:
 
 FIXME:
 * add Edge, Safari and Opera support
-* add random config i.e. win platform more common than linux
+* add random config i.e. windows is more common than linux
 
 Specs:
 * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
@@ -36,11 +36,13 @@ from datetime import datetime, timedelta
 
 import six
 
+from .warning import warn
+
 __all__ = ['generate_user_agent', 'generate_navigator',
            'generate_navigator_js',
            'UserAgentRuntimeError', 'UserAgentInvalidRequirements']
 
-PLATFORM = {
+OS_PLATFORM = {
     'win': (
         'Windows NT 5.1', # Windows XP
         'Windows NT 6.1', # Windows 7
@@ -59,40 +61,43 @@ PLATFORM = {
         'X11; Linux',
         'X11; Ubuntu; Linux',
     ),
+    #'android': (
+    #    'Android 4.4', # 2013-10-31
+    #    'Android 5.0', # 2014-11-12
+    #    'Android 6.0', # 2015-10-05
+    #),
 }
 
-SUBPLATFORM = {
+OS_CPU = {
     'win': (
-        ('', 'Win32'), # 32bit
-        ('Win64; x64', 'Win32'), # 64bit
-        ('WOW64', 'Win32'), # 32bit process / 64bit system
+        '', # 32bit
+        'Win64; x64', # 64bit
+        'WOW64', # 32bit process on 64bit system
     ),
     'linux': (
-        ('i686', 'Linux i686'), # 32bit
-        ('x86_64', 'Linux x86_64'), # 64bit
-        ('i686 on x86_64', 'Linux i686 on x86_64'), # 32bit process on 64bit os
+        'i686', # 32bit
+        'x86_64', # 64bit
+        'i686 on x86_64', # 32bit process on 64bit system
     ),
     'mac': (
-        ('', 'IS NOT USED'),
+        '',
     ),
 }
 
-PLATFORM_NAVIGATORS = {
+OS_NAVIGATORS = {
     'win': ('chrome', 'firefox', 'ie'),
     'mac': ('firefox', 'chrome'),
     'linux': ('chrome', 'firefox'),
+    'android': ('firefox',),
 }
 
-NAVIGATOR_PLATFORMS = {
+NAVIGATOR_OSES = {
     'chrome': ('win', 'linux', 'mac'),
     'firefox': ('win', 'linux', 'mac'),
     'ie': ('win',),
 }
 
 NAVIGATOR = ('firefox', 'chrome', 'ie')
-USERAGENT_TEMPLATE = {
-    'ie': 'Mozilla/5.0 (compatible; MSIE %(version)s; %(platform)s',
-}
 FIREFOX_VERSION = (
     ('45.0', datetime(2016, 3, 8)),
     ('46.0', datetime(2016, 4, 26)),
@@ -122,28 +127,24 @@ IE_VERSION = (
 USER_AGENT_TEMPLATE = {
     'firefox': (
         'Mozilla/5.0'
-        ' ({platform}; rv:{build_version}) Gecko/20100101'
-        ' Firefox/{build_version}'
-    ),
-    'firefox_mobile': (
-        'Mozilla/5.0'
-        ' ({platform}; rv:{build_version}) Gecko/{build_version}'
-        ' Firefox/{build_version}'
+        ' ({system[platform]}; rv:{app[build_version]})'
+        ' Gecko/{app[geckotrail]}'
+        ' Firefox/{app[build_version]}'
     ),
     'chrome': (
         'Mozilla/5.0'
-        ' ({platform}) AppleWebKit/537.36'
+        ' ({system[platform]}) AppleWebKit/537.36'
         ' (KHTML, like Gecko)'
-        ' Chrome/{build_version} Safari/537.36'
+        ' Chrome/{app[build_version]} Safari/537.36'
     ),
     'ie_less_11': (
         'Mozilla/5.0'
-        ' (compatible; {build_version}; {platform};'
-        ' Trident/{trident_version})'
+        ' (compatible; {app[build_version]}; {system[platform]};'
+        ' Trident/{app[trident_version]})'
     ),
     'ie_11': (
         'Mozilla/5.0'
-        ' ({platform}; Trident/{trident_version};'
+        ' ({system[platform]}; Trident/{app[trident_version]};'
         ' rv:11.0) like Gecko'
     ),
 }
@@ -218,53 +219,68 @@ def fix_chrome_mac_platform(platform):
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
 
-def build_platform_components(platform_name, navigator_name):
+def build_system_components(os_name, navigator_name):
     """
-    For given platform_name build random platform and oscpu
+    For given os_name build random platform and oscpu
     components
 
-    Returns tuple (platform, oscpu)
+    Returns dict {platform, oscpu}
     """
 
-    if platform_name == 'win':
-        subplatform, navigator_platform = choice(SUBPLATFORM['win'])
-        win_platform = choice(PLATFORM['win'])
-        if subplatform:
-            platform = win_platform + '; ' + subplatform
+    if os_name == 'win':
+        base_platform = choice(OS_PLATFORM['win'])
+        cpu = choice(OS_CPU['win'])
+        if cpu:
+            platform = '%s; %s' % (base_platform, cpu)
         else:
-            platform = win_platform
-        oscpu = platform
-    elif platform_name == 'linux':
-        subplatform, navigator_platform = choice(SUBPLATFORM['linux'])
-        platform = choice(PLATFORM['linux']) + ' ' + subplatform
-        oscpu = navigator_platform
-    elif platform_name == 'mac':
-        subplatform, navigator_platform = choice(SUBPLATFORM['mac'])
-        platform = choice(PLATFORM['mac'])
-        oscpu = 'Intel Mac OS X %s' % platform.split(' ')[-1]
+            platform = base_platform
+        res = {
+            'platform': platform,
+            'oscpu': platform,
+        }
+    elif os_name == 'linux':
+        cpu = choice(OS_CPU['linux'])
+        base_platform = choice(OS_PLATFORM['linux'])
+        res = {
+            'platform': '%s %s' % (base_platform, cpu),
+            'oscpu': 'Linux %s' % cpu,
+        }
+    elif os_name == 'mac':
+        cpu = choice(OS_CPU['mac'])
+        platform = choice(OS_PLATFORM['mac'])
         if navigator_name == 'chrome':
             platform = fix_chrome_mac_platform(platform)
-    return platform, oscpu
+        res = {
+            'platform': platform,
+            'oscpu': 'Intel Mac OS X %s' % platform.split(' ')[-1],
+        }
+    #elif os_name == 'android':
+    #    pass
+    return res
 
 
-def build_app_components(navigator_name):
+def build_app_components(os_id, navigator_id):
     """
-    For given navigator_name build random app version and app name
-    components
+    For given navigator_id build app features
 
-    Returns tuple (platform, oscpu)
+    Returns dict {name, product_sub, vendor, build_version, build_id}
     """
 
-    if navigator_name == 'firefox':
+    if navigator_id == 'firefox':
         build_version, build_id = get_firefox_build()
+        if os_id in ('win', 'linux', 'mac'):
+            geckotrail = '20100101'
+        else:
+            geckotrail = build_version
         res = {
             'name': 'Netscape',
             'product_sub': '20100101',
             'vendor': '',
             'build_version': build_version,
             'build_id': build_id,
+            'geckotrail': geckotrail,
         }
-    elif navigator_name == 'chrome':
+    elif navigator_id == 'chrome':
         res = {
             'name': 'Netscape',
             'product_sub': '20030107',
@@ -272,7 +288,7 @@ def build_app_components(navigator_name):
             'build_version': get_chrome_build(),
             'build_id': None,
         }
-    elif navigator_name == 'ie':
+    elif navigator_id == 'ie':
         num_ver, build_version, trident_version = get_ie_build()
         if num_ver >= 11:
             app_name = 'Netscape'
@@ -291,31 +307,31 @@ def build_app_components(navigator_name):
     return res
 
 
-def pickup_platform_navigator_ids(platform, navigator):
+def pickup_os_navigator_ids(os, navigator):
     """
-    Select one random pair (platform_id, navigator_id) from all
-    possible combinations matching the given platform and
+    Select one random pair (os_id, navigator_id) from all
+    possible combinations matching the given os and
     navigator filters.
 
-    :param platform: allowed platform(s)
-    :type platform: string or list/tuple or None
+    :param os: allowed os(es)
+    :type os: string or list/tuple or None
     :param navigator: allowed browser engine(s)
     :type navigator: string or list/tuple or None
     """
 
-    # Process platform option
-    if isinstance(platform, six.string_types):
-        platform_choices = [platform]
-    elif isinstance(platform, (list, tuple)):
-        platform_choices = list(platform)
-    elif platform is None:
-        platform_choices = list(PLATFORM.keys())
+    # Process os option
+    if isinstance(os, six.string_types):
+        os_choices = [os]
+    elif isinstance(os, (list, tuple)):
+        os_choices = list(os)
+    elif os is None:
+        os_choices = list(OS_PLATFORM.keys())
     else:
-        raise UserAgentRuntimeError('Option platform has invalid'
-                                    ' value: %s' % platform)
-    for item in platform_choices:
-        if item not in PLATFORM_NAVIGATORS:
-            raise UserAgentRuntimeError('Invalid platform option: %s' % item)
+        raise UserAgentRuntimeError('Option os has invalid'
+                                    ' value: %s' % os)
+    for item in os_choices:
+        if item not in OS_NAVIGATORS:
+            raise UserAgentRuntimeError('Invalid os option: %s' % item)
 
     # Process navigator option
     if isinstance(navigator, six.string_types):
@@ -328,77 +344,81 @@ def pickup_platform_navigator_ids(platform, navigator):
         raise UserAgentRuntimeError('Option navigator has invalid'
                                     ' value: %s' % navigator)
     for item in navigator_choices:
-        if item not in NAVIGATOR_PLATFORMS:
+        if item not in NAVIGATOR_OSES:
             raise UserAgentRuntimeError('Invalid navigator option: %s' % item)
 
     # If we have only one navigator option to choose from
-    # Then use it and select platform from platforms
+    # Then use it and select os from oses
     # available for choosen navigator
     if len(navigator_choices) == 1:
         navigator_id = navigator_choices[0]
-        avail_platform_choices = [x for x in platform_choices
-                                  if x in NAVIGATOR_PLATFORMS[navigator_id]]
+        avail_os_choices = [x for x in os_choices
+                                  if x in NAVIGATOR_OSES[navigator_id]]
         # This list could be empty because of invalid
         # parameters passed to the `generate_navigator` function
-        if avail_platform_choices:
-            platform_id = choice(avail_platform_choices)
+        if avail_os_choices:
+            os_id = choice(avail_os_choices)
         else:
-            platform_list = '[%s]' % ', '.join(avail_platform_choices)
+            os_list = '[%s]' % ', '.join(avail_os_choices)
             navigator_list = '[%s]' % ', '.join(navigator_choices)
             raise UserAgentInvalidRequirements(
                 'Could not generate navigator for any combination of'
-                ' %s platforms and %s navigators'
-                % (platform_list, navigator_list))
+                ' %s oses and %s navigators'
+                % (os_list, navigator_list))
     else:
-        platform_id = choice(platform_choices)
+        os_id = choice(os_choices)
         avail_navigator_choices = [x for x in navigator_choices
-                                   if x in PLATFORM_NAVIGATORS[platform_id]]
+                                   if x in OS_NAVIGATORS[os_id]]
         # This list could be empty because of invalid
         # parameters passed to the `generate_navigator` function
         if avail_navigator_choices:
             navigator_id = choice(avail_navigator_choices)
         else:
-            platform_list = '[%s]' % ', '.join(avail_platform_choices)
+            os_list = '[%s]' % ', '.join(avail_os_choices)
             navigator_list = '[%s]' % ', '.join(navigator_choices)
             raise UserAgentInvalidRequirements(
                 'Could not generate navigator for any combination of'
-                ' %s platforms and %s navigators'
-                % (platform_list, navigator_list))
+                ' %s oses and %s navigators'
+                % (os_list, navigator_list))
 
-    assert platform_id in PLATFORM
+    assert os_id in OS_PLATFORM
     assert navigator_id in NAVIGATOR
 
-    return platform_id, navigator_id
+    return os_id, navigator_id
 
 
-def generate_navigator(platform=None, navigator=None):
+def generate_navigator(os=None, navigator=None, platform=None):
     """
     Generates web navigator's config
 
-    :param platform: limit list of platforms for generation
-    :type platform: string or list/tuple or None
+    :param os: limit list of oses for generation
+    :type os: string or list/tuple or None
     :param navigator: limit list of browser engines for generation
     :type navigator: string or list/tuple or None
     :return: User-Agent config
-    :rtype: dict with keys (appversion, name, os, oscpu,
-                            platform, user_agent, version)
+    :rtype: dict with keys (os, name, platform, oscpu, build_version,
+                            build_id, app_version, app_name, app_code_name,
+                            product, product_sub, vendor, vendor_sub,
+                            user_agent)
     :raises UserAgentInvalidRequirements: if could not generate user-agent for
         any combination of allowed platforms and navigators
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
-
-    platform_id, navigator_id = pickup_platform_navigator_ids(platform,
-                                                              navigator)
-    os_platform, oscpu = build_platform_components(platform_id,
-                                                   navigator_id)
-    app = build_app_components(navigator_id)
+    
+    if platform is not None:
+        os = platform
+        warn('The `platform` option is deprecated.'
+             ' Use `os` option instead.', stacklevel=3)
+    os_id, navigator_id = pickup_os_navigator_ids(os, navigator)
+    system = build_system_components(os_id, navigator_id)
+    app = build_app_components(os_id, navigator_id)
     if navigator_id == 'ie':
         tpl_name = ('ie_11' if app['build_version'] == 'MSIE 11.0'
                     else 'ie_less_11')
     else:
         tpl_name = navigator_id
     ua_template = USER_AGENT_TEMPLATE[tpl_name]
-    user_agent = ua_template.format(platform=os_platform, **app)
+    user_agent = ua_template.format(system=system, app=app)
     app_version = None
     if navigator_id in ('chrome', 'ie'):
         assert user_agent.startswith('Mozilla/')
@@ -408,17 +428,17 @@ def generate_navigator(platform=None, navigator=None):
             'win': 'Windows',
             'mac': 'Macintosh',
             'linux': 'X11',
-        }[platform_id]
+        }[os_id]
         app_version = '5.0 (%s)' % os_token
     assert app_version is not None
 
     return {
         # ids
-        'os': platform_id,
-        'name': navigator_id,
-        # platform components
-        'platform': os_platform,
-        'oscpu': oscpu,
+        'os_id': os_id,
+        'navigator_id': navigator_id,
+        # system components
+        'platform': system['platform'],
+        'oscpu': system['oscpu'],
         # app components
         'build_version': app['build_version'],
         'build_id': app['build_id'],
@@ -434,41 +454,42 @@ def generate_navigator(platform=None, navigator=None):
     }
 
 
-def generate_user_agent(platform=None, navigator=None):
+def generate_user_agent(os=None, navigator=None, platform=None):
     """
     Generates HTTP User-Agent header
 
-    :param platform: limit list of platforms for generation
-    :type platform: string or list/tuple or None
+    :param os: limit list of os for generation
+    :type os: string or list/tuple or None
     :param navigator: limit list of browser engines for generation
     :type navigator: string or list/tuple or None
     :return: User-Agent string
     :rtype: string
     :raises UserAgentInvalidRequirements: if could not generate user-agent for
-        any combination of allowed platforms and navigators
+        any combination of allowed oses and navigators
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
-    return generate_navigator(platform=platform,
-                              navigator=navigator)['user_agent']
+    return generate_navigator(os=os, navigator=navigator,
+                              platform=platform)['user_agent']
 
 
-def generate_navigator_js(platform=None, navigator=None):
+def generate_navigator_js(os=None, navigator=None, platform=None):
     """
     Generates web navigator's config with keys corresponding
     to keys of `windows.navigator` JavaScript object.
 
-    :param platform: limit list of platforms for generation
-    :type platform: string or list/tuple or None
+    :param os: limit list of oses for generation
+    :type os: string or list/tuple or None
     :param navigator: limit list of browser engines for generation
     :type navigator: string or list/tuple or None
     :return: User-Agent config
     :rtype: dict with keys (TODO)
     :raises UserAgentInvalidRequirements: if could not generate user-agent for
-        any combination of allowed platforms and navigators
+        any combination of allowed oses and navigators
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
 
-    config = generate_navigator(platform=platform, navigator=navigator)
+    config = generate_navigator(os=os, navigator=navigator,
+                                platform=platform)
     return {
         'appCodeName': config['app_code_name'],
         'appName': config['app_name'],

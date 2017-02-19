@@ -8,10 +8,10 @@ def script_ua():
     parser = ArgumentParser()
     parser.add_argument('-e', '--extended', action='store_true',
                         default=False)
-    parser.add_argument('-p', '--platform')
+    parser.add_argument('-o', '--os')
     parser.add_argument('-n', '--navigator')
     opts = parser.parse_args()
-    nav = generate_navigator_js(platform=opts.platform,
+    nav = generate_navigator_js(os=opts.os,
                                 navigator=opts.navigator)
     if opts.extended:
         print(json.dumps(nav, indent=2))
