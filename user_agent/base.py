@@ -398,7 +398,7 @@ def choose_ids(device_type, os, # pylint: disable=invalid-name
     :type navigator: string or list/tuple or None
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
-        "desktop", "mobile"
+        "desktop", "smartphone", "tablet", "all"
     """
 
     # Process device_type option
@@ -577,7 +577,7 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
     :type navigator: string or list/tuple or None
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
-        "desktop", "mobile"
+        "desktop", "smartphone", "tablet", "all"
 
     :return: User-Agent config
     :rtype: dict with keys (os, name, platform, oscpu, build_version,
@@ -637,7 +637,7 @@ def generate_user_agent(os=None, # pylint: disable=invalid-name
     :type navigator: string or list/tuple or None
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
-        "desktop", "mobile"
+        "desktop", "smartphone", "tablet", "all"
     :return: User-Agent string
     :rtype: string
     :raises UserAgentInvalidRequirements: if could not generate user-agent for
@@ -662,7 +662,7 @@ def generate_navigator_js(os=None, # pylint: disable=invalid-name
     :type navigator: string or list/tuple or None
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
-        "desktop", "mobile"
+        "desktop", "smartphone", "tablet", "all"
     :return: User-Agent config
     :rtype: dict with keys (TODO)
     :raises UserAgentInvalidRequirements: if could not generate user-agent for

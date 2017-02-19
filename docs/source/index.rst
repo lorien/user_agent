@@ -25,13 +25,42 @@ Returns a dict like:
 
 .. code:: python
 
-    {'appversion': '5.0',
-     'name': 'chrome',
-     'os': 'win',
-     'oscpu': 'Windows NT 10.0; WOW64',
-     'platform': 'Win32',
-     'user_agent': 'Mozilla/5.0 ... Safari/537.36',
-     'version': '39.0.2172.16'}
+    {'app_code_name': 'Mozilla',
+     'app_name': 'Netscape',
+     'app_version': '5.0 (Windows)',
+     'build_id': '20170124100044',
+     'build_version': '51.0',
+     'navigator_id': 'firefox',
+     'os_id': 'win',
+     'oscpu': 'Windows NT 6.2',
+     'platform': 'Windows NT 6.2',
+     'product': 'Gecko',
+     'product_sub': '20100101',
+     'user_agent': 'Mozilla/5.0 (Windows NT 6.2; rv:51.0) Gecko/20100101 '
+                   'Firefox/51.0',
+     'vendor': '',
+     'vendor_sub': ''}
+
+.. autofunction:: generate_navigator_js
+
+Returns a dict like:
+
+.. code:: python
+
+    {'appCodeName': 'Mozilla',
+     'appName': 'Netscape',
+     'appVersion': '5.0 (Macintosh; Intel Mac OS X 10_8_1) AppleWebKit/537.36 '
+                   '(KHTML, like Gecko) Chrome/54.0.2840.93 Safari/537.36',
+     'buildID': None,
+     'oscpu': 'Intel Mac OS X 10_8_1',
+     'platform': 'Macintosh; Intel Mac OS X 10_8_1',
+     'product': 'Gecko',
+     'productSub': '20030107',
+     'userAgent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_1) '
+                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.93 '
+                  'Safari/537.36',
+     'vendor': 'Google Inc.',
+     'vendorSub': ''}
 
 
 .. toctree::
