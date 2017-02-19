@@ -32,6 +32,8 @@ Lists of user agents:
 # pylint: enable=line-too-long
 
 from random import choice, randint
+from datetime import datetime, timedelta
+
 import six
 
 __all__ = ['generate_user_agent', 'generate_navigator',
@@ -71,7 +73,7 @@ SUBPLATFORM = {
         ('i686 on x86_64', 'Linux i686 on x86_64'), # 32bit process on 64bit os
     ),
     'mac': (
-        ('', 'MacIntel'),
+        ('', 'IS NOT USED'),
     ),
 }
 
@@ -88,20 +90,18 @@ NAVIGATOR_PLATFORMS = {
 }
 
 NAVIGATOR = ('firefox', 'chrome', 'ie')
-APPVERSION = '5.0'
 USERAGENT_TEMPLATE = {
     'ie': 'Mozilla/5.0 (compatible; MSIE %(version)s; %(platform)s',
 }
 FIREFOX_VERSION = (
-    '45.0', # 2016-03-08
-    '46.0', # 2016-04-26
-    '47.0', # 2016-06-07
-    '48.0', # 2016-08-02
-    '49.0', # 2016-09-20
-    '50.0', # 2016-11-15
-    '51.0', # 2017-01-24
+    ('45.0', datetime(2016, 3, 8)),
+    ('46.0', datetime(2016, 4, 26)),
+    ('47.0', datetime(2016, 6, 7)),
+    ('48.0', datetime(2016, 8, 2)),
+    ('49.0', datetime(2016, 9, 20)),
+    ('50.0', datetime(2016, 11, 15)),
+    ('51.0', datetime(2017, 1, 24)),
 )
-GECKOTRAIL_DESKTOP = '20100101'
 CHROME_BUILD = (
     (49, 2623, 2660), # 2016-03-02
     (50, 2661, 2703), # 2016-04-13
@@ -121,18 +121,18 @@ IE_VERSION = (
 USER_AGENT_TEMPLATE = {
     'firefox': (
         'Mozilla/5.0'
-        ' ({platform}; rv:{app_version}) Gecko/20100101'
-        ' Firefox/{app_version}'
+        ' ({platform}; rv:{build_version}) Gecko/20100101'
+        ' Firefox/{build_version}'
     ),
     'chrome': (
         'Mozilla/5.0'
         ' ({platform}) AppleWebKit/537.36'
         ' (KHTML, like Gecko)'
-        ' Chrome/{app_version} Safari/537.36'
+        ' Chrome/{build_version} Safari/537.36'
     ),
     'ie_old': (
         'Mozilla/5.0'
-        ' (compatible; {app_version}; {platform})'
+        ' (compatible; {build_version}; {platform})'
     ),
     'ie_new': (
         'Mozilla/5.0'
@@ -149,11 +149,21 @@ class UserAgentInvalidRequirements(UserAgentRuntimeError):
     pass
 
 
-def build_firefox_version():
-    return choice(FIREFOX_VERSION)
+def get_firefox_build():
+    build_ver, date_from = choice(FIREFOX_VERSION)
+    try:
+        idx = FIREFOX_VERSION.index((build_ver, date_from))
+        _, date_to = FIREFOX_VERSION[idx + 1]
+    except IndexError:
+        date_to = date_from + timedelta(days=1)
+    sec_range = (date_to - date_from).total_seconds() - 1
+    build_rnd_time = (date_from +
+                      timedelta(seconds=randint(0, sec_range)))
+    return build_ver, build_rnd_time.strftime('%Y%m%d%H%M%S')
 
 
-def build_chrome_version():
+
+def get_chrome_build():
     build = choice(CHROME_BUILD)
     return '%d.0.%d.%d' % (
         build[0],
@@ -162,7 +172,7 @@ def build_chrome_version():
     )
 
 
-def build_ie_version():
+def get_ie_build():
     """
     Return random IE version as tuple
     (numeric_version, us-string component)
@@ -238,18 +248,26 @@ def build_app_components(navigator_name):
     """
 
     if navigator_name == 'firefox':
-        app_version = build_firefox_version()
+        build_version, build_id = get_firefox_build()
         app_name = 'Netscape'
+        app_product_sub = '20100101'
+        app_vendor = ''
     elif navigator_name == 'chrome':
-        app_version = build_chrome_version()
+        build_version = get_chrome_build()
+        build_id = None
         app_name = 'Netscape'
+        app_product_sub = '20030107'
+        app_vendor = 'Google Inc.'
     elif navigator_name == 'ie':
-        num_ver, app_version = build_ie_version()
+        num_ver, build_version = get_ie_build()
+        build_id = None
         if num_ver >= 11:
             app_name = 'Netscape'
         else:
             app_name = 'Microsoft Internet Explorer'
-    return app_version, app_name
+        app_product_sub = None
+        app_vendor = ''
+    return build_version, build_id, app_name, app_product_sub, app_vendor
 
 
 def pickup_platform_navigator_ids(platform, navigator):
@@ -352,16 +370,30 @@ def generate_navigator(platform=None, navigator=None):
                                                               navigator)
     os_platform, oscpu = build_platform_components(platform_id,
                                                    navigator_id)
-    app_version, app_name = build_app_components(navigator_id)
+    build_version, build_id, app_name, app_product_sub, app_vendor = (
+        build_app_components(navigator_id)
+    )
     if navigator_id == 'ie':
-        tpl_name = 'ie_new' if app_version == 'MSIE 11.0' else 'ie_old'
+        tpl_name = 'ie_new' if build_version == 'MSIE 11.0' else 'ie_old'
     else:
         tpl_name = navigator_id
     ua_template = USER_AGENT_TEMPLATE[tpl_name]
     user_agent = ua_template.format(
         platform=os_platform,
-        app_version=app_version,
+        build_version=build_version,
     )
+    app_version = None
+    if navigator_id in ('chrome', 'ie'):
+        assert user_agent.startswith('Mozilla/')
+        app_version = user_agent.split('Mozilla/', 1)[1]
+    elif navigator_id == 'firefox':
+        os_token = {
+            'win': 'Windows',
+            'mac': 'Macintosh',
+            'linux': 'X11',
+        }[platform_id]
+        app_version = '5.0 (%s)' % os_token
+    assert app_version is not None
 
     return {
         # ids
@@ -371,10 +403,15 @@ def generate_navigator(platform=None, navigator=None):
         'platform': os_platform,
         'oscpu': oscpu,
         # app components
-        'appversion': APPVERSION,
-        'version': app_version,
+        'build_version': build_version,
+        'build_id': build_id,
+        'app_version': app_version,
         'app_name': app_name,
         'app_code_name': 'Mozilla',
+        'product': 'Gecko',
+        'product_sub': app_product_sub,
+        'vendor': app_vendor,
+        'vendor_sub': '',
         # compiled user agent
         'user_agent': user_agent,
     }
@@ -418,8 +455,13 @@ def generate_navigator_js(platform=None, navigator=None):
     return {
         'appCodeName': config['app_code_name'],
         'appName': config['app_name'],
-        'appVersion': config['version'],
+        'appVersion': config['app_version'],
         'platform': config['platform'],
         'userAgent': config['user_agent'],
         'oscpu': config['oscpu'],
+        'product': config['product'],
+        'productSub': config['product_sub'],
+        'vendor': config['vendor'],
+        'vendorSub': config['vendor_sub'],
+        'buildID': config['build_id'],
     }
