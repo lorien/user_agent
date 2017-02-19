@@ -113,10 +113,11 @@ CHROME_BUILD = (
     (56, 2924, 2986), # 2016-12-01
 )
 IE_VERSION = (
-    (8, 'MSIE 8.0'), # 2009
-    (9, 'MSIE 9.0'), # 2011
-    (10, 'MSIE 10.0'), # 2012
-    (11, 'MSIE 11.0'), # 2013
+    # (numeric ver, string ver, trident ver) # release year
+    (8, 'MSIE 8.0', '4.0'), # 2009
+    (9, 'MSIE 9.0', '5.0'), # 2011
+    (10, 'MSIE 10.0', '6.0'), # 2012
+    (11, 'MSIE 11.0', '7.0'), # 2013
 )
 USER_AGENT_TEMPLATE = {
     'firefox': (
@@ -272,7 +273,7 @@ def build_app_components(navigator_name):
             'build_id': None,
         }
     elif navigator_name == 'ie':
-        num_ver, build_version = get_ie_build()
+        num_ver, build_version, trident_version = get_ie_build()
         if num_ver >= 11:
             app_name = 'Netscape'
         else:
@@ -285,7 +286,7 @@ def build_app_components(navigator_name):
             'vendor': '',
             'build_version': build_version,
             'build_id': None,
-            'trident_version': '1.0', # FIXME
+            'trident_version': trident_version,
         }
     return res
 
