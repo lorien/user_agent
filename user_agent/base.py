@@ -22,6 +22,7 @@ Release history:
 * https://en.wikipedia.org/wiki/Firefox_release_history
 * https://en.wikipedia.org/wiki/Google_Chrome_release_history
 * https://en.wikipedia.org/wiki/Internet_Explorer_version_history
+* https://en.wikipedia.org/wiki/Android_version_history
 
 Lists of user agents:
 * http://www.useragentstring.com/
@@ -294,8 +295,6 @@ def build_app_components(os_id, navigator_id):
             app_name = 'Netscape'
         else:
             app_name = 'Microsoft Internet Explorer'
-        app_product_sub = None
-        app_vendor = ''
         res = {
             'name': app_name,
             'product_sub': None,
@@ -307,7 +306,7 @@ def build_app_components(os_id, navigator_id):
     return res
 
 
-def pickup_os_navigator_ids(os, navigator):
+def pickup_os_navigator_ids(os, navigator): # pylint: disable=invalid-name
     """
     Select one random pair (os_id, navigator_id) from all
     possible combinations matching the given os and
@@ -353,7 +352,7 @@ def pickup_os_navigator_ids(os, navigator):
     if len(navigator_choices) == 1:
         navigator_id = navigator_choices[0]
         avail_os_choices = [x for x in os_choices
-                                  if x in NAVIGATOR_OSES[navigator_id]]
+                            if x in NAVIGATOR_OSES[navigator_id]]
         # This list could be empty because of invalid
         # parameters passed to the `generate_navigator` function
         if avail_os_choices:
@@ -387,7 +386,8 @@ def pickup_os_navigator_ids(os, navigator):
     return os_id, navigator_id
 
 
-def generate_navigator(os=None, navigator=None, platform=None):
+def generate_navigator(os=None, # pylint: disable=invalid-name
+                       navigator=None, platform=None):
     """
     Generates web navigator's config
 
@@ -404,7 +404,7 @@ def generate_navigator(os=None, navigator=None, platform=None):
         any combination of allowed platforms and navigators
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
-    
+
     if platform is not None:
         os = platform
         warn('The `platform` option is deprecated.'
@@ -454,7 +454,8 @@ def generate_navigator(os=None, navigator=None, platform=None):
     }
 
 
-def generate_user_agent(os=None, navigator=None, platform=None):
+def generate_user_agent(os=None, # pylint: disable=invalid-name
+                        navigator=None, platform=None):
     """
     Generates HTTP User-Agent header
 
@@ -472,7 +473,8 @@ def generate_user_agent(os=None, navigator=None, platform=None):
                               platform=platform)['user_agent']
 
 
-def generate_navigator_js(os=None, navigator=None, platform=None):
+def generate_navigator_js(os=None, # pylint: disable=invalid-name
+                          navigator=None, platform=None):
     """
     Generates web navigator's config with keys corresponding
     to keys of `windows.navigator` JavaScript object.
