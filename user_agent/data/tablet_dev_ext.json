@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Huawei MediaPad M1",
+    "ids": [
+      "MediaPad M1 8.0 Build/HuaweiMediaPad"
+    ],
+    "cpu": "Quad-core 1.6 GHz Cortex-A9",
+    "released": 2014,
+    "resolution": [
+      800,
+      1280
+    ]
+  },
+  {
+    "name": "Lenovo TAB S8",
+    "ids": [
+      "Lenovo TAB S8-50L Build/BMAIN"
+    ],
+    "cpu": "Quad-core 1.86 GHz",
+    "released": 2014,
+    "resolution": [
+      1200,
+      1920
+    ]
+  }
+]

@@ -9,6 +9,7 @@ setup(
     description='User-Agent generator',
     long_description=open(os.path.join(ROOT, 'README.rst')).read(),
     packages=find_packages(),
+    include_package_data=True,
     install_requires=['six'],
     license="MIT",
     keywords="user agent browser navigator",

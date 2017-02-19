@@ -30,7 +30,7 @@ Usage Example
     >>> from pprint import pprint
     >>> generate_user_agent()
     'Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.3; Win64; x64)'
-    >>> generate_user_agent(platform=('mac', 'linux'))
+    >>> generate_user_agent(os=('mac', 'linux'))
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:36.0) Gecko/20100101 Firefox/36.0'
     >>> pprint(generate_navigator())
     {'app_code_name': 'Mozilla',
