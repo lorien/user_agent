@@ -247,9 +247,9 @@ def test_android_firefox():
 def test_device_type_option():
     for _ in range(50):
         agent = generate_user_agent(device_type='desktop')
-        agent = generate_user_agent(device_type='mobile')
+        agent = generate_user_agent(device_type='smartphone')
         assert 'Android' in agent
-        assert 'Firefox' in agent
+        assert 'Firefox' in agent or 'Chrome' in agent
 
 
 def test_device_type_option_invalid():
@@ -261,13 +261,13 @@ def test_device_type_option_invalid():
 def test_invalid_combination_device_type_os():
     for _ in range(50):
         with pytest.raises(UserAgentRuntimeError):
-            generate_user_agent(device_type='mobile', os='win')
+            generate_user_agent(device_type='smartphone', os='win')
 
 
 def test_invalid_combination_device_type_navigator():
     for _ in range(50):
         with pytest.raises(UserAgentRuntimeError):
-            generate_user_agent(device_type='mobile', navigator='ie')
+            generate_user_agent(device_type='smartphone', navigator='ie')
 
 
 def test_no_os_options_default_device_type():
@@ -281,3 +281,10 @@ def test_device_type_all():
     for _ in range(50):
         generate_user_agent(device_type='all')
         generate_user_agent(device_type='all', navigator='ie')
+
+def test_device_type_smartphone_chrome():
+    for _ in range(50):
+        ua = generate_user_agent(device_type='smartphone', navigator='chrome')
+        assert 'Mobile' in ua
+        ua = generate_user_agent(device_type='tablet', navigator='chrome')
+        assert 'Mobile' not in ua

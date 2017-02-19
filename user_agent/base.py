@@ -50,16 +50,25 @@ __all__ = ['generate_user_agent', 'generate_navigator',
 
 DEVICE_TYPE_OS = {
     'desktop': ('win', 'mac', 'linux'),
-    'mobile': ('android',),
-    'all': ('win', 'mac', 'linux', 'android',),
+    'smartphone': ('android',),
+    'tablet': ('android',),
 }
-
+OS_DEVICE_TYPE = {
+    'win': ('desktop',),
+    'linux': ('desktop',),
+    'mac': ('desktop',),
+    'android': ('smartphone', 'tablet'),
+}
 DEVICE_TYPE_NAVIGATOR = {
     'desktop': ('chrome', 'firefox', 'ie'),
-    'mobile': ('firefox',),
-    'all': ('chrome', 'firefox', 'ie'),
+    'smartphone': ('firefox', 'chrome'),
+    'tablet': ('firefox', 'chrome'),
 }
-
+NAVIGATOR_DEVICE_TYPE = {
+    'ie': ('desktop',),
+    'chrome': ('desktop', 'smartphone', 'tablet'),
+    'firefox': ('desktop', 'smartphone', 'tablet'),
+}
 OS_PLATFORM = {
     'win': (
         'Windows NT 5.1', # Windows XP
@@ -97,7 +106,6 @@ OS_PLATFORM = {
         #'Android 7.1.1', # 2016-12-05
     ),
 }
-
 OS_CPU = {
     'win': (
         '', # 32bit
@@ -117,21 +125,17 @@ OS_CPU = {
         'armv8l', # 64bit
     ),
 }
-
-OS_NAVIGATORS = {
+OS_NAVIGATOR = {
     'win': ('chrome', 'firefox', 'ie'),
     'mac': ('firefox', 'chrome'),
     'linux': ('chrome', 'firefox'),
-    'android': ('firefox',),
+    'android': ('firefox', 'chrome'),
 }
-
-NAVIGATOR_OSES = {
-    'chrome': ('win', 'linux', 'mac'),
+NAVIGATOR_OS = {
+    'chrome': ('win', 'linux', 'mac', 'android'),
     'firefox': ('win', 'linux', 'mac', 'android'),
     'ie': ('win',),
 }
-
-NAVIGATOR = ('firefox', 'chrome', 'ie')
 FIREFOX_VERSION = (
     ('45.0', datetime(2016, 3, 8)),
     ('46.0', datetime(2016, 4, 26)),
@@ -166,6 +170,18 @@ USER_AGENT_TEMPLATE = {
         ' Firefox/{app[build_version]}'
     ),
     'chrome': (
+        'Mozilla/5.0'
+        ' ({system[ua_platform]}) AppleWebKit/537.36'
+        ' (KHTML, like Gecko)'
+        ' Chrome/{app[build_version]} Safari/537.36'
+    ),
+    'chrome_smartphone': (
+        'Mozilla/5.0'
+        ' ({system[ua_platform]}) AppleWebKit/537.36'
+        ' (KHTML, like Gecko)'
+        ' Chrome/{app[build_version]} Mobile Safari/537.36'
+    ),
+    'chrome_tablet': (
         'Mozilla/5.0'
         ' ({system[ua_platform]}) AppleWebKit/537.36'
         ' (KHTML, like Gecko)'
@@ -253,7 +269,7 @@ def fix_chrome_mac_platform(platform):
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
 
-def build_system_components(os_id, navigator_id):
+def build_system_components(device_type, os_id, navigator_id):
     """
     For given os_id build random platform and oscpu
     components
@@ -302,9 +318,17 @@ def build_system_components(os_id, navigator_id):
             'oscpu': 'Intel Mac OS X %s' % platform.split(' ')[-1],
         }
     elif os_id == 'android':
-        assert navigator_id in ('firefox',)
+        assert navigator_id in ('firefox', 'chrome')
+        assert device_type in ('smartphone', 'tablet')
         platform_version = choice(OS_PLATFORM['android'])
-        ua_platform = '%s; Mobile' % platform_version
+        if navigator_id == 'firefox':
+            if device_type == 'smartphone':
+                ua_platform = '%s; Mobile' % platform_version
+            elif device_type ==  'tablet':
+                ua_platform = '%s; Tablet' % platform_version
+        elif navigator_id == 'chrome':
+            device_id = choice(SMARTPHONE_DEV_IDS)
+            ua_platform = 'Linux; %s; %s' % (platform_version, device_id)
         oscpu = 'Linux %s' % choice(OS_CPU['android'])
         res = {
             'platform_version': platform_version,
@@ -361,11 +385,11 @@ def build_app_components(os_id, navigator_id):
     return res
 
 
-def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
+def choose_ids(device_type, os, # pylint: disable=invalid-name
                             navigator):
     """
-    Select one random pair (os_id, navigator_id) from all
-    possible combinations matching the given os and
+    Select one random pair (device_type, os_id, navigator_id) from
+    all possible combinations matching the given os and
     navigator filters.
 
     :param os: allowed os(es)
@@ -392,6 +416,10 @@ def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
     else:
         raise UserAgentRuntimeError('Option device_type has invalid'
                                     ' value: %s' % device_type)
+
+    if 'all' in dev_type_choices:
+        dev_type_choices = list(DEVICE_TYPE_OS.keys())
+
     for item in dev_type_choices:
         if item not in DEVICE_TYPE_OS:
             raise UserAgentRuntimeError('Invalid device_type option: %s'
@@ -420,7 +448,7 @@ def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
         raise UserAgentRuntimeError('Option os has invalid'
                                     ' value: %s' % os)
     for item in os_choices:
-        if item not in OS_NAVIGATORS:
+        if item not in OS_NAVIGATOR:
             raise UserAgentRuntimeError('Invalid os option: %s' % item)
 
     # Check consistency of os and device_type options
@@ -443,7 +471,7 @@ def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
         raise UserAgentRuntimeError('Option navigator has invalid'
                                     ' value: %s' % navigator)
     for item in navigator_choices:
-        if item not in NAVIGATOR_OSES:
+        if item not in NAVIGATOR_OS:
             raise UserAgentRuntimeError('Invalid navigator option: %s' % item)
 
     # Check consistency of navigator and device_type options
@@ -459,7 +487,7 @@ def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
     if len(navigator_choices) == 1:
         navigator_id = navigator_choices[0]
         avail_os_choices = [x for x in os_choices
-                            if x in NAVIGATOR_OSES[navigator_id]]
+                            if x in NAVIGATOR_OS[navigator_id]]
         # This list could be empty because of invalid
         # parameters passed to the `generate_navigator` function
         if avail_os_choices:
@@ -474,23 +502,67 @@ def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
     else:
         os_id = choice(os_choices)
         avail_navigator_choices = [x for x in navigator_choices
-                                   if x in OS_NAVIGATORS[os_id]]
+                                   if x in OS_NAVIGATOR[os_id]]
         # This list could be empty because of invalid
         # parameters passed to the `generate_navigator` function
         if avail_navigator_choices:
             navigator_id = choice(avail_navigator_choices)
         else:
+            # FIXME: that should not happen in runtime
+            # Invalid config should be detected in the beginning
+            # of current method
             os_list = '[%s]' % ', '.join(avail_os_choices)
             navigator_list = '[%s]' % ', '.join(navigator_choices)
             raise UserAgentInvalidRequirements(
                 'Could not generate navigator for any combination of'
                 ' %s oses and %s navigators'
                 % (os_list, navigator_list))
+    
+    os_dev_types = set()
+    for dev_type in OS_DEVICE_TYPE[os_id]:
+        os_dev_types.add(dev_type)
+    nav_dev_types = set()
+    for dev_type in NAVIGATOR_DEVICE_TYPE[navigator_id]:
+        nav_dev_types.add(dev_type)
+    device_type = choice(list(os_dev_types.intersection(nav_dev_types
+                              .intersection(dev_type_choices))))
 
     assert os_id in OS_PLATFORM
-    assert navigator_id in NAVIGATOR
+    assert navigator_id in NAVIGATOR_OS
+    assert device_type in DEVICE_TYPE_OS
 
-    return os_id, navigator_id
+    return device_type, os_id, navigator_id
+
+
+def choose_ua_template(device_type, os_id, navigator_id, app):
+    tpl_name = navigator_id
+    if navigator_id == 'ie':
+        tpl_name = ('ie_11' if app['build_version'] == 'MSIE 11.0'
+                    else 'ie_less_11')
+    if navigator_id == 'chrome':
+        if device_type == 'smartphone':
+            tpl_name = 'chrome_smartphone'
+        if device_type == 'tablet':
+            tpl_name = 'chrome_tablet'
+    return USER_AGENT_TEMPLATE[tpl_name]
+
+
+def build_navigator_app_version(os_id, navigator_id,
+                                platform_version, user_agent):
+    if navigator_id in ('chrome', 'ie'):
+        assert user_agent.startswith('Mozilla/')
+        app_version = user_agent.split('Mozilla/', 1)[1]
+    elif navigator_id == 'firefox':
+        if os_id == 'android':
+            app_version = '5.0 (%s)' % platform_version
+        else:
+            os_token = {
+                'win': 'Windows',
+                'mac': 'Macintosh',
+                'linux': 'X11',
+            }[os_id]
+            app_version = '5.0 (%s)' % os_token
+    return app_version
 
 
 def generate_navigator(os=None, # pylint: disable=invalid-name
@@ -521,33 +593,16 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
         os = platform
         warn('The `platform` option is deprecated.'
              ' Use `os` option instead.', stacklevel=3)
-    os_id, navigator_id = pickup_os_navigator_ids(device_type, os,
+    device_type, os_id, navigator_id = choose_ids(device_type, os,
                                                   navigator)
-    system = build_system_components(os_id, navigator_id)
+    system = build_system_components(
+        device_type, os_id, navigator_id)
     app = build_app_components(os_id, navigator_id)
-    if navigator_id == 'ie':
-        tpl_name = ('ie_11' if app['build_version'] == 'MSIE 11.0'
-                    else 'ie_less_11')
-    else:
-        tpl_name = navigator_id
-    ua_template = USER_AGENT_TEMPLATE[tpl_name]
+    ua_template = choose_ua_template(
+        device_type, os_id, navigator_id, app)
     user_agent = ua_template.format(system=system, app=app)
-    app_version = None
-    if navigator_id in ('chrome', 'ie'):
-        assert user_agent.startswith('Mozilla/')
-        app_version = user_agent.split('Mozilla/', 1)[1]
-    elif navigator_id == 'firefox':
-        if os_id == 'android':
-            app_version = '5.0 (%s)' % system['platform_version']
-        else:
-            os_token = {
-                'win': 'Windows',
-                'mac': 'Macintosh',
-                'linux': 'X11',
-            }[os_id]
-            app_version = '5.0 (%s)' % os_token
-    assert app_version is not None
-
+    app_version = build_navigator_app_version(
+        os_id, navigator_id, system['platform_version'], user_agent)
     return {
         # ids
         'os_id': os_id,
