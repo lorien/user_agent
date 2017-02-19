@@ -40,6 +40,9 @@ from datetime import datetime, timedelta
 import six
 
 from .warning import warn
+# pylint: disable=unused-import
+from .device import SMARTPHONE_DEV_IDS, TABLET_DEV_IDS
+# pylint: enable=unused-import
 
 __all__ = ['generate_user_agent', 'generate_navigator',
            'generate_navigator_js',

@@ -1,0 +1,572 @@
+[
+  {
+    "name": "Amazon Fire Phone",
+    "ids": [
+      "SD4930UR Build/KTU84P",
+      "SD4930UR Build/JDQ39"
+    ],
+    "cpu": "Quad-core 2.2 GHz Krait 400",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "BlackBerry Passport",
+    "ids": [
+      "Passport Build/10.3.2.148"
+    ],
+    "cpu": "Quad-core 2.26 GHz Krait 400",
+    "released": 2014,
+    "resolution": [
+      1440,
+      1440
+    ]
+  },
+  {
+    "name": "Huawei Ascend P7",
+    "ids": [
+      "HUAWEI P7-L12 Build/HuaweiP7-L12"
+    ],
+    "cpu": "Quad-core 1.8 GHz Cortex-A9",
+    "released": 2014,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Huawei Ascend Y220",
+    "ids": [
+      "Y220-U00 Build/HUAWEIY220-U00"
+    ],
+    "cpu": "Dual-core 1.0 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      320,
+      480
+    ]
+  },
+  {
+    "name": "Huawei Honor 4C",
+    "ids": [
+      "CHM-U01 Build/HonorCHM-U01"
+    ],
+    "cpu": "Octa-core 1.2 GHz Cortex-A53",
+    "released": 2015,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Huawei Honor 7",
+    "ids": [
+      "PLK-AL10 Build/HONORPLK-AL10"
+    ],
+    "cpu": "Octa-core (4x2.2 GHz Cortex-A53 & 4x1.5 GHz Cortex-A53)",
+    "released": 2015,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Huawei Honor Holly",
+    "ids": [
+      "Hol-U19 Build/HUAWEIHol-U19"
+    ],
+    "cpu": "Quad-core 1.3 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Huawei P8",
+    "ids": [
+      "HUAWEI H891L Build/HuaweiH891L"
+    ],
+    "cpu": "Octa-core (4x2.0 GHz Cortex-A53 & 4x1.5 GHz Cortex-A53)",
+    "released": 2015,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Lava Iris 250",
+    "ids": [
+      "iris 250 Build/iris250"
+    ],
+    "cpu": "Dual-core 1.0 GHz",
+    "released": 2014,
+    "resolution": [
+      480,
+      800
+    ]
+  },
+  {
+    "name": "Lava Iris 356",
+    "ids": [
+      "iris356 Build/irisIRIS356"
+    ],
+    "cpu": "Dual-core 1.2 GHz",
+    "released": 2014,
+    "resolution": [
+      320,
+      480
+    ]
+  },
+  {
+    "name": "Lenovo A319",
+    "ids": [
+      "Lenovo A319 Build/MocorDroid4.4.2"
+    ],
+    "cpu": "Dual-core 1.3 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      480,
+      800
+    ]
+  },
+  {
+    "name": "Lenovo A5000",
+    "ids": [
+      "Lenovo A5000 Build/KOT49H"
+    ],
+    "cpu": "Quad-core 1.3 GHz Cortex-A7",
+    "released": 2015,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Lenovo A526",
+    "ids": [
+      "Lenovo A526 Build/JDQ39"
+    ],
+    "cpu": "Quad-core 1.3 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      480,
+      854
+    ]
+  },
+  {
+    "name": "Lenovo A536",
+    "ids": [
+      "Lenovo A536 Build/KOT49H"
+    ],
+    "cpu": "Quad-core 1.3 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      480,
+      854
+    ]
+  },
+  {
+    "name": "Lenovo A889",
+    "ids": [
+      "Lenovo A889 Build/JDQ39"
+    ],
+    "cpu": "Quad-core 1.3 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      540,
+      960
+    ]
+  },
+  {
+    "name": "Lenovo S850",
+    "ids": [
+      "Lenovo S850 Build/KOT49H"
+    ],
+    "cpu": "Quad-core 1.3 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Lenovo S939",
+    "ids": [
+      "Lenovo S939 Build/KOT49H"
+    ],
+    "cpu": "Octa-core 1.7 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "LG G Stylo",
+    "ids": [
+      "LG-H631 Build/LMY47V"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A53",
+    "released": 2015,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "LG G2 Mini",
+    "ids": [
+      "LG-D625 Build/KOT49I"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      540,
+      960
+    ]
+  },
+  {
+    "name": "LG G3",
+    "ids": [
+      "LG-D851 Build/KVT49L.D85110c",
+      "LG-D724 Build/KOT49I.A1423035001",
+      "LG-F400S Build/LRX21R",
+      "LG-D850 Build/KVT49L.D85010d",
+      "LG-D855 Build/LRX21R.A1421650137",
+      "LG-D852 Build/KVT49L.D85210b",
+      "LG-D690 Build/KOT49I.A1411630516",
+      "LG-D855 Build/LRX21R.A1422018487"
+    ],
+    "cpu": "Quad-core 2.5 GHz Krait 400",
+    "released": 2014,
+    "resolution": [
+      1440,
+      2560
+    ]
+  },
+  {
+    "name": "LG G4",
+    "ids": [
+      "LG-H815/H81510d Build/LMY47D",
+      "LG-H815 Build/LMY47D"
+    ],
+    "cpu": "Hexa-core (4x1.4 GHz Cortex-A53 & 2x1.8 GHz Cortex-A57)",
+    "released": 2015,
+    "resolution": [
+      1440,
+      2560
+    ]
+  },
+  {
+    "name": "LG L80",
+    "ids": [
+      "LG-D380 Build/KOT49I.A1399471002"
+    ],
+    "cpu": "Dual-core 1.2 GHz",
+    "released": 2014,
+    "resolution": [
+      480,
+      800
+    ]
+  },
+  {
+    "name": "Motorola Moto E",
+    "ids": [
+      "XT1022 Build/KXC20.82-14"
+    ],
+    "cpu": "Dual-core 1.2 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      540,
+      960
+    ]
+  },
+  {
+    "name": "Nokia Lumia 1320",
+    "ids": [
+      "Lumia 1320"
+    ],
+    "cpu": "Dual-core 1.7 GHz Krait 300",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Nokia Lumia 525",
+    "ids": [
+      "Lumia 525"
+    ],
+    "cpu": "Dual-core 1.0 GHz",
+    "released": 2014,
+    "resolution": [
+      480,
+      800
+    ]
+  },
+  {
+    "name": "Nokia Lumia 635",
+    "ids": [
+      "Lumia 635"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      480,
+      854
+    ]
+  },
+  {
+    "name": "Nokia Lumia 630",
+    "ids": [
+      "Lumia 630"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      480,
+      854
+    ]
+  },
+  {
+    "name": "Nokia X",
+    "ids": [
+      "Nokia_X Build/JZO54K"
+    ],
+    "cpu": "Dual-core 1.0 GHz Cortex-A5",
+    "released": 2014,
+    "resolution": [
+      480,
+      800
+    ]
+  },
+  {
+    "name": "OnePlus One",
+    "ids": [
+      "MI-ONEPlus"
+    ],
+    "cpu": "Quad-core 2.5 GHz Krait 400",
+    "released": 2014,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Samsung Galaxy A5",
+    "ids": [
+      "SAMSUNG SM-A500F Build/KTU84P",
+      "SM-A500F Build/KTU84P"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A53",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Samsung Galaxy A7",
+    "ids": [
+      "SM-A700F Build/KTU84P"
+    ],
+    "cpu": "Octa-core (4x1.5 GHz Cortex-A53 & 4x1.0 GHz Cortex-A53) - A700FDOcta-core (4x1.8 Cortex-A15 GHz & 4x1.3 Cortex-A7 GHz) - A700F",
+    "released": 2015,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Samsung Galaxy A8",
+    "ids": [
+      "SAMSUNG SM-A800F Build/LMY47X"
+    ],
+    "cpu": "Octa-core (4x1.8 GHz Cortex-A53 & 4x1.3 GHz Cortex-A53)",
+    "released": 2015,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Samsung Galaxy Core Prime",
+    "ids": [
+      "SM-G360H Build/KTU84P",
+      "SM-G360G Build/KTU84P",
+      "SAMSUNG SM-G360T1 Build/LMY47X"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A53",
+    "released": 2014,
+    "resolution": [
+      480,
+      800
+    ]
+  },
+  {
+    "name": "Samsung Galaxy Grand 2",
+    "ids": [
+      "SM-G7102 Build/KOT49H",
+      "SM-G7102 Build/JLS36C"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Samsung Galaxy Grand Neo",
+    "ids": [
+      "GT-I9060 Build/JDQ39"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      480,
+      800
+    ]
+  },
+  {
+    "name": "Samsung Galaxy Grand Prime",
+    "ids": [
+      "SM-G530H Build/KTU84P"
+    ],
+    "cpu": "Quad-core 1.2 GHz Cortex-A53Quad-core 1.3 GHz Cortex-A7 (Value Edition)",
+    "released": 2014,
+    "resolution": [
+      540,
+      960
+    ]
+  },
+  {
+    "name": "Samsung Galaxy Note 4",
+    "ids": [
+      "SAMSUNG SM-N910C Build/KTU84P",
+      "SM-N910V Build/LRX22C",
+      "SM-N910G Build/KTU84P",
+      "SAMSUNG SM-N910P Build/KTU84P"
+    ],
+    "cpu": "Quad-core 2.7 GHz Krait 450 - Snapdragon 805Octa-core (4x1.3 GHz Cortex-A53 & 4x1.9 GHz Cortex-A57) - Exynos 5433",
+    "released": 2014,
+    "resolution": [
+      1440,
+      2560
+    ]
+  },
+  {
+    "name": "Samsung Galaxy Note Edge",
+    "ids": [
+      "SM-N915V Build/KTU84P",
+      "SC-01G Build/KTU84P"
+    ],
+    "cpu": "Quad-core 2.7 GHz Krait 450",
+    "released": 2014,
+    "resolution": [
+      1600,
+      2560
+    ]
+  },
+  {
+    "name": "Samsung Galaxy S6 Edge",
+    "ids": [
+      "SM-G925F Build/LMY47X",
+      "SAMSUNG SM-G925F Build/LMY47X"
+    ],
+    "cpu": "Octa-core (4x2.1 GHz Cortex-A57 & 4x1.5 GHz Cortex-A53)",
+    "released": 2015,
+    "resolution": [
+      1440,
+      2560
+    ]
+  },
+  {
+    "name": "Samsung Z3",
+    "ids": [
+      "SAMSUNG SM-Z300H"
+    ],
+    "cpu": "Quad-core 1.3 GHz Cortex-A7",
+    "released": 2015,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Sony Xperia XA",
+    "ids": [
+      "SonySO-01E Build/9.0.G.0.247"
+    ],
+    "cpu": "Octa-core (4x2.0 GHz Cortex-A53 & 4x1.0 GHz Cortex-A53)",
+    "released": 2016,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Sony Xperia Z2",
+    "ids": [
+      "SGP512 Build/23.4.A.0.546"
+    ],
+    "cpu": "Quad-core 2.3 GHz Krait 400",
+    "released": 2014,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Xiaomi Mi 4i",
+    "ids": [
+      "Mi 4i Build/LRX22G"
+    ],
+    "cpu": "Octa-core (4x1.7 GHz Cortex-A53 & 4x1.0 GHz Cortex-A53)",
+    "released": 2015,
+    "resolution": [
+      1080,
+      1920
+    ]
+  },
+  {
+    "name": "Xiaomi Redmi Note 4G",
+    "ids": [
+      "HM NOTE 1W Build/KOT49H",
+      "HM NOTE 1LTE Build/KTU84P"
+    ],
+    "cpu": "Quad-core 1.6 GHz Cortex-A7",
+    "released": 2014,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "YU Yureka",
+    "ids": [
+      "AO5510 Build/KTU84Q",
+      "AO5510 Build/LRX22G",
+      "AO5510 Build/LMY48W"
+    ],
+    "cpu": "Octa-core (4x1.7 GHz Cortex-A53 & 4x1.0 GHz Cortex-A53)",
+    "released": 2015,
+    "resolution": [
+      720,
+      1280
+    ]
+  },
+  {
+    "name": "Huawei Ascend Plus",
+    "ids": [
+      "HUAWEI H881C Build/HuaweiH881C"
+    ],
+    "cpu": "1.0 GHz",
+    "released": 2014,
+    "resolution": null
+  }
+]
