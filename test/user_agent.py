@@ -246,7 +246,6 @@ def test_android_firefox():
 
 def test_device_type_option():
     for _ in range(50):
-        agent = generate_user_agent()
         agent = generate_user_agent(device_type='desktop')
         agent = generate_user_agent(device_type='mobile')
         assert 'Android' in agent
@@ -256,16 +255,29 @@ def test_device_type_option():
 def test_device_type_option_invalid():
     for _ in range(50):
         with pytest.raises(UserAgentRuntimeError):
-            agent = generate_user_agent(device_type='fridge')
+            generate_user_agent(device_type='fridge')
 
 
 def test_invalid_combination_device_type_os():
     for _ in range(50):
         with pytest.raises(UserAgentRuntimeError):
-            agent = generate_user_agent(device_type='mobile', os='win')
+            generate_user_agent(device_type='mobile', os='win')
 
 
 def test_invalid_combination_device_type_navigator():
     for _ in range(50):
         with pytest.raises(UserAgentRuntimeError):
-            agent = generate_user_agent(device_type='mobile', navigator='ie')
+            generate_user_agent(device_type='mobile', navigator='ie')
+
+
+def test_no_os_options_default_device_type():
+    for _ in range(50):
+        agent = generate_user_agent()
+        # by default if no os option has given
+        # then device_type is "desktop"
+        assert 'Android' not in agent
+
+def test_device_type_all():
+    for _ in range(50):
+        generate_user_agent(device_type='all')
+        generate_user_agent(device_type='all', navigator='ie')

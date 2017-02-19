@@ -48,11 +48,13 @@ __all__ = ['generate_user_agent', 'generate_navigator',
 DEVICE_TYPE_OS = {
     'desktop': ('win', 'mac', 'linux'),
     'mobile': ('android',),
+    'all': ('win', 'mac', 'linux', 'android',),
 }
 
 DEVICE_TYPE_NAVIGATOR = {
     'desktop': ('chrome', 'firefox', 'ie'),
     'mobile': ('firefox',),
+    'all': ('chrome', 'firefox', 'ie'),
 }
 
 OS_PLATFORM = {
@@ -378,7 +380,12 @@ def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
     elif isinstance(device_type, (list, tuple)):
         dev_type_choices = list(device_type)
     elif device_type is None:
-        dev_type_choices = list(DEVICE_TYPE_OS.keys())
+        # BY default if os option is not given
+        # then device_type default value is "desktop"
+        if os is None:
+            dev_type_choices = ['desktop']
+        else:
+            dev_type_choices = list(DEVICE_TYPE_OS.keys())
     else:
         raise UserAgentRuntimeError('Option device_type has invalid'
                                     ' value: %s' % device_type)
