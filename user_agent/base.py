@@ -124,19 +124,26 @@ USER_AGENT_TEMPLATE = {
         ' ({platform}; rv:{build_version}) Gecko/20100101'
         ' Firefox/{build_version}'
     ),
+    'firefox_mobile': (
+        'Mozilla/5.0'
+        ' ({platform}; rv:{build_version}) Gecko/{build_version}'
+        ' Firefox/{build_version}'
+    ),
     'chrome': (
         'Mozilla/5.0'
         ' ({platform}) AppleWebKit/537.36'
         ' (KHTML, like Gecko)'
         ' Chrome/{build_version} Safari/537.36'
     ),
-    'ie_old': (
+    'ie_less_11': (
         'Mozilla/5.0'
-        ' (compatible; {build_version}; {platform})'
+        ' (compatible; {build_version}; {platform};'
+        ' Trident/{trident_version})'
     ),
-    'ie_new': (
+    'ie_11': (
         'Mozilla/5.0'
-        ' ({platform}; Trident/7.0; rv:11.0) like Gecko'
+        ' ({platform}; Trident/{trident_version};'
+        ' rv:11.0) like Gecko'
     ),
 }
 
@@ -249,25 +256,38 @@ def build_app_components(navigator_name):
 
     if navigator_name == 'firefox':
         build_version, build_id = get_firefox_build()
-        app_name = 'Netscape'
-        app_product_sub = '20100101'
-        app_vendor = ''
+        res = {
+            'name': 'Netscape',
+            'product_sub': '20100101',
+            'vendor': '',
+            'build_version': build_version,
+            'build_id': build_id,
+        }
     elif navigator_name == 'chrome':
-        build_version = get_chrome_build()
-        build_id = None
-        app_name = 'Netscape'
-        app_product_sub = '20030107'
-        app_vendor = 'Google Inc.'
+        res = {
+            'name': 'Netscape',
+            'product_sub': '20030107',
+            'vendor': 'Google Inc.',
+            'build_version': get_chrome_build(),
+            'build_id': None,
+        }
     elif navigator_name == 'ie':
         num_ver, build_version = get_ie_build()
-        build_id = None
         if num_ver >= 11:
             app_name = 'Netscape'
         else:
             app_name = 'Microsoft Internet Explorer'
         app_product_sub = None
         app_vendor = ''
-    return build_version, build_id, app_name, app_product_sub, app_vendor
+        res = {
+            'name': app_name,
+            'product_sub': None,
+            'vendor': '',
+            'build_version': build_version,
+            'build_id': None,
+            'trident_version': '1.0', # FIXME
+        }
+    return res
 
 
 def pickup_platform_navigator_ids(platform, navigator):
@@ -370,18 +390,14 @@ def generate_navigator(platform=None, navigator=None):
                                                               navigator)
     os_platform, oscpu = build_platform_components(platform_id,
                                                    navigator_id)
-    build_version, build_id, app_name, app_product_sub, app_vendor = (
-        build_app_components(navigator_id)
-    )
+    app = build_app_components(navigator_id)
     if navigator_id == 'ie':
-        tpl_name = 'ie_new' if build_version == 'MSIE 11.0' else 'ie_old'
+        tpl_name = ('ie_11' if app['build_version'] == 'MSIE 11.0'
+                    else 'ie_less_11')
     else:
         tpl_name = navigator_id
     ua_template = USER_AGENT_TEMPLATE[tpl_name]
-    user_agent = ua_template.format(
-        platform=os_platform,
-        build_version=build_version,
-    )
+    user_agent = ua_template.format(platform=os_platform, **app)
     app_version = None
     if navigator_id in ('chrome', 'ie'):
         assert user_agent.startswith('Mozilla/')
@@ -403,14 +419,14 @@ def generate_navigator(platform=None, navigator=None):
         'platform': os_platform,
         'oscpu': oscpu,
         # app components
-        'build_version': build_version,
-        'build_id': build_id,
+        'build_version': app['build_version'],
+        'build_id': app['build_id'],
         'app_version': app_version,
-        'app_name': app_name,
+        'app_name': app['name'],
         'app_code_name': 'Mozilla',
         'product': 'Gecko',
-        'product_sub': app_product_sub,
-        'vendor': app_vendor,
+        'product_sub': app['product_sub'],
+        'vendor': app['vendor'],
         'vendor_sub': '',
         # compiled user agent
         'user_agent': user_agent,
