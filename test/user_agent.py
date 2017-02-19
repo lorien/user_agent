@@ -242,3 +242,30 @@ def test_android_firefox():
         assert 'Linux armv' in nav['oscpu']
         assert 'Android' in nav['userAgent'].split('(')[1].split(')')[0]
         assert 'Android' in nav['appVersion']
+
+
+def test_device_type_option():
+    for _ in range(50):
+        agent = generate_user_agent()
+        agent = generate_user_agent(device_type='desktop')
+        agent = generate_user_agent(device_type='mobile')
+        assert 'Android' in agent
+        assert 'Firefox' in agent
+
+
+def test_device_type_option_invalid():
+    for _ in range(50):
+        with pytest.raises(UserAgentRuntimeError):
+            agent = generate_user_agent(device_type='fridge')
+
+
+def test_invalid_combination_device_type_os():
+    for _ in range(50):
+        with pytest.raises(UserAgentRuntimeError):
+            agent = generate_user_agent(device_type='mobile', os='win')
+
+
+def test_invalid_combination_device_type_navigator():
+    for _ in range(50):
+        with pytest.raises(UserAgentRuntimeError):
+            agent = generate_user_agent(device_type='mobile', navigator='ie')

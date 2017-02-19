@@ -45,6 +45,16 @@ __all__ = ['generate_user_agent', 'generate_navigator',
            'generate_navigator_js',
            'UserAgentRuntimeError', 'UserAgentInvalidRequirements']
 
+DEVICE_TYPE_OS = {
+    'desktop': ('win', 'mac', 'linux'),
+    'mobile': ('android',),
+}
+
+DEVICE_TYPE_NAVIGATOR = {
+    'desktop': ('chrome', 'firefox', 'ie'),
+    'mobile': ('firefox',),
+}
+
 OS_PLATFORM = {
     'win': (
         'Windows NT 5.1', # Windows XP
@@ -346,7 +356,8 @@ def build_app_components(os_id, navigator_id):
     return res
 
 
-def pickup_os_navigator_ids(os, navigator): # pylint: disable=invalid-name
+def pickup_os_navigator_ids(device_type, os, # pylint: disable=invalid-name
+                            navigator):
     """
     Select one random pair (os_id, navigator_id) from all
     possible combinations matching the given os and
@@ -356,7 +367,35 @@ def pickup_os_navigator_ids(os, navigator): # pylint: disable=invalid-name
     :type os: string or list/tuple or None
     :param navigator: allowed browser engine(s)
     :type navigator: string or list/tuple or None
+    :param device_type: limit possible oses by device type
+    :type device_type: list/tuple or None, possible values:
+        "desktop", "mobile"
     """
+
+    # Process device_type option
+    if isinstance(device_type, six.string_types):
+        dev_type_choices = [device_type]
+    elif isinstance(device_type, (list, tuple)):
+        dev_type_choices = list(device_type)
+    elif device_type is None:
+        dev_type_choices = list(DEVICE_TYPE_OS.keys())
+    else:
+        raise UserAgentRuntimeError('Option device_type has invalid'
+                                    ' value: %s' % device_type)
+    for item in dev_type_choices:
+        if item not in DEVICE_TYPE_OS:
+            raise UserAgentRuntimeError('Invalid device_type option: %s'
+                                        % item)
+
+    # Build os list allowed by dev type
+    devtype_valid_oses = []
+    for dev_type in dev_type_choices:
+        devtype_valid_oses.extend(list(DEVICE_TYPE_OS[dev_type]))
+
+    # Build navigator list allowed by dev type
+    devtype_valid_navs = []
+    for dev_type in dev_type_choices:
+        devtype_valid_navs.extend(list(DEVICE_TYPE_NAVIGATOR[dev_type]))
 
     # Process os option
     if isinstance(os, six.string_types):
@@ -364,7 +403,9 @@ def pickup_os_navigator_ids(os, navigator): # pylint: disable=invalid-name
     elif isinstance(os, (list, tuple)):
         os_choices = list(os)
     elif os is None:
-        os_choices = list(OS_PLATFORM.keys())
+        # If os choice is not restricted then
+        # use any os valid for choosed device type
+        os_choices = devtype_valid_oses
     else:
         raise UserAgentRuntimeError('Option os has invalid'
                                     ' value: %s' % os)
@@ -372,19 +413,35 @@ def pickup_os_navigator_ids(os, navigator): # pylint: disable=invalid-name
         if item not in OS_NAVIGATORS:
             raise UserAgentRuntimeError('Invalid os option: %s' % item)
 
+    # Check consistency of os and device_type options
+    for os_item in os_choices:
+        if not os_item in devtype_valid_oses:
+            raise UserAgentRuntimeError('Option os=%s conflicts with option'
+                                        ' device_type=%s'
+                                        % (os, device_type))
+
     # Process navigator option
     if isinstance(navigator, six.string_types):
         navigator_choices = [navigator]
     elif isinstance(navigator, (list, tuple)):
         navigator_choices = list(navigator)
     elif navigator is None:
-        navigator_choices = list(NAVIGATOR)
+        # If navigator choice is not restricted then
+        # use any navigator valid for choosed device type
+        navigator_choices = devtype_valid_navs
     else:
         raise UserAgentRuntimeError('Option navigator has invalid'
                                     ' value: %s' % navigator)
     for item in navigator_choices:
         if item not in NAVIGATOR_OSES:
             raise UserAgentRuntimeError('Invalid navigator option: %s' % item)
+
+    # Check consistency of navigator and device_type options
+    for nav_item in navigator_choices:
+        if not nav_item in devtype_valid_navs:
+            raise UserAgentRuntimeError('Option navigator=%s conflicts with'
+                                        ' option device_type=%s'
+                                        % (navigator, device_type))
 
     # If we have only one navigator option to choose from
     # Then use it and select os from oses
@@ -427,7 +484,8 @@ def pickup_os_navigator_ids(os, navigator): # pylint: disable=invalid-name
 
 
 def generate_navigator(os=None, # pylint: disable=invalid-name
-                       navigator=None, platform=None):
+                       navigator=None, platform=None,
+                       device_type=None):
     """
     Generates web navigator's config
 
@@ -435,6 +493,10 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
     :type os: string or list/tuple or None
     :param navigator: limit list of browser engines for generation
     :type navigator: string or list/tuple or None
+    :param device_type: limit possible oses by device type
+    :type device_type: list/tuple or None, possible values:
+        "desktop", "mobile"
+
     :return: User-Agent config
     :rtype: dict with keys (os, name, platform, oscpu, build_version,
                             build_id, app_version, app_name, app_code_name,
@@ -449,7 +511,8 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
         os = platform
         warn('The `platform` option is deprecated.'
              ' Use `os` option instead.', stacklevel=3)
-    os_id, navigator_id = pickup_os_navigator_ids(os, navigator)
+    os_id, navigator_id = pickup_os_navigator_ids(device_type, os,
+                                                  navigator)
     system = build_system_components(os_id, navigator_id)
     app = build_app_components(os_id, navigator_id)
     if navigator_id == 'ie':
@@ -498,7 +561,8 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
 
 
 def generate_user_agent(os=None, # pylint: disable=invalid-name
-                        navigator=None, platform=None):
+                        navigator=None, platform=None,
+                        device_type=None):
     """
     Generates HTTP User-Agent header
 
@@ -506,6 +570,9 @@ def generate_user_agent(os=None, # pylint: disable=invalid-name
     :type os: string or list/tuple or None
     :param navigator: limit list of browser engines for generation
     :type navigator: string or list/tuple or None
+    :param device_type: limit possible oses by device type
+    :type device_type: list/tuple or None, possible values:
+        "desktop", "mobile"
     :return: User-Agent string
     :rtype: string
     :raises UserAgentInvalidRequirements: if could not generate user-agent for
@@ -513,11 +580,13 @@ def generate_user_agent(os=None, # pylint: disable=invalid-name
     :raise UserAgentRuntimeError: if any of passed options is invalid
     """
     return generate_navigator(os=os, navigator=navigator,
-                              platform=platform)['user_agent']
+                              platform=platform,
+                              device_type=device_type)['user_agent']
 
 
 def generate_navigator_js(os=None, # pylint: disable=invalid-name
-                          navigator=None, platform=None):
+                          navigator=None, platform=None,
+                          device_type=None):
     """
     Generates web navigator's config with keys corresponding
     to keys of `windows.navigator` JavaScript object.
@@ -526,6 +595,9 @@ def generate_navigator_js(os=None, # pylint: disable=invalid-name
     :type os: string or list/tuple or None
     :param navigator: limit list of browser engines for generation
     :type navigator: string or list/tuple or None
+    :param device_type: limit possible oses by device type
+    :type device_type: list/tuple or None, possible values:
+        "desktop", "mobile"
     :return: User-Agent config
     :rtype: dict with keys (TODO)
     :raises UserAgentInvalidRequirements: if could not generate user-agent for
@@ -534,7 +606,8 @@ def generate_navigator_js(os=None, # pylint: disable=invalid-name
     """
 
     config = generate_navigator(os=os, navigator=navigator,
-                                platform=platform)
+                                platform=platform,
+                                device_type=device_type)
     return {
         'appCodeName': config['app_code_name'],
         'appName': config['app_name'],

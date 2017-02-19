@@ -3,3 +3,4 @@ bumpversion
 sphinx
 pytest
 pylint
+mock
