@@ -234,3 +234,11 @@ def test_build_id_firefox():
                 assert time_ < datetime(2016, 11, 15)
     finally:
         base.FIREFOX_VERSION = orig_ff_ver
+
+def test_android_firefox():
+    for _ in range(50):
+        nav = generate_navigator_js(os='android', navigator='firefox')
+        assert 'armv' in nav['platform']
+        assert 'Linux armv' in nav['oscpu']
+        assert 'Android' in nav['userAgent'].split('(')[1].split(')')[0]
+        assert 'Android' in nav['appVersion']

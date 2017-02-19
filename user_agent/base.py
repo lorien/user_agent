@@ -7,6 +7,8 @@ This module is for generating random, valid web navigator's
 Functions:
 * generate_user_agent: generates User-Agent HTTP header
 * generate_navigator:  generates web navigator's config
+* generate_navigator_js:  generates web navigator's config with keys
+    identical keys used in navigator object
 
 FIXME:
 * add Edge, Safari and Opera support
@@ -62,11 +64,23 @@ OS_PLATFORM = {
         'X11; Linux',
         'X11; Ubuntu; Linux',
     ),
-    #'android': (
-    #    'Android 4.4', # 2013-10-31
-    #    'Android 5.0', # 2014-11-12
-    #    'Android 6.0', # 2015-10-05
-    #),
+    'android': (
+        'Android 4.4', # 2013-10-31
+        'Android 4.4.1', # 2013-12-05
+        'Android 4.4.2', # 2013-12-09
+        'Android 4.4.3', # 2014-06-02
+        'Android 4.4.4', # 2014-06-19
+        'Android 5.0', # 2014-11-12
+        'Android 5.0.1', # 2014-12-02
+        'Android 5.0.2', # 2014-12-19
+        'Android 5.1', # 2015-03-09
+        'Android 5.1.1', # 2015-04-21
+        'Android 6.0', # 2015-10-05
+        'Android 6.0.1', # 2015-12-07
+        #'Android 7.0', # 2016-08-22
+        #'Android 7.1', # 2016-10-04
+        #'Android 7.1.1', # 2016-12-05
+    ),
 }
 
 OS_CPU = {
@@ -83,6 +97,10 @@ OS_CPU = {
     'mac': (
         '',
     ),
+    'android': (
+        'armv7l', # 32bit
+        'armv8l', # 64bit
+    ),
 }
 
 OS_NAVIGATORS = {
@@ -94,7 +112,7 @@ OS_NAVIGATORS = {
 
 NAVIGATOR_OSES = {
     'chrome': ('win', 'linux', 'mac'),
-    'firefox': ('win', 'linux', 'mac'),
+    'firefox': ('win', 'linux', 'mac', 'android'),
     'ie': ('win',),
 }
 
@@ -128,24 +146,24 @@ IE_VERSION = (
 USER_AGENT_TEMPLATE = {
     'firefox': (
         'Mozilla/5.0'
-        ' ({system[platform]}; rv:{app[build_version]})'
+        ' ({system[ua_platform]}; rv:{app[build_version]})'
         ' Gecko/{app[geckotrail]}'
         ' Firefox/{app[build_version]}'
     ),
     'chrome': (
         'Mozilla/5.0'
-        ' ({system[platform]}) AppleWebKit/537.36'
+        ' ({system[ua_platform]}) AppleWebKit/537.36'
         ' (KHTML, like Gecko)'
         ' Chrome/{app[build_version]} Safari/537.36'
     ),
     'ie_less_11': (
         'Mozilla/5.0'
-        ' (compatible; {app[build_version]}; {system[platform]};'
+        ' (compatible; {app[build_version]}; {system[ua_platform]};'
         ' Trident/{app[trident_version]})'
     ),
     'ie_11': (
         'Mozilla/5.0'
-        ' ({system[platform]}; Trident/{app[trident_version]};'
+        ' ({system[ua_platform]}; Trident/{app[trident_version]};'
         ' rv:11.0) like Gecko'
     ),
 }
@@ -220,43 +238,65 @@ def fix_chrome_mac_platform(platform):
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
 
-def build_system_components(os_name, navigator_name):
+def build_system_components(os_id, navigator_id):
     """
-    For given os_name build random platform and oscpu
+    For given os_id build random platform and oscpu
     components
 
-    Returns dict {platform, oscpu}
+    Returns dict {platform_version, platform, ua_platform, oscpu}
+
+    platform_version is OS name used in different places
+    ua_platform goes to navigator.platform
+    platform is used in building navigator.userAgent
+    oscpu goes to navigator.oscpu
     """
 
-    if os_name == 'win':
-        base_platform = choice(OS_PLATFORM['win'])
+    if os_id == 'win':
+        platform_version = choice(OS_PLATFORM['win'])
         cpu = choice(OS_CPU['win'])
         if cpu:
-            platform = '%s; %s' % (base_platform, cpu)
+            platform = '%s; %s' % (platform_version, cpu)
         else:
-            platform = base_platform
+            platform = platform_version
         res = {
+            'platform_version': platform_version,
             'platform': platform,
+            'ua_platform': platform,
             'oscpu': platform,
         }
-    elif os_name == 'linux':
+    elif os_id == 'linux':
         cpu = choice(OS_CPU['linux'])
-        base_platform = choice(OS_PLATFORM['linux'])
+        platform_version = choice(OS_PLATFORM['linux'])
+        platform = '%s %s' % (platform_version, cpu)
         res = {
-            'platform': '%s %s' % (base_platform, cpu),
+            'platform_version': platform_version,
+            'platform': platform,
+            'ua_platform': platform,
             'oscpu': 'Linux %s' % cpu,
         }
-    elif os_name == 'mac':
+    elif os_id == 'mac':
         cpu = choice(OS_CPU['mac'])
-        platform = choice(OS_PLATFORM['mac'])
-        if navigator_name == 'chrome':
+        platform_version = choice(OS_PLATFORM['mac'])
+        platform = platform_version
+        if navigator_id == 'chrome':
             platform = fix_chrome_mac_platform(platform)
         res = {
+            'platform_version': platform_version,
             'platform': platform,
+            'ua_platform': platform,
             'oscpu': 'Intel Mac OS X %s' % platform.split(' ')[-1],
         }
-    #elif os_name == 'android':
-    #    pass
+    elif os_id == 'android':
+        assert navigator_id in ('firefox',)
+        platform_version = choice(OS_PLATFORM['android'])
+        ua_platform = '%s; Mobile' % platform_version
+        oscpu = 'Linux %s' % choice(OS_CPU['android'])
+        res = {
+            'platform_version': platform_version,
+            'ua_platform': ua_platform,
+            'platform': oscpu,
+            'oscpu': oscpu,
+        }
     return res
 
 
@@ -424,12 +464,15 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
         assert user_agent.startswith('Mozilla/')
         app_version = user_agent.split('Mozilla/', 1)[1]
     elif navigator_id == 'firefox':
-        os_token = {
-            'win': 'Windows',
-            'mac': 'Macintosh',
-            'linux': 'X11',
-        }[os_id]
-        app_version = '5.0 (%s)' % os_token
+        if os_id == 'android':
+            app_version = '5.0 (%s)' % system['platform_version']
+        else:
+            os_token = {
+                'win': 'Windows',
+                'mac': 'Macintosh',
+                'linux': 'X11',
+            }[os_id]
+            app_version = '5.0 (%s)' % os_token
     assert app_version is not None
 
     return {
