@@ -284,7 +284,8 @@ def test_device_type_all():
 
 def test_device_type_smartphone_chrome():
     for _ in range(50):
-        ua = generate_user_agent(device_type='smartphone', navigator='chrome')
-        assert 'Mobile' in ua
-        ua = generate_user_agent(device_type='tablet', navigator='chrome')
-        assert 'Mobile' not in ua
+        agent = generate_user_agent(device_type='smartphone',
+                                    navigator='chrome')
+        assert 'Mobile' in agent
+        agent = generate_user_agent(device_type='tablet', navigator='chrome')
+        assert 'Mobile' not in agent

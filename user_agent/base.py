@@ -324,7 +324,7 @@ def build_system_components(device_type, os_id, navigator_id):
         if navigator_id == 'firefox':
             if device_type == 'smartphone':
                 ua_platform = '%s; Mobile' % platform_version
-            elif device_type ==  'tablet':
+            elif device_type == 'tablet':
                 ua_platform = '%s; Tablet' % platform_version
         elif navigator_id == 'chrome':
             device_id = choice(SMARTPHONE_DEV_IDS)
@@ -386,7 +386,7 @@ def build_app_components(os_id, navigator_id):
 
 
 def choose_ids(device_type, os, # pylint: disable=invalid-name
-                            navigator):
+               navigator):
     """
     Select one random pair (device_type, os_id, navigator_id) from
     all possible combinations matching the given os and
@@ -517,15 +517,15 @@ def choose_ids(device_type, os, # pylint: disable=invalid-name
                 'Could not generate navigator for any combination of'
                 ' %s oses and %s navigators'
                 % (os_list, navigator_list))
-    
+
     os_dev_types = set()
     for dev_type in OS_DEVICE_TYPE[os_id]:
         os_dev_types.add(dev_type)
     nav_dev_types = set()
     for dev_type in NAVIGATOR_DEVICE_TYPE[navigator_id]:
         nav_dev_types.add(dev_type)
-    device_type = choice(list(os_dev_types.intersection(nav_dev_types
-                              .intersection(dev_type_choices))))
+    device_type = choice(list(os_dev_types.intersection(nav_dev_types)
+                              .intersection(dev_type_choices)))
 
     assert os_id in OS_PLATFORM
     assert navigator_id in NAVIGATOR_OS
@@ -534,7 +534,7 @@ def choose_ids(device_type, os, # pylint: disable=invalid-name
     return device_type, os_id, navigator_id
 
 
-def choose_ua_template(device_type, os_id, navigator_id, app):
+def choose_ua_template(device_type, navigator_id, app):
     tpl_name = navigator_id
     if navigator_id == 'ie':
         tpl_name = ('ie_11' if app['build_version'] == 'MSIE 11.0'
@@ -599,7 +599,7 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
         device_type, os_id, navigator_id)
     app = build_app_components(os_id, navigator_id)
     ua_template = choose_ua_template(
-        device_type, os_id, navigator_id, app)
+        device_type, navigator_id, app)
     user_agent = ua_template.format(system=system, app=app)
     app_version = build_navigator_app_version(
         os_id, navigator_id, system['platform_version'], user_agent)
