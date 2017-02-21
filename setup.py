@@ -1,7 +1,9 @@
-from setuptools import setup, find_packages
 import os
 
+from setuptools import setup, find_packages
+
 ROOT = os.path.dirname(os.path.realpath(__file__))
+
 
 setup(
     name='user_agent',
@@ -14,7 +16,7 @@ setup(
     keywords="user agent browser navigator",
     author="jamb0ss, Gregory Petukhov",
     author_email='lorien@lorien.name',
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'ua = user_agent.cli:script_ua',
         ],
@@ -23,13 +25,13 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
-        #'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: Implementation :: CPython',
         'License :: OSI Approved :: MIT License',
-        #'Development Status :: 5 - Production/Stable',
-        #'Environment :: Console',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
-        #'Topic :: Software Development :: Libraries :: Application Frameworks',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Internet :: WWW/HTTP',
     ],
