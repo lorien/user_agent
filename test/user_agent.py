@@ -14,6 +14,7 @@ from user_agent import (generate_user_agent, generate_navigator,
                         generate_navigator_js,
                         UserAgentRuntimeError, UserAgentInvalidRequirements)
 
+
 def test_it():
     agent = generate_user_agent()
     assert len(agent) > 0
@@ -29,6 +30,7 @@ def test_platform_option():
 
         agent = generate_user_agent(os='mac')
         assert 'mac' in agent.lower()
+
 
 def test_invalid_platform_option():
     with pytest.raises(UserAgentRuntimeError):
@@ -163,9 +165,9 @@ def test_feature_platform():
         assert 'Win' in nav['platform']
         nav = generate_navigator(os='linux')
         assert 'Linux' in nav['platform']
-        #TODO: Should be mac
-        #nav = generate_navigator(os='win')
-        #assert 'Win' in nav['platform']
+        # TODO: Should be mac
+        # nav = generate_navigator(os='win')
+        # assert 'Win' in nav['platform']
 
 
 def test_feature_oscpu():
@@ -235,6 +237,7 @@ def test_build_id_firefox():
     finally:
         base.FIREFOX_VERSION = orig_ff_ver
 
+
 def test_android_firefox():
     for _ in range(50):
         nav = generate_navigator_js(os='android', navigator='firefox')
@@ -276,6 +279,7 @@ def test_no_os_options_default_device_type():
         # by default if no os option has given
         # then device_type is "desktop"
         assert 'Android' not in agent
+
 
 def test_device_type_all():
     for _ in range(50):

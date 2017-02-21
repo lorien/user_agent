@@ -202,7 +202,6 @@ def get_firefox_build():
     return build_ver, build_rnd_time.strftime('%Y%m%d%H%M%S')
 
 
-
 def get_chrome_build():
     build = choice(CHROME_BUILD)
     return '%d.0.%d.%d' % (
@@ -421,7 +420,7 @@ def pickup_os_navigator_ids(device_type, os, navigator):
 
     # Check consistency of os and device_type options
     for os_item in os_choices:
-        if not os_item in devtype_valid_oses:
+        if os_item not in devtype_valid_oses:
             raise UserAgentRuntimeError('Option os=%s conflicts with option'
                                         ' device_type=%s'
                                         % (os, device_type))
@@ -444,7 +443,7 @@ def pickup_os_navigator_ids(device_type, os, navigator):
 
     # Check consistency of navigator and device_type options
     for nav_item in navigator_choices:
-        if not nav_item in devtype_valid_navs:
+        if nav_item not in devtype_valid_navs:
             raise UserAgentRuntimeError('Option navigator=%s conflicts with'
                                         ' option device_type=%s'
                                         % (navigator, device_type))
