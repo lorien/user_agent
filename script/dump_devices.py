@@ -14,6 +14,7 @@ def dump_devices(devices, file_token):
             'cpu': dev['cpu'], 
             'resolution': dev['resolution'], 
             'dev_ids': dev['dev_ids'],
+            'android_versionss': dev['android_versions'],
         })
     with open('user_agent/data/%s_dev_ext.json' % file_token, 'w') as out:
         json.dump(res, out, indent=2)
