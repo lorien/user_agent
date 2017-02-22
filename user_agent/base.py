@@ -19,6 +19,7 @@ Specs:
 * http://msdn.microsoft.com/en-us/library/ms537503(VS.85).aspx
 * https://developer.chrome.com/multidevice/user-agent
 * http://www.javascriptkit.com/javatutors/navigator.shtml
+* http://source.android.com/compatibility/4.4/android-4.4-cdd.xhtml#section-3.4
 
 Release history:
 * https://en.wikipedia.org/wiki/Firefox_release_history
