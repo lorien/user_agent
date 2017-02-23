@@ -1,13 +1,29 @@
 # Change Log of user_agent Library
 
-## [0.1.7] - Unreleased
+## [0.1.9] - Unreleased
+
+## [0.1.8] - 2017-02-23
+### Changed
+- Update mobile device IDs
+
+## [0.1.7] - 2017-02-20
 ### Added
 - The `ua` script for generating user-agent data in console
+- Add product, productSub, vendor, buildID features
+- New OS: android
+- Add new option `device_type`
+- If no os given then device type is "desktop" by default
+- Add smartphone and tablet device IDs
+- Add chrome and android navigators for android OS
+
+### Changed
+- Rename `platform` option to `os` option
 
 ### Fixed
 - Better validation platform/navigator options
+- Fix bugs in appVersion feature
 
-## [0.1.6] - 2016-02-17
+## [0.1.6] - 2017-02-17
 ### Added
 - Extend CI test environments: py35, py36, Windows.
 
