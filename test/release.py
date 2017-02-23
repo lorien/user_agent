@@ -1,7 +1,7 @@
 from __future__ import absolute_import
+import re
 
 import user_agent
-import re
 
 
 def test_changelog():
@@ -12,7 +12,7 @@ def test_changelog():
     """
     re_date = re.compile(r'^\d{4}-\d{2}-\d{2}$')
     ver_dates = {}
-    ver_history  = []
+    ver_history = []
     for line in open('CHANGELOG.md'):
         if line.startswith('## ['):
             ver = line.split('[')[1].split(']')[0]

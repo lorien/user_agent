@@ -11,7 +11,7 @@ env:
 matrix:
   include:
     - python: 3.4
-      env: TOX_ENV=pylint
+      env: TOX_ENV=quality
     - python: 3.5
       env: TOX_ENV=py35
     - python: 3.6
