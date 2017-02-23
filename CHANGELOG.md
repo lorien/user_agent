@@ -1,6 +1,8 @@
 # Change Log of user_agent Library
 
-## [0.1.8] - unreleased
+## [0.1.9] - Unreleased
+
+## [0.1.8] - 2017-02-23
 ### Changed
 - Update mobile device IDs
 
