@@ -1,4 +1,4 @@
-.PHONY: clean upload test build venv deps docs viewdoc
+.PHONY: clean upload build venv deps viewdoc
 
 clean:
 	find -name '*.pyc' -delete
@@ -15,9 +15,6 @@ venv:
 
 deps:
 	.env/bin/pip install -r requirements_dev.txt
-
-docs:
-	cd docs; make html
 
 viewdoc:
 	x-www-browser docs/build/html/index.html
