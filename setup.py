@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -20,7 +20,7 @@ setup(
     keywords="user agent browser navigator",
     license="MIT License",
     # Package files
-    packages=find_packages(),
+    packages=['user_agent'],
     include_package_data=True,
     install_requires=['six'],
     entry_points={
