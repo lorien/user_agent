@@ -1,27 +1,34 @@
 import os
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 
 
 setup(
+    # Meta data
     name='user_agent',
     version='0.1.8',
+    author="Gregory Petukhov",
+    author_email='lorien@lorien.name',
+    maintainer="Gregory Petukhov",
+    maintainer_email='lorien@lorien.name',
+    url='https://github.com/lorien/user_agent',
     description='User-Agent generator',
     long_description=open(os.path.join(ROOT, 'README.rst')).read(),
-    packages=find_packages(),
+    download_url='http://pypi.python.org/pypi/user_agent',
+    keywords="user agent browser navigator",
+    license="MIT License",
+    # Package files
+    packages=['user_agent'],
     include_package_data=True,
     install_requires=['six'],
-    license="MIT",
-    keywords="user agent browser navigator",
-    author="jamb0ss, Gregory Petukhov",
-    author_email='lorien@lorien.name',
     entry_points={
         'console_scripts': [
             'ua = user_agent.cli:script_ua',
         ],
     },
+    # Topics
     classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
