@@ -385,8 +385,7 @@ def build_app_components(os_id, navigator_id):
     return res
 
 
-def choose_ids(device_type, os, # pylint: disable=invalid-name
-               navigator):
+def choose_ids(device_type, os, navigator):
     """
     Select one random pair (device_type, os_id, navigator_id) from
     all possible combinations matching the given os and
@@ -565,8 +564,7 @@ def build_navigator_app_version(os_id, navigator_id,
     return app_version
 
 
-def generate_navigator(os=None, # pylint: disable=invalid-name
-                       navigator=None, platform=None,
+def generate_navigator(os=None, navigator=None, platform=None,
                        device_type=None):
     """
     Generates web navigator's config
@@ -625,8 +623,7 @@ def generate_navigator(os=None, # pylint: disable=invalid-name
     }
 
 
-def generate_user_agent(os=None, # pylint: disable=invalid-name
-                        navigator=None, platform=None,
+def generate_user_agent(os=None, navigator=None, platform=None,
                         device_type=None):
     """
     Generates HTTP User-Agent header
@@ -649,8 +646,7 @@ def generate_user_agent(os=None, # pylint: disable=invalid-name
                               device_type=device_type)['user_agent']
 
 
-def generate_navigator_js(os=None, # pylint: disable=invalid-name
-                          navigator=None, platform=None,
+def generate_navigator_js(os=None, navigator=None, platform=None,
                           device_type=None):
     """
     Generates web navigator's config with keys corresponding
