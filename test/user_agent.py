@@ -11,8 +11,7 @@ import six
 import pytest
 
 from user_agent import (generate_user_agent, generate_navigator,
-                        generate_navigator_js,
-                        UserAgentRuntimeError, UserAgentInvalidRequirements)
+                        generate_navigator_js, InvalidOption)
 
 
 def test_it():
@@ -33,13 +32,13 @@ def test_platform_option():
 
 
 def test_invalid_platform_option():
-    with pytest.raises(UserAgentRuntimeError):
+    with pytest.raises(InvalidOption):
         generate_user_agent(os=11)
 
-    with pytest.raises(UserAgentRuntimeError):
+    with pytest.raises(InvalidOption):
         generate_user_agent(os='dos')
 
-    with pytest.raises(UserAgentRuntimeError):
+    with pytest.raises(InvalidOption):
         generate_user_agent(os='win,dos')
 
 
@@ -56,10 +55,10 @@ def test_navigator_option():
 
 
 def test_invalid_navigator_option():
-    with pytest.raises(UserAgentRuntimeError):
+    with pytest.raises(InvalidOption):
         generate_user_agent(navigator='vim')
 
-    with pytest.raises(UserAgentRuntimeError):
+    with pytest.raises(InvalidOption):
         generate_user_agent(navigator='chrome,vim')
 
 
@@ -108,9 +107,9 @@ def test_mac_chrome():
 
 def test_impossible_combination():
     for _ in range(50):
-        with pytest.raises(UserAgentInvalidRequirements):
+        with pytest.raises(InvalidOption):
             generate_user_agent(os='linux', navigator='ie')
-        with pytest.raises(UserAgentInvalidRequirements):
+        with pytest.raises(InvalidOption):
             generate_user_agent(os='mac', navigator='ie')
 
 
@@ -257,19 +256,19 @@ def test_device_type_option():
 
 def test_device_type_option_invalid():
     for _ in range(50):
-        with pytest.raises(UserAgentRuntimeError):
+        with pytest.raises(InvalidOption):
             generate_user_agent(device_type='fridge')
 
 
 def test_invalid_combination_device_type_os():
     for _ in range(50):
-        with pytest.raises(UserAgentRuntimeError):
+        with pytest.raises(InvalidOption):
             generate_user_agent(device_type='smartphone', os='win')
 
 
 def test_invalid_combination_device_type_navigator():
     for _ in range(50):
-        with pytest.raises(UserAgentRuntimeError):
+        with pytest.raises(InvalidOption):
             generate_user_agent(device_type='smartphone', navigator='ie')
 
 
