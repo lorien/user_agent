@@ -6,7 +6,7 @@ clean:
 	find -name __pycache__ -delete
 
 upload:
-	python setup.py sdist upload
+	git push --tags; python setup.py sdist upload
 
 build: venv deps
 
