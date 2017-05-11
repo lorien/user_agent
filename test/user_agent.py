@@ -16,7 +16,7 @@ from user_agent import (generate_user_agent, generate_navigator,
 
 def test_it():
     agent = generate_user_agent()
-    assert len(agent) > 0
+    assert len(agent) > 0 # pylint: disable=len-as-condition
 
 
 def test_platform_option():
