@@ -307,7 +307,7 @@ def build_system_components(device_type, os_id, navigator_id):
             platform = fix_chrome_mac_platform(platform)
         res = {
             'platform_version': platform_version,
-            'platform': platform,
+            'platform': 'MacIntel',
             'ua_platform': platform,
             'oscpu': 'Intel Mac OS X %s' % platform.split(' ')[-1],
         }
