@@ -15,3 +15,4 @@ dist/
 /var/
 /docs/build/
 /.cache/
+/.pytest_cache/
