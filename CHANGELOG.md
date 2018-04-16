@@ -1,7 +1,8 @@
 # Change Log of user_agent Library
 
-## [0.1.20] - Unreleased
-### Changed
+## [0.1.10] - Unreleased
+### Added
+- Possibility to use external file or load json string with configuration of versions
 
 ## [0.1.9] - 2017-08-05
 ### Changed

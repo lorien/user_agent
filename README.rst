@@ -24,7 +24,7 @@ This module is for generating random, valid web user agents:
 Usage Example
 -------------
 
-.. code:: python
+.. code-block:: python
 
     >>> from user_agent import generate_user_agent, generate_navigator
     >>> from pprint import pprint
@@ -48,6 +48,14 @@ Usage Example
      'appVersion': '38.0',
      'platform': 'MacIntel',
      'userAgent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:38.0) Gecko/20100101 Firefox/38.0'}
+
+Additionally there's possibility to load configurations of version from json file or from string that contains json
+(see configuration.py for required json format)
+
+.. code-block:: python
+
+    >>> configuration.load_external_file_configuration("./external_config.json")
+    >>> configuration.load_external_configuration("{...}")
 
 
 Command Line Usage
