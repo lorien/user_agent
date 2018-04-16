@@ -5,3 +5,4 @@ pytest
 pylint
 mock
 flake8
+voluptuous
