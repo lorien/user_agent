@@ -35,7 +35,7 @@ Lists of user agents:
 # pylint: enable=line-too-long
 
 from random import choice, randint
-from datetime import datetime, timedelta
+from datetime import timedelta
 from itertools import product
 
 import six
@@ -45,168 +45,17 @@ from .warning import warn
 from .device import SMARTPHONE_DEV_IDS, TABLET_DEV_IDS
 # pylint: enable=unused-import
 from .error import InvalidOption
+from .configuration import Configuration
 
 __all__ = ['generate_user_agent', 'generate_navigator',
            'generate_navigator_js']
 
 
-DEVICE_TYPE_OS = {
-    'desktop': ('win', 'mac', 'linux'),
-    'smartphone': ('android',),
-    'tablet': ('android',),
-}
-OS_DEVICE_TYPE = {
-    'win': ('desktop',),
-    'linux': ('desktop',),
-    'mac': ('desktop',),
-    'android': ('smartphone', 'tablet'),
-}
-DEVICE_TYPE_NAVIGATOR = {
-    'desktop': ('chrome', 'firefox', 'ie'),
-    'smartphone': ('firefox', 'chrome'),
-    'tablet': ('firefox', 'chrome'),
-}
-NAVIGATOR_DEVICE_TYPE = {
-    'ie': ('desktop',),
-    'chrome': ('desktop', 'smartphone', 'tablet'),
-    'firefox': ('desktop', 'smartphone', 'tablet'),
-}
-OS_PLATFORM = {
-    'win': (
-        'Windows NT 5.1', # Windows XP
-        'Windows NT 6.1', # Windows 7
-        'Windows NT 6.2', # Windows 8
-        'Windows NT 6.3', # Windows 8.1
-        'Windows NT 10.0', # Windows 10
-    ),
-    'mac': (
-        'Macintosh; Intel Mac OS X 10.8',
-        'Macintosh; Intel Mac OS X 10.9',
-        'Macintosh; Intel Mac OS X 10.10',
-        'Macintosh; Intel Mac OS X 10.11',
-        'Macintosh; Intel Mac OS X 10.12',
-    ),
-    'linux': (
-        'X11; Linux',
-        'X11; Ubuntu; Linux',
-    ),
-    'android': (
-        'Android 4.4', # 2013-10-31
-        'Android 4.4.1', # 2013-12-05
-        'Android 4.4.2', # 2013-12-09
-        'Android 4.4.3', # 2014-06-02
-        'Android 4.4.4', # 2014-06-19
-        'Android 5.0', # 2014-11-12
-        'Android 5.0.1', # 2014-12-02
-        'Android 5.0.2', # 2014-12-19
-        'Android 5.1', # 2015-03-09
-        'Android 5.1.1', # 2015-04-21
-        'Android 6.0', # 2015-10-05
-        'Android 6.0.1', # 2015-12-07
-        #'Android 7.0', # 2016-08-22
-        #'Android 7.1', # 2016-10-04
-        #'Android 7.1.1', # 2016-12-05
-    ),
-}
-OS_CPU = {
-    'win': (
-        '', # 32bit
-        'Win64; x64', # 64bit
-        'WOW64', # 32bit process on 64bit system
-    ),
-    'linux': (
-        'i686', # 32bit
-        'x86_64', # 64bit
-        'i686 on x86_64', # 32bit process on 64bit system
-    ),
-    'mac': (
-        '',
-    ),
-    'android': (
-        'armv7l', # 32bit
-        'armv8l', # 64bit
-    ),
-}
-OS_NAVIGATOR = {
-    'win': ('chrome', 'firefox', 'ie'),
-    'mac': ('firefox', 'chrome'),
-    'linux': ('chrome', 'firefox'),
-    'android': ('firefox', 'chrome'),
-}
-NAVIGATOR_OS = {
-    'chrome': ('win', 'linux', 'mac', 'android'),
-    'firefox': ('win', 'linux', 'mac', 'android'),
-    'ie': ('win',),
-}
-FIREFOX_VERSION = (
-    ('45.0', datetime(2016, 3, 8)),
-    ('46.0', datetime(2016, 4, 26)),
-    ('47.0', datetime(2016, 6, 7)),
-    ('48.0', datetime(2016, 8, 2)),
-    ('49.0', datetime(2016, 9, 20)),
-    ('50.0', datetime(2016, 11, 15)),
-    ('51.0', datetime(2017, 1, 24)),
-)
-CHROME_BUILD = (
-    (49, 2623, 2660), # 2016-03-02
-    (50, 2661, 2703), # 2016-04-13
-    (51, 2704, 2742), # 2016-05-25
-    (52, 2743, 2784), # 2016-07-20
-    (53, 2785, 2839), # 2016-08-31
-    (54, 2840, 2882), # 2016-10-12
-    (55, 2883, 2923), # 2016-12-01
-    (56, 2924, 2986), # 2016-12-01
-)
-IE_VERSION = (
-    # (numeric ver, string ver, trident ver) # release year
-    (8, 'MSIE 8.0', '4.0'), # 2009
-    (9, 'MSIE 9.0', '5.0'), # 2011
-    (10, 'MSIE 10.0', '6.0'), # 2012
-    (11, 'MSIE 11.0', '7.0'), # 2013
-)
-USER_AGENT_TEMPLATE = {
-    'firefox': (
-        'Mozilla/5.0'
-        ' ({system[ua_platform]}; rv:{app[build_version]})'
-        ' Gecko/{app[geckotrail]}'
-        ' Firefox/{app[build_version]}'
-    ),
-    'chrome': (
-        'Mozilla/5.0'
-        ' ({system[ua_platform]}) AppleWebKit/537.36'
-        ' (KHTML, like Gecko)'
-        ' Chrome/{app[build_version]} Safari/537.36'
-    ),
-    'chrome_smartphone': (
-        'Mozilla/5.0'
-        ' ({system[ua_platform]}) AppleWebKit/537.36'
-        ' (KHTML, like Gecko)'
-        ' Chrome/{app[build_version]} Mobile Safari/537.36'
-    ),
-    'chrome_tablet': (
-        'Mozilla/5.0'
-        ' ({system[ua_platform]}) AppleWebKit/537.36'
-        ' (KHTML, like Gecko)'
-        ' Chrome/{app[build_version]} Safari/537.36'
-    ),
-    'ie_less_11': (
-        'Mozilla/5.0'
-        ' (compatible; {app[build_version]}; {system[ua_platform]};'
-        ' Trident/{app[trident_version]})'
-    ),
-    'ie_11': (
-        'Mozilla/5.0'
-        ' ({system[ua_platform]}; Trident/{app[trident_version]};'
-        ' rv:11.0) like Gecko'
-    ),
-}
-
-
 def get_firefox_build():
-    build_ver, date_from = choice(FIREFOX_VERSION)
+    build_ver, date_from = choice(Configuration.FIREFOX_VERSION)
     try:
-        idx = FIREFOX_VERSION.index((build_ver, date_from))
-        _, date_to = FIREFOX_VERSION[idx + 1]
+        idx = Configuration.FIREFOX_VERSION.index((build_ver, date_from))
+        _, date_to = Configuration.FIREFOX_VERSION[idx + 1]
     except IndexError:
         date_to = date_from + timedelta(days=1)
     sec_range = (date_to - date_from).total_seconds() - 1
@@ -215,9 +64,8 @@ def get_firefox_build():
     return build_ver, build_rnd_time.strftime('%Y%m%d%H%M%S')
 
 
-
 def get_chrome_build():
-    build = choice(CHROME_BUILD)
+    build = choice(Configuration.CHROME_BUILD)
     return '%d.0.%d.%d' % (
         build[0],
         randint(build[1], build[2]),
@@ -232,18 +80,7 @@ def get_ie_build():
 
     Example: (8, 'MSIE 8.0')
     """
-
-    return choice(IE_VERSION)
-
-
-MACOSX_CHROME_BUILD_RANGE = {
-    # https://en.wikipedia.org/wiki/MacOS#Release_history
-    '10.8': (0, 8),
-    '10.9': (0, 5),
-    '10.10': (0, 5),
-    '10.11': (0, 6),
-    '10.12': (0, 2)
-}
+    return choice(Configuration.IE_VERSION)
 
 
 def fix_chrome_mac_platform(platform):
@@ -257,7 +94,7 @@ def fix_chrome_mac_platform(platform):
     with underscores, e.g. "Macintosh; Intel Mac OS X 10_8_2"
     """
     ver = platform.split('OS X ')[1]
-    build_range = range(*MACOSX_CHROME_BUILD_RANGE[ver])
+    build_range = range(*Configuration.MACOSX_CHROME_BUILD_RANGE[ver])
     build = choice(build_range)
     mac_ver = ver.replace('.', '_') + '_' + str(build)
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
@@ -277,8 +114,8 @@ def build_system_components(device_type, os_id, navigator_id):
     """
 
     if os_id == 'win':
-        platform_version = choice(OS_PLATFORM['win'])
-        cpu = choice(OS_CPU['win'])
+        platform_version = choice(Configuration.OS_PLATFORM['win'])
+        cpu = choice(Configuration.OS_CPU['win'])
         if cpu:
             platform = '%s; %s' % (platform_version, cpu)
         else:
@@ -290,8 +127,8 @@ def build_system_components(device_type, os_id, navigator_id):
             'oscpu': platform,
         }
     elif os_id == 'linux':
-        cpu = choice(OS_CPU['linux'])
-        platform_version = choice(OS_PLATFORM['linux'])
+        cpu = choice(Configuration.OS_CPU['linux'])
+        platform_version = choice(Configuration.OS_PLATFORM['linux'])
         platform = '%s %s' % (platform_version, cpu)
         res = {
             'platform_version': platform_version,
@@ -300,8 +137,8 @@ def build_system_components(device_type, os_id, navigator_id):
             'oscpu': 'Linux %s' % cpu,
         }
     elif os_id == 'mac':
-        cpu = choice(OS_CPU['mac'])
-        platform_version = choice(OS_PLATFORM['mac'])
+        cpu = choice(Configuration.OS_CPU['mac'])
+        platform_version = choice(Configuration.OS_PLATFORM['mac'])
         platform = platform_version
         if navigator_id == 'chrome':
             platform = fix_chrome_mac_platform(platform)
@@ -314,7 +151,7 @@ def build_system_components(device_type, os_id, navigator_id):
     elif os_id == 'android':
         assert navigator_id in ('firefox', 'chrome')
         assert device_type in ('smartphone', 'tablet')
-        platform_version = choice(OS_PLATFORM['android'])
+        platform_version = choice(Configuration.OS_PLATFORM['android'])
         if navigator_id == 'firefox':
             if device_type == 'smartphone':
                 ua_platform = '%s; Mobile' % platform_version
@@ -323,7 +160,7 @@ def build_system_components(device_type, os_id, navigator_id):
         elif navigator_id == 'chrome':
             device_id = choice(SMARTPHONE_DEV_IDS)
             ua_platform = 'Linux; %s; %s' % (platform_version, device_id)
-        oscpu = 'Linux %s' % choice(OS_CPU['android'])
+        oscpu = 'Linux %s' % choice(Configuration.OS_CPU['android'])
         res = {
             'platform_version': platform_version,
             'ua_platform': ua_platform,
@@ -420,37 +257,37 @@ def pick_config_ids(device_type, os, navigator):
         "desktop", "smartphone", "tablet", "all"
     """
 
-
     if os is None:
         default_dev_types = ['desktop']
     else:
-        default_dev_types = list(DEVICE_TYPE_OS.keys())
+        default_dev_types = list(Configuration.DEVICE_TYPE_OS.keys())
     dev_type_choices = get_option_choices(
         'device_type', device_type, default_dev_types,
-        list(DEVICE_TYPE_OS.keys())
+        list(Configuration.DEVICE_TYPE_OS.keys())
     )
-    os_choices = get_option_choices('os', os, list(OS_NAVIGATOR.keys()),
-                                    list(OS_NAVIGATOR.keys()))
+    os_choices = get_option_choices('os', os,
+                                    list(Configuration.OS_NAVIGATOR.keys()),
+                                    list(Configuration.OS_NAVIGATOR.keys()))
     nav_choices = get_option_choices('navigator', navigator,
-                                     list(NAVIGATOR_OS.keys()),
-                                     list(NAVIGATOR_OS.keys()))
+                                     list(Configuration.NAVIGATOR_OS.keys()),
+                                     list(Configuration.NAVIGATOR_OS.keys()))
 
     variants = []
     for dev, os, nav in product(dev_type_choices, os_choices,
                                 nav_choices):
 
-        if (os in DEVICE_TYPE_OS[dev]
-                and nav in DEVICE_TYPE_NAVIGATOR[dev]
-                and nav in OS_NAVIGATOR[os]):
+        if (os in Configuration.DEVICE_TYPE_OS[dev]
+                and nav in Configuration.DEVICE_TYPE_NAVIGATOR[dev]
+                and nav in Configuration.OS_NAVIGATOR[os]):
             variants.append((dev, os, nav))
     if not variants:
         raise InvalidOption('Options device_type, os and navigator'
                             ' conflicts with each other')
     device_type, os_id, navigator_id = choice(variants)
 
-    assert os_id in OS_PLATFORM
-    assert navigator_id in NAVIGATOR_OS
-    assert device_type in DEVICE_TYPE_OS
+    assert os_id in Configuration.OS_PLATFORM
+    assert navigator_id in Configuration.NAVIGATOR_OS
+    assert device_type in Configuration.DEVICE_TYPE_OS
 
     return device_type, os_id, navigator_id
 
@@ -465,7 +302,7 @@ def choose_ua_template(device_type, navigator_id, app):
             tpl_name = 'chrome_smartphone'
         if device_type == 'tablet':
             tpl_name = 'chrome_tablet'
-    return USER_AGENT_TEMPLATE[tpl_name]
+    return Configuration.USER_AGENT_TEMPLATE[tpl_name]
 
 
 def build_navigator_app_version(os_id, navigator_id,

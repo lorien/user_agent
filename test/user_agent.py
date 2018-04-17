@@ -216,10 +216,10 @@ def test_build_id_nofirefox():
 
 
 def test_build_id_firefox():
-    from user_agent import base
+    from user_agent import Configuration
 
-    orig_ff_ver = deepcopy(base.FIREFOX_VERSION)
-    base.FIREFOX_VERSION = [
+    orig_ff_ver = deepcopy(Configuration.FIREFOX_VERSION)
+    Configuration.FIREFOX_VERSION = [
         ('49.0', datetime(2016, 9, 20)),
         ('50.0', datetime(2016, 11, 15)),
     ]
@@ -234,7 +234,7 @@ def test_build_id_firefox():
                 assert datetime(2016, 9, 20, 0) <= time_
                 assert time_ < datetime(2016, 11, 15)
     finally:
-        base.FIREFOX_VERSION = orig_ff_ver
+        Configuration.FIREFOX_VERSION = orig_ff_ver
 
 
 def test_android_firefox():

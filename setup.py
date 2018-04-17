@@ -22,7 +22,7 @@ setup(
     # Package files
     packages=['user_agent'],
     include_package_data=True,
-    install_requires=['six'],
+    install_requires=['six', 'voluptuous'],
     entry_points={
         'console_scripts': [
             'ua = user_agent.cli:script_ua',
