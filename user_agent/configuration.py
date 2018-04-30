@@ -332,9 +332,7 @@ def validate_external_configuration(external_config):
     for browser, version_length in (
             {'FIREFOX_VERSION': 2, 'IE_VERSION': 3}.items()):
         for version in external_config[browser]:
-            try:
-                assert len(version) == version_length
-            except AssertionError:
+            if len(version) != version_length:
                 raise MultipleInvalid(errors=[
                     SchemaError("Too much values in {}".format(browser))
                 ])
@@ -344,9 +342,7 @@ def validate_external_configuration(external_config):
         map(lambda platform_string: platform_string.split('OS X ')[1],
             external_config['OS_PLATFORM']['mac']))
     for version_key in external_config['MACOSX_CHROME_BUILD_RANGE'].keys():
-        try:
-            assert version_key in mac_platforms
-        except AssertionError:
+        if version_key not in mac_platforms:
             raise MultipleInvalid(errors=[
                 SchemaError("There's no {} version of mac OSX "
                             "chrome build in OS_PLATFORM.mac"
@@ -355,9 +351,7 @@ def validate_external_configuration(external_config):
 
     # Length of range of MACOSX_CHROME_BUILD
     for build_range in external_config['MACOSX_CHROME_BUILD_RANGE'].values():
-        try:
-            assert len(build_range) == 2
-        except AssertionError:
+        if len(build_range) != 2:
             raise MultipleInvalid(errors=[
                 SchemaError("Too much values in "
                             "MACOSX_CHROME_BUILD_RANGE field, in list {}"
