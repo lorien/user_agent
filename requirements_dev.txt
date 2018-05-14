@@ -6,3 +6,4 @@ pylint
 mock
 flake8
 voluptuous
+pytest-ordering

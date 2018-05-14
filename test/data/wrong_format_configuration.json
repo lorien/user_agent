@@ -1,0 +1,8 @@
+{
+  "OS_PLATFORM": [
+    "win",
+    "mac",
+    "linux",
+    "android"
+  ]
+}

@@ -273,8 +273,8 @@ def load_configuration(external_config):
 
 
 def load_file_configuration(json_file_path):
-    with open(json_file_path, encoding='utf-8') as data_file:
-        load_configuration(data_file)
+    with open(json_file_path) as data_file:
+        load_configuration(data_file.read())
 
 
 # --- Convertation functions ---

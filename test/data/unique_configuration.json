@@ -1,0 +1,42 @@
+{
+  "OS_PLATFORM": {
+    "win": [
+      "Windows Nimbus 2000"
+    ],
+    "mac": [
+      "Macintosh; Intel Mac OS X 42"
+    ],
+    "linux": [
+      "X11; Golden Snitch; Linux"
+    ],
+    "android": [
+      "Android 7.1.1"
+    ]
+  },
+  "FIREFOX_VERSION": [
+    [
+      "4.0",
+      "2018-4-5"
+    ]
+  ],
+  "CHROME_BUILD": [
+    [
+      4242,
+      3325,
+      3325
+    ]
+  ],
+  "IE_VERSION": [
+    [
+      11,
+      "Quaffle 10.0",
+      "8.0"
+    ]
+  ],
+  "MACOSX_CHROME_BUILD_RANGE": {
+    "42": [
+      0,
+      3
+    ]
+  }
+}
