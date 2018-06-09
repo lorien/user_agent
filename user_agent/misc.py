@@ -13,13 +13,11 @@ def weighted_choice(applicants):
     """
     if isinstance(applicants, dict):
         applicants = applicants.items()
-    total = sum(w for v, w in applicants)
+    total = sum(wg for val, wg in applicants)
     assert total > 0
     rw = uniform(0, total)
     pr = 0
-    for v, w in applicants:
-        if pr + w > rw:
-            return v
-        pr += w
-
-
+    for val, wg in applicants:
+        if pr + wg > rw:
+            return val
+        pr += wg

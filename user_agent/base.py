@@ -493,8 +493,8 @@ def pick_config_ids(device_type, os, navigator, weighted=False):
                 and nav in OS_NAVIGATOR[os]):
             if weighted:
                 popularity = (DEVICE_TYPE_POPULARITY[dev] *
-                    PLATFORM_POPULARITY[dev][os] *
-                    NAVIGATOR_POPULARITY[dev][nav])
+                              PLATFORM_POPULARITY[dev][os] *
+                              NAVIGATOR_POPULARITY[dev][nav])
             else:
                 popularity = 1
             variants.append(
@@ -572,7 +572,8 @@ def generate_navigator(os=None, navigator=None, platform=None,
         warn('The `platform` option is deprecated.'
              ' Use `os` option instead.', stacklevel=3)
     device_type, os_id, navigator_id = pick_config_ids(device_type, os,
-        navigator, weighted=weighted)
+                                                       navigator,
+                                                       weighted=weighted)
     system = build_system_components(
         device_type, os_id, navigator_id)
     app = build_app_components(os_id, navigator_id)
