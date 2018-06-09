@@ -31,6 +31,10 @@ Lists of user agents:
 * http://www.user-agents.org/
 * http://www.webapps-online.com/online-tools/user-agent-strings
 
+Navigator/platform popularity:
+* https://en.wikipedia.org/wiki/Usage_share_of_web_browsers
+* https://en.wikipedia.org/wiki/Usage_share_of_operating_systems
+
 """
 # pylint: enable=line-too-long
 
@@ -45,6 +49,7 @@ from .warning import warn
 from .device import SMARTPHONE_DEV_IDS, TABLET_DEV_IDS
 # pylint: enable=unused-import
 from .error import InvalidOption
+from .misc import weighted_choice
 
 __all__ = ['generate_user_agent', 'generate_navigator',
            'generate_navigator_js']
@@ -137,6 +142,48 @@ NAVIGATOR_OS = {
     'chrome': ('win', 'linux', 'mac', 'android'),
     'firefox': ('win', 'linux', 'mac', 'android'),
     'ie': ('win',),
+}
+DEVICE_TYPE_POPULARITY = {
+    'desktop': 45,
+    'smartphone': 50,
+    'tablet': 5,
+}
+NAVIGATOR_POPULARITY = {
+    'desktop': {
+        'chrome': 58,
+        'firefox': 6,
+        'ie': 3,
+        # 'safari': 14,
+        # 'edge': 2,
+        # 'opera': 4,
+    },
+    'smartphone': {
+        'chrome': 52,
+        'firefox': 2,
+        # 'safari': 18,
+        # 'opera': 6,
+    },
+    'tablet': {
+        'chrome': 57,
+        'firefox': 1,
+        # 'safari': 35,
+        # 'opera': 1,
+    },
+}
+PLATFORM_POPULARITY = {
+    'desktop': {
+        'win': 82,
+        'mac': 14,
+        'linux': 2,
+    },
+    'smartphone': {
+        'android': 82,
+        #'ios': 18,
+    },
+    'tablet': {
+        'android': 32,
+        #'ios': 65,
+    }
 }
 FIREFOX_VERSION = (
     ('45.0', datetime(2016, 3, 8)),
@@ -405,7 +452,7 @@ def get_option_choices(opt_name, opt_value, default_value, all_choices):
     return choices
 
 
-def pick_config_ids(device_type, os, navigator):
+def pick_config_ids(device_type, os, navigator, weighted=False):
     """
     Select one random pair (device_type, os_id, navigator_id) from
     all possible combinations matching the given os and
@@ -418,6 +465,8 @@ def pick_config_ids(device_type, os, navigator):
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
         "desktop", "smartphone", "tablet", "all"
+    :param weighted: consider the popularity while choosing device/os/navigator
+    :type weighted: bool
     """
 
 
@@ -442,11 +491,19 @@ def pick_config_ids(device_type, os, navigator):
         if (os in DEVICE_TYPE_OS[dev]
                 and nav in DEVICE_TYPE_NAVIGATOR[dev]
                 and nav in OS_NAVIGATOR[os]):
-            variants.append((dev, os, nav))
+            if weighted:
+                popularity = (DEVICE_TYPE_POPULARITY[dev] *
+                    PLATFORM_POPULARITY[dev][os] *
+                    NAVIGATOR_POPULARITY[dev][nav])
+            else:
+                popularity = 0
+            variants.append(
+                ((dev, os, nav), popularity)
+            )
     if not variants:
         raise InvalidOption('Options device_type, os and navigator'
                             ' conflicts with each other')
-    device_type, os_id, navigator_id = choice(variants)
+    device_type, os_id, navigator_id = weighted_choice(variants)
 
     assert os_id in OS_PLATFORM
     assert navigator_id in NAVIGATOR_OS
@@ -487,7 +544,7 @@ def build_navigator_app_version(os_id, navigator_id,
 
 
 def generate_navigator(os=None, navigator=None, platform=None,
-                       device_type=None):
+                       device_type=None, weighted=False):
     """
     Generates web navigator's config
 
@@ -498,7 +555,8 @@ def generate_navigator(os=None, navigator=None, platform=None,
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
         "desktop", "smartphone", "tablet", "all"
-
+    :param weighted: consider the popularity while choosing device/os/navigator
+    :type weighted: bool
     :return: User-Agent config
     :rtype: dict with keys (os, name, platform, oscpu, build_version,
                             build_id, app_version, app_name, app_code_name,
@@ -514,7 +572,7 @@ def generate_navigator(os=None, navigator=None, platform=None,
         warn('The `platform` option is deprecated.'
              ' Use `os` option instead.', stacklevel=3)
     device_type, os_id, navigator_id = (
-        pick_config_ids(device_type, os, navigator)
+        pick_config_ids(device_type, os, navigator, weighted=weighted)
     )
     system = build_system_components(
         device_type, os_id, navigator_id)
@@ -547,7 +605,7 @@ def generate_navigator(os=None, navigator=None, platform=None,
 
 
 def generate_user_agent(os=None, navigator=None, platform=None,
-                        device_type=None):
+                        device_type=None, weighted=False):
     """
     Generates HTTP User-Agent header
 
@@ -558,6 +616,8 @@ def generate_user_agent(os=None, navigator=None, platform=None,
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
         "desktop", "smartphone", "tablet", "all"
+    :param weighted: consider the popularity while choosing device/os/navigator
+    :type weighted: bool
     :return: User-Agent string
     :rtype: string
     :raises InvalidOption: if could not generate user-agent for
@@ -566,11 +626,12 @@ def generate_user_agent(os=None, navigator=None, platform=None,
     """
     return generate_navigator(os=os, navigator=navigator,
                               platform=platform,
-                              device_type=device_type)['user_agent']
+                              device_type=device_type,
+                              weighted=weighted)['user_agent']
 
 
 def generate_navigator_js(os=None, navigator=None, platform=None,
-                          device_type=None):
+                          device_type=None, weighted=False):
     """
     Generates web navigator's config with keys corresponding
     to keys of `windows.navigator` JavaScript object.
@@ -582,6 +643,8 @@ def generate_navigator_js(os=None, navigator=None, platform=None,
     :param device_type: limit possible oses by device type
     :type device_type: list/tuple or None, possible values:
         "desktop", "smartphone", "tablet", "all"
+    :param weighted: consider the popularity while choosing device/os/navigator
+    :type weighted: bool
     :return: User-Agent config
     :rtype: dict with keys (TODO)
     :raises InvalidOption: if could not generate user-agent for
@@ -591,7 +654,8 @@ def generate_navigator_js(os=None, navigator=None, platform=None,
 
     config = generate_navigator(os=os, navigator=navigator,
                                 platform=platform,
-                                device_type=device_type)
+                                device_type=device_type,
+                                weighted=weighted)
     return {
         'appCodeName': config['app_code_name'],
         'appName': config['app_name'],
