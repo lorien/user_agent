@@ -16,7 +16,7 @@ def weighted_choice(applicants):
     total = sum(w for c, w in applicants)
     rw = uniform(0, total)
     pr = 0
-    for c, w in choices:
+    for c, w in applicants:
         if pr + w > rw:
             return c
         pr += w
