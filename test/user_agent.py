@@ -293,3 +293,18 @@ def test_device_type_smartphone_chrome():
         assert 'Mobile' in agent
         agent = generate_user_agent(device_type='tablet', navigator='chrome')
         assert 'Mobile' not in agent
+
+def test_feature_popularity():
+    from user_agent.base import NAVIGATOR_POPULARITY, PLATFORM_POPULARITY
+    stats = {'os': {}, 'nav': {}}
+    for _ in xrange(1000):
+        conf = generate_navigator(weighted=True)
+        stats['os'][conf['os_id']] = stats['os'].get(conf['os_id'], 0) + 1
+        stats['nav'][conf['navigator_id']] = stats['nav'].get(
+            conf['navigator_id'], 0) + 1
+    for os, v in stats['os'].items():
+        assert (float(v) / PLATFORM_POPULARITY['desktop'][os]) > 0.99
+    for nav, v in stats['nav'].items():
+        assert (float(v) / NAVIGATOR_POPULARITY['desktop'][nav]) > 0.99
+
+

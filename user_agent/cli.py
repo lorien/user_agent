@@ -11,10 +11,13 @@ def script_ua():
     parser.add_argument('-o', '--os')
     parser.add_argument('-n', '--navigator')
     parser.add_argument('-d', '--device-type')
+    parser.add_argument('-w', '--weighted', action='store_true',
+                        default=False)
     opts = parser.parse_args()
     nav = generate_navigator_js(os=opts.os,
                                 navigator=opts.navigator,
-                                device_type=opts.device_type)
+                                device_type=opts.device_type,
+                                weighted=opts.weighted)
     if opts.extended:
         print(json.dumps(nav, indent=2))
     else:
