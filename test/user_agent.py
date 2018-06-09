@@ -294,6 +294,7 @@ def test_device_type_smartphone_chrome():
         agent = generate_user_agent(device_type='tablet', navigator='chrome')
         assert 'Mobile' not in agent
 
+
 def test_feature_popularity():
     from user_agent import base
     stats = {'os': {}, 'nav': {}}
