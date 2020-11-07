@@ -210,10 +210,10 @@ def get_firefox_build():
     except IndexError:
         date_to = date_from + timedelta(days=1)
     sec_range = (date_to - date_from).total_seconds() - 1
-    build_rnd_time = (date_from +
-                      timedelta(seconds=randint(0, sec_range)))
+    build_rnd_time = (
+        date_from + timedelta(seconds=randint(0, sec_range))
+    )
     return build_ver, build_rnd_time.strftime('%Y%m%d%H%M%S')
-
 
 
 def get_chrome_build():
@@ -419,7 +419,6 @@ def pick_config_ids(device_type, os, navigator):
     :type device_type: list/tuple or None, possible values:
         "desktop", "smartphone", "tablet", "all"
     """
-
 
     if os is None:
         default_dev_types = ['desktop']

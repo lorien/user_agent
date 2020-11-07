@@ -10,8 +10,11 @@ from copy import deepcopy
 import six
 import pytest
 
-from user_agent import (generate_user_agent, generate_navigator,
-                        generate_navigator_js, InvalidOption)
+import user_agent.base
+from user_agent import (
+    generate_user_agent, generate_navigator,
+    generate_navigator_js, InvalidOption
+)
 
 
 def test_it():
@@ -216,10 +219,8 @@ def test_build_id_nofirefox():
 
 
 def test_build_id_firefox():
-    from user_agent import base
-
-    orig_ff_ver = deepcopy(base.FIREFOX_VERSION)
-    base.FIREFOX_VERSION = [
+    orig_ff_ver = deepcopy(user_agent.base.FIREFOX_VERSION)
+    user_agent.base.FIREFOX_VERSION = [
         ('49.0', datetime(2016, 9, 20)),
         ('50.0', datetime(2016, 11, 15)),
     ]
@@ -234,7 +235,7 @@ def test_build_id_firefox():
                 assert datetime(2016, 9, 20, 0) <= time_
                 assert time_ < datetime(2016, 11, 15)
     finally:
-        base.FIREFOX_VERSION = orig_ff_ver
+        user_agent.base.FIREFOX_VERSION = orig_ff_ver
 
 
 def test_android_firefox():
