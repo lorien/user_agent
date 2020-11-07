@@ -16,3 +16,4 @@ dist/
 /docs/build/
 /.cache/
 /.pytest_cache/
+/.pytype/
