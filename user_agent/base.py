@@ -34,7 +34,7 @@ Lists of user agents:
 """
 # pylint: enable=line-too-long
 
-from random import choice, randint
+from random import SystemRandom
 from datetime import datetime, timedelta
 from itertools import product
 
@@ -49,7 +49,7 @@ from .error import InvalidOption
 __all__ = ['generate_user_agent', 'generate_navigator',
            'generate_navigator_js']
 
-
+randomizer = SystemRandom()
 DEVICE_TYPE_OS = {
     'desktop': ('win', 'mac', 'linux'),
     'smartphone': ('android',),
@@ -147,16 +147,42 @@ FIREFOX_VERSION = (
     ('50.0', datetime(2016, 11, 15)),
     ('51.0', datetime(2017, 1, 24)),
 )
-CHROME_BUILD = (
-    (49, 2623, 2660), # 2016-03-02
-    (50, 2661, 2703), # 2016-04-13
-    (51, 2704, 2742), # 2016-05-25
-    (52, 2743, 2784), # 2016-07-20
-    (53, 2785, 2839), # 2016-08-31
-    (54, 2840, 2882), # 2016-10-12
-    (55, 2883, 2923), # 2016-12-01
-    (56, 2924, 2986), # 2016-12-01
-)
+
+# Top chrome builds from website access log
+# for september, october 2020
+CHROME_BUILD = '''
+80.0.3987.132
+80.0.3987.149
+80.0.3987.99
+81.0.4044.117
+81.0.4044.138
+83.0.4103.101
+83.0.4103.106
+83.0.4103.96
+84.0.4147.105
+84.0.4147.111
+84.0.4147.125
+84.0.4147.135
+84.0.4147.89
+85.0.4183.101
+85.0.4183.102
+85.0.4183.120
+85.0.4183.121
+85.0.4183.127
+85.0.4183.81
+85.0.4183.83
+86.0.4240.110
+86.0.4240.111
+86.0.4240.114
+86.0.4240.183
+86.0.4240.185
+86.0.4240.75
+86.0.4240.78
+86.0.4240.80
+86.0.4240.96
+86.0.4240.99
+'''.strip().splitlines()
+
 IE_VERSION = (
     # (numeric ver, string ver, trident ver) # release year
     (8, 'MSIE 8.0', '4.0'), # 2009
@@ -203,7 +229,7 @@ USER_AGENT_TEMPLATE = {
 
 
 def get_firefox_build():
-    build_ver, date_from = choice(FIREFOX_VERSION)
+    build_ver, date_from = randomizer.choice(FIREFOX_VERSION)
     try:
         idx = FIREFOX_VERSION.index((build_ver, date_from))
         _, date_to = FIREFOX_VERSION[idx + 1]
@@ -211,18 +237,13 @@ def get_firefox_build():
         date_to = date_from + timedelta(days=1)
     sec_range = (date_to - date_from).total_seconds() - 1
     build_rnd_time = (
-        date_from + timedelta(seconds=randint(0, sec_range))
+        date_from + timedelta(seconds=randomizer.randint(0, sec_range))
     )
     return build_ver, build_rnd_time.strftime('%Y%m%d%H%M%S')
 
 
 def get_chrome_build():
-    build = choice(CHROME_BUILD)
-    return '%d.0.%d.%d' % (
-        build[0],
-        randint(build[1], build[2]),
-        randint(0, 99),
-    )
+    return randomizer.choice(CHROME_BUILD)
 
 
 def get_ie_build():
@@ -233,7 +254,7 @@ def get_ie_build():
     Example: (8, 'MSIE 8.0')
     """
 
-    return choice(IE_VERSION)
+    return randomizer.choice(IE_VERSION)
 
 
 MACOSX_CHROME_BUILD_RANGE = {
@@ -258,7 +279,7 @@ def fix_chrome_mac_platform(platform):
     """
     ver = platform.split('OS X ')[1]
     build_range = range(*MACOSX_CHROME_BUILD_RANGE[ver])
-    build = choice(build_range)
+    build = randomizer.choice(build_range)
     mac_ver = ver.replace('.', '_') + '_' + str(build)
     return 'Macintosh; Intel Mac OS X %s' % mac_ver
 
@@ -277,8 +298,8 @@ def build_system_components(device_type, os_id, navigator_id):
     """
 
     if os_id == 'win':
-        platform_version = choice(OS_PLATFORM['win'])
-        cpu = choice(OS_CPU['win'])
+        platform_version = randomizer.choice(OS_PLATFORM['win'])
+        cpu = randomizer.choice(OS_CPU['win'])
         if cpu:
             platform = '%s; %s' % (platform_version, cpu)
         else:
@@ -290,8 +311,8 @@ def build_system_components(device_type, os_id, navigator_id):
             'oscpu': platform,
         }
     elif os_id == 'linux':
-        cpu = choice(OS_CPU['linux'])
-        platform_version = choice(OS_PLATFORM['linux'])
+        cpu = randomizer.choice(OS_CPU['linux'])
+        platform_version = randomizer.choice(OS_PLATFORM['linux'])
         platform = '%s %s' % (platform_version, cpu)
         res = {
             'platform_version': platform_version,
@@ -300,8 +321,8 @@ def build_system_components(device_type, os_id, navigator_id):
             'oscpu': 'Linux %s' % cpu,
         }
     elif os_id == 'mac':
-        cpu = choice(OS_CPU['mac'])
-        platform_version = choice(OS_PLATFORM['mac'])
+        cpu = randomizer.choice(OS_CPU['mac'])
+        platform_version = randomizer.choice(OS_PLATFORM['mac'])
         platform = platform_version
         if navigator_id == 'chrome':
             platform = fix_chrome_mac_platform(platform)
@@ -314,16 +335,16 @@ def build_system_components(device_type, os_id, navigator_id):
     elif os_id == 'android':
         assert navigator_id in ('firefox', 'chrome')
         assert device_type in ('smartphone', 'tablet')
-        platform_version = choice(OS_PLATFORM['android'])
+        platform_version = randomizer.choice(OS_PLATFORM['android'])
         if navigator_id == 'firefox':
             if device_type == 'smartphone':
                 ua_platform = '%s; Mobile' % platform_version
             elif device_type == 'tablet':
                 ua_platform = '%s; Tablet' % platform_version
         elif navigator_id == 'chrome':
-            device_id = choice(SMARTPHONE_DEV_IDS)
+            device_id = randomizer.choice(SMARTPHONE_DEV_IDS)
             ua_platform = 'Linux; %s; %s' % (platform_version, device_id)
-        oscpu = 'Linux %s' % choice(OS_CPU['android'])
+        oscpu = 'Linux %s' % randomizer.choice(OS_CPU['android'])
         res = {
             'platform_version': platform_version,
             'ua_platform': ua_platform,
@@ -445,7 +466,7 @@ def pick_config_ids(device_type, os, navigator):
     if not variants:
         raise InvalidOption('Options device_type, os and navigator'
                             ' conflicts with each other')
-    device_type, os_id, navigator_id = choice(variants)
+    device_type, os_id, navigator_id = randomizer.choice(variants)
 
     assert os_id in OS_PLATFORM
     assert navigator_id in NAVIGATOR_OS
