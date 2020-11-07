@@ -4,14 +4,15 @@ python: 3.7
 
 sudo: false
 
-env:
-  - TOX_ENV=py37
-
 matrix:
   include:
     - python: 3.7
       env: TOX_ENV=qa
+    - python: 3.5
+      env: TOX_ENV=py3
     - python: 3.6
+      env: TOX_ENV=py3
+    - python: 3.7
       env: TOX_ENV=py3
     - python: 3.8
       env: TOX_ENV=py3
