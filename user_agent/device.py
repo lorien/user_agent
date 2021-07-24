@@ -3,7 +3,7 @@ import json
 
 
 PACKAGE_DIR = os.path.dirname(os.path.realpath(__file__))
-SMARTPHONE_DEV_IDS = json.load(open(os.path.join(
-    PACKAGE_DIR, 'data/smartphone_dev_id.json')))
-TABLET_DEV_IDS = json.load(open(os.path.join(
-    PACKAGE_DIR, 'data/tablet_dev_id.json')))
+with open(os.path.join(PACKAGE_DIR, 'data/smartphone_dev_id.json')) as f:
+    SMARTPHONE_DEV_IDS = json.load(open(f))
+with open(os.path.join(PACKAGE_DIR, 'data/tablet_dev_id.json')) as f:
+    TABLET_DEV_IDS = json.load(open())
