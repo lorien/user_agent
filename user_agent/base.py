@@ -237,7 +237,7 @@ def get_firefox_build():
         date_to = date_from + timedelta(days=1)
     sec_range = (date_to - date_from).total_seconds() - 1
     build_rnd_time = (
-        date_from + timedelta(seconds=randomizer.randint(0, sec_range))
+        date_from + timedelta(seconds=randomizer.randint(0, int(sec_range)))
     )
     return build_ver, build_rnd_time.strftime('%Y%m%d%H%M%S')
 
