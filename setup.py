@@ -3,6 +3,8 @@ import os
 from setuptools import setup
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
+with open(os.path.join(ROOT, 'README.rst'), encoding='utf-8') as inp:
+    LONG_DESCRIPTION = inp.read()
 
 
 setup(
@@ -15,7 +17,7 @@ setup(
     maintainer_email='lorien@lorien.name',
     url='https://github.com/lorien/user_agent',
     description='User-Agent generator',
-    long_description=open(os.path.join(ROOT, 'README.rst')).read(),
+    long_description=LONG_DESCRIPTION,
     download_url='http://pypi.python.org/pypi/user_agent',
     keywords="user agent browser navigator",
     license="MIT License",

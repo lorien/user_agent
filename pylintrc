@@ -5,7 +5,7 @@ extension-pkg-whitelist=pytest
 [TYPECHEK]
 
 [MESSAGES CONTROL]
-disable=R,I,fixme,missing-docstring
+disable=R,I,fixme,missing-docstring,C0209
 
 [REPORTS]
 reports=no

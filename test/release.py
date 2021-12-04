@@ -13,7 +13,7 @@ def test_changelog():
     re_date = re.compile(r'^\d{4}-\d{2}-\d{2}$')
     ver_dates = {}
     ver_history = []
-    for line in open('CHANGELOG.md'):
+    for line in open('CHANGELOG.md', encoding='utf-8'):
         if line.startswith('## ['):
             ver = line.split('[')[1].split(']')[0]
             date = line.split('-', 1)[1].strip().lower()
