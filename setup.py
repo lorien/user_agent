@@ -10,7 +10,7 @@ with open(os.path.join(ROOT, 'README.rst'), encoding='utf-8') as inp:
 setup(
     # Meta data
     name='user_agent',
-    version='0.1.9',
+    version='0.1.10',
     author="Gregory Petukhov",
     author_email='lorien@lorien.name',
     maintainer="Gregory Petukhov",
