@@ -1,6 +1,8 @@
 # Change Log of user_agent Library
 
-## [0.1.20] - Unreleased
+## [0.1.11] - Unreleased
+
+## [0.1.10] - 2021-12-04
 ### Changed
 
 ## [0.1.9] - 2017-08-05
