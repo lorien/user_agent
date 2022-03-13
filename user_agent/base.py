@@ -21,8 +21,8 @@ Specs:
 * http://www.javascriptkit.com/javatutors/navigator.shtml
 
 Release history:
-* https://en.wikipedia.org/wiki/Firefox_release_history
-* https://en.wikipedia.org/wiki/Google_Chrome_release_history
+* https://en.wikipedia.org/wiki/Firefox_version_history
+* https://en.wikipedia.org/wiki/Google_Chrome_version_history
 * https://en.wikipedia.org/wiki/Internet_Explorer_version_history
 * https://en.wikipedia.org/wiki/Android_version_history
 
