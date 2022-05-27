@@ -1,0 +1,45 @@
+name: tox
+on: [push, pull_request]
+jobs:
+  tox-pylint-strict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - run: pip install --upgrade pip
+      - run: pip install tox
+      - run: tox -e pylint-strict  # Perhaps use ${{ job.name }}
+
+  tox-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - run: pip install --upgrade pip
+      - run: pip install tox
+      - run: tox -e qa
+
+  tox-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - run: pip install --upgrade pip
+      - run: pip install tox
+      - run: tox -e doc
+
+  #tox:
+  #  strategy:
+  #    fail-fast: false
+  #    matrix:
+  #      os: [ubuntu-latest]  # [macos-latest, ubuntu-latest, windows-latest]
+  #      python: ['3.10']  # ['3.6', '3.7', '3.8', '3.9', '3.10', 'pypy-3.7']
+  #  runs-on: ${{ matrix.os }}
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - uses: actions/setup-python@v3
+  #      with:
+  #        python-version: ${{ matrix.python }}
+  #    - run: pip install --upgrade pip
+  #    - run: pip install tox
+  #    - run: tox -e py
