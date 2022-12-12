@@ -37,6 +37,9 @@ build-backend = "setuptools.build_meta"
 [project.urls]
 homepage = "http://github.com/lorien/user_agent"
 
+[project.scripts]
+ua = "user_agent.cli:script_ua"
+
 [tool.setuptools]
 packages=["user_agent", "user_agent.data"]
 
