@@ -6,7 +6,7 @@ import json
 import re
 from copy import deepcopy
 from datetime import datetime
-from subprocess import check_output
+from subprocess import check_output  # nosec
 
 import pytest
 import six
@@ -149,20 +149,22 @@ def test_data_integrity():
 
 def test_ua_script_simple():
     for _ in range(5):
-        out = check_output("ua", shell=True).decode("utf-8")
+        out = check_output("ua", shell=True).decode("utf-8")  # nosec
         assert re.match("^Mozilla", out)
         assert len(out.strip().splitlines()) == 1
 
 
 def test_ua_script_options():
     for _ in range(5):
-        out = check_output("ua -o linux -n chrome", shell=True).decode("utf-8")
+        out = check_output("ua -o linux -n chrome", shell=True).decode("utf-8")  # nosec
         assert re.match("^Mozilla.*Linux.*Chrome", out)
 
 
 def test_ua_script_extended():
     for _ in range(5):
-        out = check_output("ua -o linux -n chrome -e", shell=True).decode("utf-8")
+        out = check_output("ua -o linux -n chrome -e", shell=True).decode(  # nosec
+            "utf-8"
+        )
         data = json.loads(out)
         assert "Linux" in data["platform"]
         assert "Chrome" in data["userAgent"]
