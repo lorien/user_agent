@@ -1,4 +1,4 @@
-# Documentation for user\_agent package
+# Documentation for user_agent package
 
 
 [![Test Status](https://github.com/lorien/user_agent/actions/workflows/test.yml/badge.svg)](https://github.com/lorien/user_agent/actions/workflows/test.yml)
@@ -7,7 +7,7 @@
 [![Documentation Status](https://readthedocs.org/projects/user_agent/badge/?version=latest)](http://user-agent.readthedocs.org)
 
 
-## What is user\_agent module for?
+## What is user_agent module for?
 
 This module is for generating random, valid web user agents:
 
@@ -71,4 +71,4 @@ Documentation is available at http://user-agent.readthedocs.org
 
 ## Contribution
 
-Use github to submit bug,fix or wish request: https://github.com/lorien/user\_agent/issues
+Use github to submit bug,fix or wish request: https://github.com/lorien/user_agent/issues
