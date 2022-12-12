@@ -407,7 +407,9 @@ def get_option_choices(
     choices = []
     if isinstance(opt_value, str):
         choices = [opt_value]
-    elif isinstance(opt_value, typing.Sequence):
+    elif isinstance(
+        opt_value, typing.Sequence  # pylint: disable=deprecated-typing-alias
+    ):
         choices = list(opt_value)
     elif opt_value is None:
         choices = default_value
