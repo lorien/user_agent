@@ -42,6 +42,22 @@ This module is for generating random, valid web user agents:
  'userAgent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:38.0) Gecko/20100101 Firefox/38.0'}
 ```
 
+## Command Line Usage
+
+```shell
+$ ua
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:49.0) Gecko/20100101 Firefox/49.0
+
+$ ua -n chrome -e
+{
+  "oscpu": "Linux i686 on x86_64", 
+  "appName": "Netscape", 
+  "appCodeName": "Mozilla", 
+  "appVersion": "55.0.2909.25", 
+  "platform": "X11; Linux i686 on x86_64", 
+  "userAgent": "Mozilla/5.0 (X11; Linux i686 on x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2909.25 Safari/537.36"
+}
+```
 
 ## Installation
 
