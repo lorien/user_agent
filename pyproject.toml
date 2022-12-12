@@ -1,0 +1,82 @@
+[project]
+
+name = "user_agent"
+version = "0.1.10"
+description = "Library to build content for User-Agent HTTP header"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {"file" = "LICENSE"}
+keywords = ["user agent", "browser", "web crawling", "web scraping", "web crawler", "web scraper"]
+authors = [
+    {name = "Gregory Petukhov", email = "lorien@lorien.name"}
+]
+# https://pypi.org/pypi?%3Aaction=list_classifiers
+classifiers = [
+    "Typing :: Typed",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = []
+
+[project.optional-dependencies]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project.urls]
+homepage = "http://github.com/lorien/user_agent"
+
+[tool.setuptools]
+packages=["user_agent", "user_agent.data"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+"user_agent.data" = ["*.json"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+# skip_gitignore = true # throws errors in stderr when ".git" dir does not exist
+
+[tool.bandit]
+# B101 assert_used
+# B410 Using HtmlElement to parse untrusted XML data
+skips = ["B101", "B410"]
+
+[tool.pylint.main]
+jobs=4
+extension-pkg-whitelist="lxml"
+disable="missing-docstring,broad-except,too-few-public-methods,consider-using-f-string,fixme"
+variable-rgx="[a-z_][a-z0-9_]{1,30}$"
+attr-rgx="[a-z_][a-z0-9_]{1,30}$"
+argument-rgx="[a-z_][a-z0-9_]{1,30}$"
+max-line-length=88
+max-args=9
+load-plugins=[
+    "pylint.extensions.check_elif",
+    "pylint.extensions.comparetozero",
+    "pylint.extensions.comparison_placement",
+    "pylint.extensions.consider_ternary_expression",
+    "pylint.extensions.docstyle",
+    "pylint.extensions.emptystring",
+    "pylint.extensions.for_any_all",
+    "pylint.extensions.overlapping_exceptions",
+    "pylint.extensions.redefined_loop_name",
+    "pylint.extensions.redefined_variable_type",
+    "pylint.extensions.set_membership",
+    "pylint.extensions.typing",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

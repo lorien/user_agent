@@ -1,7 +1,0 @@
-tox
-bumpversion
-sphinx
-pytest
-pylint
-mock
-flake8
