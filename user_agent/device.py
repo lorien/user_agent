@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 import json
-import os
-from typing import Any
+import pkgutil
+from typing import Any, Dict, List, cast
 
-PACKAGE_DIR: str = os.path.dirname(os.path.realpath(__file__))
-
-
-def load_json_data(rel_path: str) -> Any:
-    path = os.path.join(PACKAGE_DIR, rel_path)
-    with open(path, encoding="utf-8") as inp:
-        return json.load(inp)
+# pylint: disable=deprecated-typing-alias
+DataStore = List[Dict[str, Any]]
+# pylint: enable=deprecated-typing-alias
 
 
-SMARTPHONE_DEV_IDS: list[dict[str, Any]] = load_json_data("data/smartphone_dev_id.json")
-TABLET_DEV_IDS: list[dict[str, Any]] = load_json_data("data/tablet_dev_id.json")
+def load_package_json_data(location: str) -> DataStore:
+    return cast(
+        DataStore, json.loads(cast(bytes, pkgutil.get_data("user_agent", location)))
+    )
+
+
+SMARTPHONE_DEV_IDS: DataStore = load_package_json_data("data/smartphone_dev_id.json")
+TABLET_DEV_IDS: DataStore = load_package_json_data("data/tablet_dev_id.json")
