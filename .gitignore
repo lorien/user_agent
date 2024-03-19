@@ -18,3 +18,4 @@ dist/
 /.pytest_cache/
 /.pytype/
 /build/
+/.coverage

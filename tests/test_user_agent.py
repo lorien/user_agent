@@ -9,7 +9,6 @@ from datetime import datetime
 from subprocess import check_output  # nosec
 
 import pytest
-import six
 
 import user_agent.base
 from user_agent import (
@@ -144,7 +143,7 @@ def test_data_integrity():
     for _ in range(50):
         nav = generate_navigator()
         for _, val in nav.items():
-            assert val is None or isinstance(val, six.string_types)
+            assert val is None or isinstance(val, str)
 
 
 def test_ua_script_simple():
