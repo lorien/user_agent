@@ -32,12 +32,12 @@ from __future__ import annotations
 
 import typing
 from collections.abc import Sequence
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from itertools import product
 from random import SystemRandom
 
 # pylint: disable=unused-import
-from .device import SMARTPHONE_DEV_IDS, TABLET_DEV_IDS
+from .device import SMARTPHONE_DEV_IDS
 
 # pylint: enable=unused-import
 from .error import InvalidOption
@@ -48,6 +48,7 @@ from .warning import warn
 
 __all__ = ["generate_user_agent", "generate_navigator", "generate_navigator_js"]
 
+IE_NETSCAPE_VERSION = 11
 randomizer = SystemRandom()
 DEVICE_TYPE_OS = {
     "desktop": ("win", "mac", "linux"),
@@ -136,13 +137,13 @@ NAVIGATOR_OS = {
     "ie": ("win",),
 }
 FIREFOX_VERSION: list[tuple[str, datetime]] = [
-    ("45.0", datetime(2016, 3, 8)),
-    ("46.0", datetime(2016, 4, 26)),
-    ("47.0", datetime(2016, 6, 7)),
-    ("48.0", datetime(2016, 8, 2)),
-    ("49.0", datetime(2016, 9, 20)),
-    ("50.0", datetime(2016, 11, 15)),
-    ("51.0", datetime(2017, 1, 24)),
+    ("45.0", datetime(2016, 3, 8, tzinfo=timezone.utc)),
+    ("46.0", datetime(2016, 4, 26, tzinfo=timezone.utc)),
+    ("47.0", datetime(2016, 6, 7, tzinfo=timezone.utc)),
+    ("48.0", datetime(2016, 8, 2, tzinfo=timezone.utc)),
+    ("49.0", datetime(2016, 9, 20, tzinfo=timezone.utc)),
+    ("50.0", datetime(2016, 11, 15, tzinfo=timezone.utc)),
+    ("51.0", datetime(2017, 1, 24, tzinfo=timezone.utc)),
 ]
 
 # Top chrome builds from website access log
@@ -297,10 +298,7 @@ def build_system_components(
     if os_id == "win":
         platform_version = randomizer.choice(OS_PLATFORM["win"])
         cpu = randomizer.choice(OS_CPU["win"])
-        if cpu:
-            platform = "%s; %s" % (platform_version, cpu)
-        else:
-            platform = platform_version
+        platform = "{}; {}".format(platform_version, cpu) if cpu else platform_version
         return {
             "platform_version": platform_version,
             "platform": platform,
@@ -310,7 +308,7 @@ def build_system_components(
     if os_id == "linux":
         cpu = randomizer.choice(OS_CPU["linux"])
         platform_version = randomizer.choice(OS_PLATFORM["linux"])
-        platform = "%s %s" % (platform_version, cpu)
+        platform = "{} {}".format(platform_version, cpu)
         return {
             "platform_version": platform_version,
             "platform": platform,
@@ -340,7 +338,7 @@ def build_system_components(
             ua_platform = "%s; Tablet" % platform_version
     elif navigator_id == "chrome":
         device_id = randomizer.choice(SMARTPHONE_DEV_IDS)
-        ua_platform = "Linux; %s; %s" % (platform_version, device_id)
+        ua_platform = "Linux; {}; {}".format(platform_version, device_id)
     oscpu = "Linux %s" % randomizer.choice(OS_CPU["android"])
     return {
         "platform_version": platform_version,
@@ -358,10 +356,7 @@ def build_app_components(os_id: str, navigator_id: str) -> dict[str, None | str]
     assert navigator_id in {"firefox", "chrome", "ie"}
     if navigator_id == "firefox":
         build_version, build_id = get_firefox_build()
-        if os_id in {"win", "linux", "mac"}:
-            geckotrail = "20100101"
-        else:
-            geckotrail = build_version
+        geckotrail = "20100101" if os_id in {"win", "linux", "mac"} else build_version
         return {
             "name": "Netscape",
             "product_sub": "20100101",
@@ -380,7 +375,9 @@ def build_app_components(os_id: str, navigator_id: str) -> dict[str, None | str]
         }
     # navigator_id could be only "ie" here
     num_ver, build_version, trident_version = get_ie_build()
-    app_name = "Netscape" if num_ver >= 11 else "Microsoft Internet Explorer"
+    app_name = (
+        "Netscape" if num_ver >= IE_NETSCAPE_VERSION else "Microsoft Internet Explorer"
+    )
     return {
         "name": app_name,
         "product_sub": None,
@@ -391,7 +388,7 @@ def build_app_components(os_id: str, navigator_id: str) -> dict[str, None | str]
     }
 
 
-# FIXME: I have no idea what this function does
+# TODO: I have no idea what this function does
 def get_option_choices(
     opt_name: str,
     opt_value: None | str | Sequence[str],
@@ -415,14 +412,14 @@ def get_option_choices(
         choices = default_value
     else:
         raise InvalidOption(
-            "Option %s has invalid" " value: %s" % (opt_name, opt_value)
+            "Option {} has invalid value: {}".format(opt_name, opt_value)
         )
     if "all" in choices:
         choices = all_choices
     for item in choices:
         if item not in all_choices:
             raise InvalidOption(
-                "Choices of option %s contains invalid" " item: %s" % (opt_name, item)
+                "Choices of option {} contains invalid item: {}".format(opt_name, item)
             )
     return choices
 
@@ -457,7 +454,6 @@ def pick_config_ids(
     for iter_dev, iter_os, iter_nav in product(
         dev_type_choices, os_choices, nav_choices
     ):
-
         if (
             iter_os in DEVICE_TYPE_OS[iter_dev]
             and iter_nav in DEVICE_TYPE_NAVIGATOR[iter_dev]

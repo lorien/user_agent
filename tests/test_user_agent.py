@@ -1,11 +1,8 @@
-#!/usr/bin/env python
 # pylint: disable=missing-docstring
-from __future__ import absolute_import
-
 import json
 import re
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timezone
 from subprocess import check_output  # nosec
 
 import pytest
@@ -18,13 +15,15 @@ from user_agent import (
     generate_user_agent,
 )
 
+FIREFOX_BUILD_ID = 14
 
-def test_it():
+
+def test_it() -> None:
     agent = generate_user_agent()
     assert len(agent) > 0  # pylint: disable=len-as-condition
 
 
-def test_platform_option():
+def test_platform_option() -> None:
     for _ in range(50):
         agent = generate_user_agent(os="linux")
         assert "linux" in agent.lower()
@@ -36,7 +35,7 @@ def test_platform_option():
         assert "mac" in agent.lower()
 
 
-def test_invalid_platform_option():
+def test_invalid_platform_option() -> None:
     with pytest.raises(InvalidOption):
         generate_user_agent(os=11)
 
@@ -47,7 +46,7 @@ def test_invalid_platform_option():
         generate_user_agent(os="win,dos")
 
 
-def test_navigator_option():
+def test_navigator_option() -> None:
     for _ in range(50):
         agent = generate_user_agent(navigator="firefox")
         assert "firefox" in agent.lower()
@@ -59,7 +58,7 @@ def test_navigator_option():
         assert "msie" in agent.lower() or "rv:11" in agent.lower()
 
 
-def test_invalid_navigator_option():
+def test_invalid_navigator_option() -> None:
     with pytest.raises(InvalidOption):
         generate_user_agent(navigator="vim")
 
@@ -67,14 +66,14 @@ def test_invalid_navigator_option():
         generate_user_agent(navigator="chrome,vim")
 
 
-def test_navigator_option_tuple():
+def test_navigator_option_tuple() -> None:
     for _ in range(50):
         generate_user_agent(navigator=("chrome",))
         generate_user_agent(navigator=("chrome", "firefox"))
         generate_user_agent(navigator=("chrome", "firefox", "ie"))
 
 
-def test_platform_option_tuple():
+def test_platform_option_tuple() -> None:
     for _ in range(50):
         generate_user_agent(os=("win", "linux"))
         generate_user_agent(os=("win", "linux", "mac"))
@@ -83,7 +82,7 @@ def test_platform_option_tuple():
         generate_user_agent(os=("mac",))
 
 
-def test_platform_navigator_option():
+def test_platform_navigator_option() -> None:
     for _ in range(50):
         agent = generate_user_agent(os="win", navigator="firefox")
         assert "firefox" in agent.lower()
@@ -98,19 +97,19 @@ def test_platform_navigator_option():
         assert "windows" in agent.lower()
 
 
-def test_platform_linux():
+def test_platform_linux() -> None:
     for _ in range(50):
         agent = generate_user_agent(os="linux")
         assert agent.startswith("Mozilla/5.0 (X11;")
 
 
-def test_mac_chrome():
+def test_mac_chrome() -> None:
     for _ in range(50):
         agent = generate_user_agent(os="mac", navigator="chrome")
         assert re.search(r"OS X \d+_\d+(_\d+\b|\b)", agent)
 
 
-def test_impossible_combination():
+def test_impossible_combination() -> None:
     for _ in range(50):
         with pytest.raises(InvalidOption):
             generate_user_agent(os="linux", navigator="ie")
@@ -118,7 +117,7 @@ def test_impossible_combination():
             generate_user_agent(os="mac", navigator="ie")
 
 
-def test_generate_navigator_js():
+def test_generate_navigator_js() -> None:
     for _ in range(50):
         nav = generate_navigator_js()
         assert set(nav.keys()) == {
@@ -139,37 +138,39 @@ def test_generate_navigator_js():
         assert nav["appName"] in {"Netscape", "Microsoft Internet Explorer"}
 
 
-def test_data_integrity():
+def test_data_integrity() -> None:
     for _ in range(50):
         nav = generate_navigator()
-        for _, val in nav.items():
+        for val in nav.values():
             assert val is None or isinstance(val, str)
 
 
-def test_ua_script_simple():
+def test_ua_script_simple() -> None:
     for _ in range(5):
-        out = check_output("ua", shell=True).decode("utf-8")  # nosec
+        out = check_output("ua", shell=True).decode("utf-8")  # noqa: S602,S607
         assert re.match("^Mozilla", out)
         assert len(out.strip().splitlines()) == 1
 
 
-def test_ua_script_options():
+def test_ua_script_options() -> None:
     for _ in range(5):
-        out = check_output("ua -o linux -n chrome", shell=True).decode("utf-8")  # nosec
+        out = check_output(
+            "ua -o linux -n chrome", shell=True  # noqa: S602,S607
+        ).decode("utf-8")
         assert re.match("^Mozilla.*Linux.*Chrome", out)
 
 
-def test_ua_script_extended():
+def test_ua_script_extended() -> None:
     for _ in range(5):
-        out = check_output("ua -o linux -n chrome -e", shell=True).decode(  # nosec
-            "utf-8"
-        )
+        out = check_output(
+            "ua -o linux -n chrome -e", shell=True  # noqa: S602,S607
+        ).decode("utf-8")
         data = json.loads(out)
         assert "Linux" in data["platform"]
         assert "Chrome" in data["userAgent"]
 
 
-def test_feature_platform():
+def test_feature_platform() -> None:
     for _ in range(50):
         nav = generate_navigator(os="win")
         assert "Win" in nav["platform"]
@@ -180,7 +181,7 @@ def test_feature_platform():
         # assert 'Win' in nav['platform']
 
 
-def test_feature_oscpu():
+def test_feature_oscpu() -> None:
     for _ in range(10):
         nav = generate_navigator(os="win")
         assert "Windows NT" in nav["oscpu"]
@@ -190,19 +191,19 @@ def test_feature_oscpu():
         assert "Mac OS" in nav["oscpu"]
 
 
-def test_feature_chrome_appversion():
+def test_feature_chrome_appversion() -> None:
     for _ in range(50):
         nav = generate_navigator_js(navigator="chrome")
         assert ("Mozilla/" + nav["appVersion"]) == nav["userAgent"]
 
 
-def test_feature_product():
+def test_feature_product() -> None:
     for _ in range(50):
         nav = generate_navigator_js(navigator="chrome")
         assert nav["product"] == "Gecko"
 
 
-def test_feature_vendor():
+def test_feature_vendor() -> None:
     for _ in range(50):
         nav = generate_navigator_js(navigator="chrome")
         assert nav["vendor"] == "Google Inc."
@@ -212,13 +213,13 @@ def test_feature_vendor():
         assert not nav["vendor"]
 
 
-def test_feature_vendor_sub():
+def test_feature_vendor_sub() -> None:
     for _ in range(50):
         nav = generate_navigator_js(navigator="chrome")
         assert not nav["vendorSub"]
 
 
-def test_build_id_nofirefox():
+def test_build_id_nofirefox() -> None:
     for _ in range(50):
         nav = generate_navigator(navigator="chrome")
         assert nav["build_id"] is None
@@ -226,27 +227,29 @@ def test_build_id_nofirefox():
         assert nav["build_id"] is None
 
 
-def test_build_id_firefox():
+def test_build_id_firefox() -> None:
     orig_ff_ver = deepcopy(user_agent.base.FIREFOX_VERSION)
     user_agent.base.FIREFOX_VERSION = [
-        ("49.0", datetime(2016, 9, 20)),
-        ("50.0", datetime(2016, 11, 15)),
+        ("49.0", datetime(2016, 9, 20, tzinfo=timezone.utc)),
+        ("50.0", datetime(2016, 11, 15, tzinfo=timezone.utc)),
     ]
     try:
         for _ in range(50):
             nav = generate_navigator(navigator="firefox")
-            assert len(nav["build_id"]) == 14
+            assert len(nav["build_id"]) == FIREFOX_BUILD_ID
             if "50.0" in nav["user_agent"]:
                 assert nav["build_id"].startswith("20161115")
             else:
-                time_ = datetime.strptime(nav["build_id"], "%Y%m%d%H%M%S")
-                assert datetime(2016, 9, 20, 0) <= time_
-                assert time_ < datetime(2016, 11, 15)
+                time_ = datetime.strptime(nav["build_id"], "%Y%m%d%H%M%S").replace(
+                    tzinfo=timezone.utc
+                )
+                assert datetime(2016, 9, 20, 0, tzinfo=timezone.utc) <= time_
+                assert time_ < datetime(2016, 11, 15, tzinfo=timezone.utc)
     finally:
         user_agent.base.FIREFOX_VERSION = orig_ff_ver
 
 
-def test_android_firefox():
+def test_android_firefox() -> None:
     for _ in range(50):
         nav = generate_navigator_js(os="android", navigator="firefox")
         something = nav["userAgent"].split("(")[1].split(")")[0]
@@ -256,7 +259,7 @@ def test_android_firefox():
         assert "Android" in nav["appVersion"]
 
 
-def test_device_type_option():
+def test_device_type_option() -> None:
     for _ in range(50):
         agent = generate_user_agent(device_type="desktop")
         agent = generate_user_agent(device_type="smartphone")
@@ -264,25 +267,25 @@ def test_device_type_option():
         assert "Firefox" in agent or "Chrome" in agent
 
 
-def test_device_type_option_invalid():
+def test_device_type_option_invalid() -> None:
     for _ in range(50):
         with pytest.raises(InvalidOption):
             generate_user_agent(device_type="fridge")
 
 
-def test_invalid_combination_device_type_os():
+def test_invalid_combination_device_type_os() -> None:
     for _ in range(50):
         with pytest.raises(InvalidOption):
             generate_user_agent(device_type="smartphone", os="win")
 
 
-def test_invalid_combination_device_type_navigator():
+def test_invalid_combination_device_type_navigator() -> None:
     for _ in range(50):
         with pytest.raises(InvalidOption):
             generate_user_agent(device_type="smartphone", navigator="ie")
 
 
-def test_no_os_options_default_device_type():
+def test_no_os_options_default_device_type() -> None:
     for _ in range(50):
         agent = generate_user_agent()
         # by default if no os option has given
@@ -290,13 +293,13 @@ def test_no_os_options_default_device_type():
         assert "Android" not in agent
 
 
-def test_device_type_all():
+def test_device_type_all() -> None:
     for _ in range(50):
         generate_user_agent(device_type="all")
         generate_user_agent(device_type="all", navigator="ie")
 
 
-def test_device_type_smartphone_chrome():
+def test_device_type_smartphone_chrome() -> None:
     for _ in range(50):
         agent = generate_user_agent(device_type="smartphone", navigator="chrome")
         assert "Mobile" in agent

@@ -1,9 +1,9 @@
 name: Tests
 
-on: [push]
+on: ["push", "pull_request"]
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -20,9 +20,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install --upgrade -r requirements.txt
-        pip install --upgrade -e .
+        pip install -U -r requirements_dev.txt
+        pip install -U -e .
 
     - name: Run tests
       run: |
-        pytest
+        make pytest
+        coverage lcov -o .coverage.lcov

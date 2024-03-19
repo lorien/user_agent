@@ -54,11 +54,6 @@ profile = "black"
 line_length = 88
 # skip_gitignore = true # throws errors in stderr when ".git" dir does not exist
 
-[tool.bandit]
-# B101 assert_used
-# B410 Using HtmlElement to parse untrusted XML data
-skips = ["B101", "B410"]
-
 [tool.pylint.main]
 jobs=4
 extension-pkg-whitelist="lxml"
@@ -70,11 +65,9 @@ max-line-length=88
 max-args=9
 load-plugins=[
     "pylint.extensions.check_elif",
-    "pylint.extensions.comparetozero",
     "pylint.extensions.comparison_placement",
     "pylint.extensions.consider_ternary_expression",
     "pylint.extensions.docstyle",
-    "pylint.extensions.emptystring",
     "pylint.extensions.for_any_all",
     "pylint.extensions.overlapping_exceptions",
     "pylint.extensions.redefined_loop_name",
@@ -85,3 +78,49 @@ load-plugins=[
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+
+[tool.ruff]
+lint.select = ["ALL"]
+lint.ignore = [
+    "A003", # Class attribute `type` is shadowing a python builtin
+    "ANN101", # Missing type annotation for `self` in method
+    "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
+    "BLE001", # Do not catch blind exception: `Exception`
+    "COM812", # Trailing comma missing
+    "D100", # Missing docstring in public module
+    "D101", # Missing docstring in public class
+    "D102", # Missing docstring in public method1
+    "D103", # Missing docstring in public function
+    "D104", # Missing docstring in public package
+    "D105", # Missing docstring in magic method,
+    "D107", # Missing docstring in `__init__`
+    "D203", # 1 blank line required before class docstring
+    "D213", # Multi-line docstring summary should start at the second line
+    "EM101", # Check for raw usage of a string literal in Exception raising
+    "EM102", # Check for raw usage of an f-string literal in Exception raising
+    "EM103", # Check for raw usage of .format on a string literal in Exception raising
+    "F401", # Imported but unused
+    "FBT", # Boolean arg/value in function definition
+    "PTH", # A plugin finding use of functions that can be replaced by pathlib module
+    "S101", # Use of `assert` detected
+    "T201", # print found	
+    "T203", # pprint found
+    "TCH", # Move import into a type-checking block
+    "TRY003", # Avoid specifying long messages outside the exception class
+    "UP032", # Use f-string instead of format call
+    "ERA001", # Found commented-out code
+    "RUF001", # String contains ambiguous unicode character
+    "ANN102", # Missing type annotation for `cls` in classmethod
+    "TD002", # Missing author in TODO
+    "TD003", # Missing issue link on the line following this TODO
+    "FIX002", # Line contains TODO
+    "RUF003", # Comment contains ambiguous
+    "RUF012", # Mutable class attributes should be annotated
+    "TRY400", #  Use `logging.exception` instead of `logging.error`
+    "PERF401", # Use a list comprehension to create a transformed list
+    "RUF100", # [*] Unused `noqa` directive
+]
+lint.pylint.max-args=9
+target-version = "py38"
+extend-exclude = ["var"]

@@ -1,16 +1,17 @@
-.PHONY: bootstrap venv deps dirs clean test release mypy pylint flake8 bandit check build
+.PHONY: init venv deps dirs clean pytest test release mypy pylint ruff check build
 
 SHELL := /bin/bash
 FILES_CHECK_MYPY = user_agent
 FILES_CHECK_ALL = $(FILES_CHECK_MYPY) tests
+COVERAGE_TARGET = user_agent
 
-bootstrap: venv deps dirs
+init: venv deps dirs
 
 venv:
 	virtualenv -p python3 .env
 
 deps:
-	.env/bin/pip install -r requirements.txt
+	.env/bin/pip install -r requirements_dev.txt
 	.env/bin/pip install -e .
 
 dirs:
@@ -22,8 +23,11 @@ clean:
 	find -name '*.swp' -delete
 	find -name '__pycache__' -delete
 
-test:
-	tox -e py3-test
+pytest:
+	pytest -n30 -x --cov $(COVERAGE_TARGET) --cov-report term-missing
+
+test: check pytest
+	tox -e check-minver
 
 #release:
 #	git push \
@@ -32,20 +36,21 @@ test:
 #	&& twine upload dist/*
 
 mypy:
-	mypy --python-version=3.8 --strict $(FILES_CHECK_MYPY)
+	mypy --strict $(FILES_CHECK_MYPY)
 
 pylint:
 	pylint -j0  $(FILES_CHECK_ALL)
 
-flake8:
-	flake8 -j auto --max-cognitive-complexity=17 $(FILES_CHECK_ALL)
+ruff:
+	ruff check $(FILES_CHECK_ALL)
 
-bandit:
-	bandit -qc pyproject.toml -r $(FILES_CHECK_ALL)
+coverage:
+	pytest -n30 -x --cov $(COVERAGE_TARGET) --cov-report term-missing
 
-check:
-	tox -e py38-check \
-	&& tox -e py3-check
+eradicate:
+	tox -e eradicate -- flake8 -j auto --eradicate-whitelist-extend="" $(FILES_CHECK_ALL)
+
+check: ruff mypy pylint
 
 build:
 	rm -rf *.egg-info
