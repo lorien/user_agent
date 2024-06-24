@@ -506,10 +506,10 @@ def build_navigator_app_version(
 
 def generate_navigator(
     *,
-    os: None | str = None,
-    navigator: None | str = None,
-    platform: None | str = None,
-    device_type: None | str = None,
+    os: None | str | Sequence[str] = None,
+    navigator: None | str | Sequence[str] = None,
+    platform: None | str | Sequence[str] = None,
+    device_type: None | str | list[str] = None,
 ) -> dict[str, None | str]:
     """Generate web navigator's config.
 
@@ -568,10 +568,10 @@ def generate_navigator(
 
 def generate_user_agent(
     *,
-    os: None | str = None,
-    navigator: None | str = None,
-    platform: None | str = None,
-    device_type: None | str = None,
+    os: None | str | Sequence[str] = None,
+    navigator: None | str | Sequence[str] = None,
+    platform: None | str | Sequence[str] = None,
+    device_type: None | str | list[str] = None,
 ) -> str:
     """Generate HTTP User-Agent header.
 
@@ -597,10 +597,10 @@ def generate_user_agent(
 
 def generate_navigator_js(
     *,
-    os: None | str = None,
-    navigator: None | str = None,
-    platform: None | str = None,
-    device_type: None | str = None,
+    os: None | str | Sequence[str] = None,
+    navigator: None | str | Sequence[str] = None,
+    platform: None | str | Sequence[str] = None,
+    device_type: None | str | list[str] = None,
 ) -> dict[str, None | str]:
     """Generate config for `windows.navigator` JavaScript object.
 
