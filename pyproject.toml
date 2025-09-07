@@ -4,7 +4,7 @@ name = "user_agent"
 version = "0.1.10"
 description = "Library to build content for User-Agent HTTP header"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=2.7"
 license = {"file" = "LICENSE"}
 keywords = ["user agent", "browser", "web crawling", "web scraping", "web crawler", "web scraper"]
 authors = [
@@ -14,13 +14,23 @@ authors = [
 classifiers = [
     "Typing :: Typed",
     "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.0",
+    "Programming Language :: Python :: 3.1",
+    "Programming Language :: Python :: 3.2",
+    "Programming Language :: Python :: 3.3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -28,7 +38,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Internet :: WWW/HTTP",
 ]
-dependencies = []
+dependencies = ["six", "pytz"]
 
 [project.optional-dependencies]
 
@@ -83,8 +93,22 @@ testpaths = ["tests"]
 [tool.ruff]
 lint.select = ["ALL"]
 lint.ignore = [
+    # py27 compat begins
+    "ANN001", # Missing type annotation for function argument
+    "ANN201", # Missing return type annotation for public function
+    #"ANN003", # Missing type annotation for `**kwargs`
+    "ANN202", # Missing return type annotation for private function
+    #"ANN204", # Missing return type annotation for special method
+    #"B904", # Use `raise from` to specify exception cause
+    #"B904", # Within an `except` clause, raise exceptions with `raise ... from err`
+    #"UP025", # Remove unicode literals from strings
+    #"UP004", # Class inherits from `object`
+    ## or `raise ... from None` to distinguish them from errors in exception handling
+    #"UP009", # UTF-8 encoding declaration is unnecessary
+    #"UP035", # Import from `collections.abc` instead
+    #"UP013", # Convert from `TypedDict` functional to class syntax
+    # py27 compat ends
     "A003", # Class attribute `type` is shadowing a python builtin
-    "ANN101", # Missing type annotation for `self` in method
     "ANN401", # Dynamically typed expressions (typing.Any) are disallowed
     "BLE001", # Do not catch blind exception: `Exception`
     "COM812", # Trailing comma missing
@@ -111,7 +135,6 @@ lint.ignore = [
     "UP032", # Use f-string instead of format call
     "ERA001", # Found commented-out code
     "RUF001", # String contains ambiguous unicode character
-    "ANN102", # Missing type annotation for `cls` in classmethod
     "TD002", # Missing author in TODO
     "TD003", # Missing issue link on the line following this TODO
     "FIX002", # Line contains TODO
@@ -122,5 +145,5 @@ lint.ignore = [
     "RUF100", # [*] Unused `noqa` directive
 ]
 lint.pylint.max-args=9
-target-version = "py38"
+target-version = "py37"
 extend-exclude = ["var"]

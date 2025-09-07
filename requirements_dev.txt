@@ -1,6 +1,4 @@
 sphinx
-tox
-test_server>=0.0.35
 mock
 bumpversion
 pytest
@@ -10,9 +8,12 @@ coverage
 coveralls
 pytest-cov
 pytest-xdist
-flake8
-mccabe
-mypy
-pep8-naming
-pylint
-ruff
+
+/web/test_server
+
+ruff; python_version >= "3.0"
+mypy; python_version >= "3.0"
+pylint; python_version >= "3.0"
+#types-urllib3; python_version >= "3.0"
+#types-six; python_version >= "3.0"
+#types-pytz; python_version >= "3.0"

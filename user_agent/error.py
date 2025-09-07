@@ -1,4 +1,4 @@
-__all__ = ["UserAgentError", "InvalidOption", "InvalidOptionError"]
+__all__ = ["InvalidOption", "InvalidOptionError", "UserAgentError"]
 
 
 class UserAgentError(Exception):

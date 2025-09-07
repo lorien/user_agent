@@ -1,18 +1,30 @@
-.PHONY: init venv deps dirs clean pytest test release mypy pylint ruff check build
+.PHONY: init venv deps py2-init py2-venv py2-deps dirs clean pytest test release mypy pylint ruff check build
 
 SHELL := /bin/bash
 FILES_CHECK_MYPY = user_agent
 FILES_CHECK_ALL = $(FILES_CHECK_MYPY) tests
 COVERAGE_TARGET = user_agent
+PY2_ROOT = /home/user/.pyenv/versions/2.7.18
+PY2_VENV = .venv-py27
 
 init: venv deps dirs
+
+py2: py2-venv py2-deps dirs
 
 venv:
 	virtualenv -p python3 .env
 
+py2-venv:
+	$(PY2_ROOT)/bin/pip install virtualenv
+	$(PY2_ROOT)/bin/virtualenv --python=$(PY2_ROOT)/bin/python2.7 $(PY2_VENV)
+
 deps:
 	.env/bin/pip install -r requirements_dev.txt
 	.env/bin/pip install -e .
+
+py2-deps:
+	$(PY2_VENV)/bin/pip install -r requirements_dev.txt
+	$(PY2_VENV)/bin/pip install .
 
 dirs:
 	if [ ! -e var/run ]; then mkdir -p var/run; fi
@@ -26,8 +38,8 @@ clean:
 pytest:
 	pytest -n30 -x --cov $(COVERAGE_TARGET) --cov-report term-missing
 
-test: check pytest
-	tox -e check-minver
+test:
+	pytest --cov test_server --cov-report term-missing
 
 #release:
 #	git push \
@@ -46,9 +58,6 @@ ruff:
 
 coverage:
 	pytest -n30 -x --cov $(COVERAGE_TARGET) --cov-report term-missing
-
-eradicate:
-	tox -e eradicate -- flake8 -j auto --eradicate-whitelist-extend="" $(FILES_CHECK_ALL)
 
 check: ruff mypy pylint
 

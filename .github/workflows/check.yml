@@ -1,17 +1,17 @@
-name: Linters
+name: Code Quality
 
 on: ["push", "pull_request"]
 
 jobs:
-  build:
+  check:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python: ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13-dev']
+        python: [3.13]
     steps:
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
 
     - name: Set up Python ${{ matrix.python }}
       uses: actions/setup-python@v4
@@ -23,6 +23,10 @@ jobs:
         pip install -U -r requirements_dev.txt
         pip install -U -e .
 
-    - name: Run tests
+    - name: Run ruff
       run: |
-        make ruff && make pylint
+        make ruff
+
+    - name: Run pylint
+      run: |
+        make pylint

@@ -4,7 +4,8 @@ from argparse import ArgumentParser
 from user_agent import generate_navigator_js
 
 
-def script_ua() -> None:
+def script_ua():
+    # type: () -> None
     parser = ArgumentParser()
     parser.add_argument("-e", "--extended", action="store_true", default=False)
     parser.add_argument("-o", "--os")

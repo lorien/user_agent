@@ -28,25 +28,26 @@ Lists of user agents:
 * http://www.webapps-online.com/online-tools/user-agent-strings
 
 """
-from __future__ import annotations
+# from __future__ import annotations
 
 import typing
-from collections.abc import Sequence
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from itertools import product
 from random import SystemRandom
 
-# pylint: disable=unused-import
-from .device import SMARTPHONE_DEV_IDS
+import pytz
+from six.moves.collections_abc import (  # pylint: disable=import-error,unused-import
+    Sequence,
+)
 
-# pylint: enable=unused-import
+from .device import SMARTPHONE_DEV_IDS
 from .error import InvalidOption
 from .warning import warn
 
 # pylint: enable=line-too-long
 
 
-__all__ = ["generate_user_agent", "generate_navigator", "generate_navigator_js"]
+__all__ = ["generate_navigator", "generate_navigator_js", "generate_user_agent"]
 
 IE_NETSCAPE_VERSION = 11
 randomizer = SystemRandom()
@@ -136,21 +137,19 @@ NAVIGATOR_OS = {
     "firefox": ("win", "linux", "mac", "android"),
     "ie": ("win",),
 }
-FIREFOX_VERSION: list[tuple[str, datetime]] = [
-    ("45.0", datetime(2016, 3, 8, tzinfo=timezone.utc)),
-    ("46.0", datetime(2016, 4, 26, tzinfo=timezone.utc)),
-    ("47.0", datetime(2016, 6, 7, tzinfo=timezone.utc)),
-    ("48.0", datetime(2016, 8, 2, tzinfo=timezone.utc)),
-    ("49.0", datetime(2016, 9, 20, tzinfo=timezone.utc)),
-    ("50.0", datetime(2016, 11, 15, tzinfo=timezone.utc)),
-    ("51.0", datetime(2017, 1, 24, tzinfo=timezone.utc)),
-]
+FIREFOX_VERSION = [
+    ("45.0", datetime(2016, 3, 8, tzinfo=pytz.utc)),
+    ("46.0", datetime(2016, 4, 26, tzinfo=pytz.utc)),
+    ("47.0", datetime(2016, 6, 7, tzinfo=pytz.utc)),
+    ("48.0", datetime(2016, 8, 2, tzinfo=pytz.utc)),
+    ("49.0", datetime(2016, 9, 20, tzinfo=pytz.utc)),
+    ("50.0", datetime(2016, 11, 15, tzinfo=pytz.utc)),
+    ("51.0", datetime(2017, 1, 24, tzinfo=pytz.utc)),
+]  # type: list[tuple[str, datetime]]
 
 # Top chrome builds from website access log
 # for september, october 2020
-CHROME_BUILD: list[
-    str
-] = """
+CHROME_BUILD = """
 80.0.3987.132
 80.0.3987.149
 80.0.3987.99
@@ -181,15 +180,15 @@ CHROME_BUILD: list[
 86.0.4240.80
 86.0.4240.96
 86.0.4240.99
-""".strip().splitlines()
+""".strip().splitlines()  # type: list[str]
 
-IE_VERSION: list[tuple[int, str, str]] = [
+IE_VERSION = [
     # (numeric ver, string ver, trident ver) # release year
     (8, "MSIE 8.0", "4.0"),  # 2009
     (9, "MSIE 9.0", "5.0"),  # 2011
     (10, "MSIE 10.0", "6.0"),  # 2012
     (11, "MSIE 11.0", "7.0"),  # 2013
-]
+]  # type: list[tuple[int, str, str]]
 USER_AGENT_TEMPLATE = {
     "firefox": (
         "Mozilla/5.0"
@@ -228,17 +227,18 @@ USER_AGENT_TEMPLATE = {
 }
 
 
-MACOSX_CHROME_BUILD_RANGE: dict[str, tuple[int, int]] = {
+MACOSX_CHROME_BUILD_RANGE = {
     # https://en.wikipedia.org/wiki/MacOS#Release_history
     "10.8": (0, 8),
     "10.9": (0, 5),
     "10.10": (0, 5),
     "10.11": (0, 6),
     "10.12": (0, 2),
-}
+}  # type: dict[str, tuple[int, int]]
 
 
-def get_firefox_build() -> tuple[str, str]:
+def get_firefox_build():
+    # type: () -> tuple[str, str]
     build_ver, date_from = randomizer.choice(FIREFOX_VERSION)
     try:
         idx = FIREFOX_VERSION.index((build_ver, date_from))
@@ -252,11 +252,13 @@ def get_firefox_build() -> tuple[str, str]:
     return build_ver, build_rnd_time.strftime("%Y%m%d%H%M%S")
 
 
-def get_chrome_build() -> str:
+def get_chrome_build():
+    # type: () -> str
     return randomizer.choice(CHROME_BUILD)
 
 
-def get_ie_build() -> tuple[int, str, str]:
+def get_ie_build():
+    # type: () -> tuple[int, str, str]
     """Return random IE version as tuple (numeric_version, us-string component).
 
     Example: (8, 'MSIE 8.0')
@@ -264,7 +266,8 @@ def get_ie_build() -> tuple[int, str, str]:
     return randomizer.choice(IE_VERSION)
 
 
-def fix_chrome_mac_platform(platform: str) -> str:
+def fix_chrome_mac_platform(platform):
+    # type: (str) -> str
     """Fix chrome version on mac OS.
 
     Chrome on Mac OS adds minor version number and uses underscores instead
@@ -279,12 +282,11 @@ def fix_chrome_mac_platform(platform: str) -> str:
     build_range = range(*MACOSX_CHROME_BUILD_RANGE[ver])
     build = randomizer.choice(build_range)
     mac_ver = ver.replace(".", "_") + "_" + str(build)
-    return "Macintosh; Intel Mac OS X %s" % mac_ver
+    return "Macintosh; Intel Mac OS X {}".format(mac_ver)
 
 
-def build_system_components(
-    device_type: str, os_id: str, navigator_id: str
-) -> dict[str, str]:
+def build_system_components(device_type, os_id, navigator_id):
+    # type: (str, str, str) -> dict[str, str]
     """Build random platform and oscpu components for given parameters.
 
     Returns dict {platform_version, platform, ua_platform, oscpu}
@@ -313,7 +315,7 @@ def build_system_components(
             "platform_version": platform_version,
             "platform": platform,
             "ua_platform": platform,
-            "oscpu": "Linux %s" % cpu,
+            "oscpu": "Linux {}".format(cpu),
         }
     if os_id == "mac":
         cpu = randomizer.choice(OS_CPU["mac"])
@@ -325,7 +327,7 @@ def build_system_components(
             "platform_version": platform_version,
             "platform": "MacIntel",
             "ua_platform": platform,
-            "oscpu": "Intel Mac OS X %s" % platform.split(" ")[-1],
+            "oscpu": "Intel Mac OS X {}".format(platform.split(" ")[-1]),
         }
     # os_id could be only "android" here
     assert navigator_id in {"firefox", "chrome"}
@@ -333,13 +335,17 @@ def build_system_components(
     platform_version = randomizer.choice(OS_PLATFORM["android"])
     if navigator_id == "firefox":
         if device_type == "smartphone":
-            ua_platform = "%s; Mobile" % platform_version
+            ua_platform = "{}; Mobile".format(platform_version)
         elif device_type == "tablet":
-            ua_platform = "%s; Tablet" % platform_version
+            ua_platform = "{}; Tablet".format(platform_version)
+        else:
+            ua_platform = "TODO"
     elif navigator_id == "chrome":
         device_id = randomizer.choice(SMARTPHONE_DEV_IDS)
         ua_platform = "Linux; {}; {}".format(platform_version, device_id)
-    oscpu = "Linux %s" % randomizer.choice(OS_CPU["android"])
+    else:
+        ua_platform = "TODO"
+    oscpu = "Linux {}".format(randomizer.choice(OS_CPU["android"]))
     return {
         "platform_version": platform_version,
         "ua_platform": ua_platform,
@@ -348,7 +354,8 @@ def build_system_components(
     }
 
 
-def build_app_components(os_id: str, navigator_id: str) -> dict[str, None | str]:
+def build_app_components(os_id, navigator_id):
+    # type: (str, str) -> dict[str, None | str]
     """Build app features for given os and navigator.
 
     Returns dict {name, product_sub, vendor, build_version, build_id}
@@ -390,11 +397,12 @@ def build_app_components(os_id: str, navigator_id: str) -> dict[str, None | str]
 
 # TODO: I have no idea what this function does
 def get_option_choices(
-    opt_name: str,
-    opt_value: None | str | Sequence[str],
-    default_value: list[str],
-    all_choices: list[str],
-) -> list[str]:
+    opt_name,  # type: str
+    opt_value,  # type: None | str | Sequence[str]
+    default_value,  # type: list[str]
+    all_choices,  # type: list[str]
+):
+    # type: (...) -> list[str]
     """Generate something.
 
     Long uninformative description: Generate possible choices for the
@@ -425,10 +433,11 @@ def get_option_choices(
 
 
 def pick_config_ids(
-    device_type: None | str | list[str],
-    os: None | str | Sequence[str],
-    navigator: None | str | Sequence[str],
-) -> tuple[str, str, str]:
+    device_type=None,  # type: None | str | list[str]
+    os=None,  # type: None | str | Sequence[str]
+    navigator=None,  # type: None | str | Sequence[str]
+):
+    # type: (...) -> tuple[str, str, str]
     """Select one item from all possible combinations of (device, os, navigator) items.
 
     :param os: allowed os(es)
@@ -474,8 +483,11 @@ def pick_config_ids(
 
 
 def choose_ua_template(
-    device_type: str, navigator_id: str, app: dict[str, None | str]
-) -> str:
+    device_type,  # type: str
+    navigator_id,  # type: str
+    app,  # type: dict[str, None | str]
+):
+    # type: (...) -> str
     tpl_name = navigator_id
     if navigator_id == "ie":
         tpl_name = "ie_11" if app["build_version"] == "MSIE 11.0" else "ie_less_11"
@@ -487,30 +499,29 @@ def choose_ua_template(
     return USER_AGENT_TEMPLATE[tpl_name]
 
 
-def build_navigator_app_version(
-    os_id: str, navigator_id: str, platform_version: str, user_agent: str
-) -> str:
+def build_navigator_app_version(os_id, navigator_id, platform_version, user_agent):
+    # type: (str, str, str, str) -> str
     if navigator_id == "firefox":
         if os_id == "android":
-            return "5.0 (%s)" % platform_version
+            return "5.0 ({})".format(platform_version)
         os_token = {
             "win": "Windows",
             "mac": "Macintosh",
             "linux": "X11",
         }[os_id]
-        return "5.0 (%s)" % os_token
+        return "5.0 ({})".format(os_token)
     # here navigator_id could be only "chrome" and "ie"
     assert user_agent.startswith("Mozilla/")
     return user_agent.split("Mozilla/", 1)[1]
 
 
 def generate_navigator(
-    *,
-    os: None | str = None,
-    navigator: None | str = None,
-    platform: None | str = None,
-    device_type: None | str = None,
-) -> dict[str, None | str]:
+    os=None,  # type: None | str
+    navigator=None,  # type: None | str
+    platform=None,  # type: None | str
+    device_type=None,  # type: None | str
+):
+    # type: (...) -> dict[str, None | str]
     """Generate web navigator's config.
 
     :param os: limit list of oses for generation
@@ -567,12 +578,12 @@ def generate_navigator(
 
 
 def generate_user_agent(
-    *,
-    os: None | str = None,
-    navigator: None | str = None,
-    platform: None | str = None,
-    device_type: None | str = None,
-) -> str:
+    os=None,  # type: None | str
+    navigator=None,  # type: None | str
+    platform=None,  # type: None | str
+    device_type=None,  # type: None | str
+):
+    # type: (...) -> str
     """Generate HTTP User-Agent header.
 
     :param os: limit list of os for generation
@@ -596,12 +607,12 @@ def generate_user_agent(
 
 
 def generate_navigator_js(
-    *,
-    os: None | str = None,
-    navigator: None | str = None,
-    platform: None | str = None,
-    device_type: None | str = None,
-) -> dict[str, None | str]:
+    os=None,  # type: None | str
+    navigator=None,  # type: None | str
+    platform=None,  # type: None | str
+    device_type=None,  # type: None | str
+):
+    # type: (...) -> dict[str, None | str]
     """Generate config for `windows.navigator` JavaScript object.
 
     :param os: limit list of oses for generation
