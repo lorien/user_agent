@@ -170,8 +170,8 @@ def test_ua_script_simple():
 def test_ua_script_options():
     # type: () -> None
     for _ in range(5):
-        out = check_output(
-            "ua -o linux -n chrome", shell=True  # noqa: S602,S607
+        out = check_output(  # noqa: S602
+            "ua -o linux -n chrome", shell=True  # noqa: S607
         ).decode("utf-8")
         assert re.match("^Mozilla.*Linux.*Chrome", out)
 
@@ -179,8 +179,8 @@ def test_ua_script_options():
 def test_ua_script_extended():
     # type: () -> None
     for _ in range(5):
-        out = check_output(
-            "ua -o linux -n chrome -e", shell=True  # noqa: S602,S607
+        out = check_output(  # noqa: S602
+            "ua -o linux -n chrome -e", shell=True  # noqa: S607
         ).decode("utf-8")
         data = json.loads(out)
         assert "Linux" in data["platform"]
