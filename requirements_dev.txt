@@ -1,15 +1,22 @@
-sphinx
+# Test
 mock
-bumpversion
-pytest
-build
-twine
+test_server
 coverage
 coveralls
 pytest-cov
 pytest-xdist
-test_server
+pytest
 
+# Devel
+pkginfo
+bumpversion
+twine
+build
+
+# Docs
+sphinx
+
+# Types and Linters
 ruff; python_version >= "3.0"
 mypy; python_version >= "3.0"
 pylint; python_version >= "3.0"
