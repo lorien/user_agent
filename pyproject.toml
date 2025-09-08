@@ -1,7 +1,7 @@
 [project]
 
 name = "user_agent"
-version = "0.1.12"
+version = "0.1.13"
 description = "Library to build content for User-Agent HTTP header"
 readme = "README.md"
 requires-python = ">=2.7"
