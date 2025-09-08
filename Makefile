@@ -39,7 +39,7 @@ pytest:
 	pytest -n30 -x --cov $(COVERAGE_TARGET) --cov-report term-missing
 
 test:
-	pytest --cov test_server --cov-report term-missing
+	pytest --cov $(COVERAGE_TARGET) --cov-report term-missing
 
 #release:
 #	git push \
