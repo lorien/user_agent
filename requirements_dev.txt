@@ -8,8 +8,7 @@ coverage
 coveralls
 pytest-cov
 pytest-xdist
-
-/web/test_server
+test_server
 
 ruff; python_version >= "3.0"
 mypy; python_version >= "3.0"
