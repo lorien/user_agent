@@ -1,0 +1,9 @@
+recursive-include user_agent/data *
+recursive-include tests *.py
+include README.rst
+include LICENSE
+include requirements_dev.txt
+include Makefile
+
+#include docs
+#include tox.ini
