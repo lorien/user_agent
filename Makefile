@@ -41,11 +41,11 @@ pytest:
 test:
 	pytest --cov $(COVERAGE_TARGET) --cov-report term-missing
 
-#release:
-#	git push \
-#	&& git push --tags \
-#	&& make build \
-#	&& twine upload dist/*
+release:
+	git push \
+	&& git push --tags \
+	&& make build \
+	&& twine upload dist/*
 
 mypy:
 	mypy --strict $(FILES_CHECK_MYPY)
