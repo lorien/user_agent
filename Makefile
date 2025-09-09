@@ -64,4 +64,4 @@ check: ruff mypy pylint
 build:
 	rm -rf *.egg-info
 	rm -rf dist/*
-	python -m build --sdist
+	python -m build
