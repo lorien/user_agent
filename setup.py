@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="user_agent",
-    version="0.1.13",
+    version="0.1.14",
     packages=["user_agent", "user_agent.data"],
     install_requires=["six", "pytz"],
     include_package_data=True,
