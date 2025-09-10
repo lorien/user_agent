@@ -5,7 +5,8 @@ version = "0.1.14"
 description = "Library to build content for User-Agent HTTP header"
 readme = "README.md"
 requires-python = ">=2.7"
-license = {"file" = "LICENSE"}
+license = "MIT"
+license-files = ["LICENSE"]
 keywords = ["user agent", "browser", "web crawling", "web scraping", "web crawler", "web scraper"]
 authors = [
     {name = "Gregory Petukhov", email = "lorien@lorien.name"}
@@ -31,7 +32,6 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "License :: OSI Approved :: MIT License",
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
