@@ -8,6 +8,8 @@ pytest-xdist
 pytest
 
 # Devel
+setuptools
+wheel
 pkginfo
 bumpversion
 twine

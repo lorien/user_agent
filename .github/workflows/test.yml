@@ -28,29 +28,14 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -U -r requirements_dev.txt
-        pip install -U -e .
+
+    - name: Build wheel and install
+      run: |
+        make build
+        mv user_agent backup_user_agent
+        mv dist/*.whl dist/user_agent-0.0.1-py2.py3-none-any.whl
+        pip install -U dist/user_agent-0.0.1-py2.py3-none-any.whl
 
     - name: Run tests
       run: |
         make test
-
-#        coverage lcov -o .coverage.lcov
-
-#    - name: Coveralls Parallel
-#      uses: coverallsapp/github-action@master
-#      with:
-#        github-token: ${{ secrets.github_token }}
-#        path-to-lcov: ./.coverage.lcov
-#        flag-name: run-${{ matrix.os }}-${{ matrix.python }}
-#        parallel: true
-
-#  finish:
-#      needs: test
-#      runs-on: ubuntu-latest
-#      steps:
-#      - name: Coveralls Finished
-#        uses: coverallsapp/github-action@master
-#        with:
-#          github-token: ${{ secrets.github_token }}
-#          path-to-lcov: ./.coverage.lcov
-#          parallel-finished: true
