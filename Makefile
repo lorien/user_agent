@@ -1,4 +1,4 @@
-.PHONY: init venv deps py2-init py2-venv py2-deps dirs clean pytest test release mypy pylint ruff check_setup coverage check build
+.PHONY: init venv deps py2-init py2-venv py2-deps dirs clean pytest test release mypy pylint ruff coverage check build
 
 SHELL := /bin/bash
 FILES_CHECK_MYPY = user_agent
@@ -56,13 +56,10 @@ pylint:
 ruff:
 	ruff check $(FILES_CHECK_ALL)
 
-check_setup:
-	python setup.py check --strict
-
 coverage:
 	pytest -n30 -x --cov $(COVERAGE_TARGET) --cov-report term-missing
 
-check: check_setup ruff mypy pylint
+check: ruff mypy pylint
 
 build:
 	rm -rf *.egg-info
