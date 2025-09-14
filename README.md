@@ -16,7 +16,7 @@ This module is for generating random, valid web user agents:
 
 ## Feedback
 
-You are welcome to join Telegram chat groups to talk about web scraping and data processing: @grablab (English), @grablab_ru (Russian).
+You are welcome to join Telegram chat groups to talk about web scraping and data processing: [@grablab](https://t.me/grablab) (English), [@grablab_ru](https://t.me/grablab_ru) (Russian).
 
 ## Installation
 
