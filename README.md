@@ -14,6 +14,19 @@ This module is for generating random, valid web user agents:
 * content of "User-Agent" HTTP headers
 * content of `window.navigator` JavaScript object
 
+## Feedback
+
+You are welcome to join Telegram chat groups to talk about web scraping and data processing: @grablab (English), @grablab_ru (Russian).
+
+## Installation
+
+Run `pip install -U user_agent`
+
+
+## Documentation
+
+Documentation is available at http://user-agent.readthedocs.org
+
 
 ## Usage Example
 
@@ -58,16 +71,6 @@ $ ua -n chrome -e
   "userAgent": "Mozilla/5.0 (X11; Linux i686 on x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2909.25 Safari/537.36"
 }
 ```
-
-## Installation
-
-Run `pip install -U user_agent`
-
-
-## Documentation
-
-Documentation is available at http://user-agent.readthedocs.org
-
 
 ## Contribution
 
